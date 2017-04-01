@@ -1,0 +1,189 @@
+1490857201601: You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+SequelizeDatabaseError: ER_NO_SUCH_TABLE: Table 'epilepsy_development.patient' doesn't exist
+    at Query.formatError (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:175:14)
+    at Query._callback (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:49:21)
+    at Query.Sequence.end (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Sequence.js:86:24)
+    at Query.ErrorPacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Query.js:88:8)
+    at Protocol._parsePacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:280:23)
+    at Parser.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Parser.js:75:12)
+    at Protocol.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:39:16)
+    at Socket.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:103:28)
+    at emitOne (events.js:96:13)
+    at Socket.emit (events.js:188:7)
+    at readableAddChunk (_stream_readable.js:176:18)
+    at Socket.Readable.push (_stream_readable.js:134:10)
+    at TCP.onread (net.js:548:20)
+1490857201605: { SequelizeDatabaseError: ER_NO_SUCH_TABLE: Table 'epilepsy_development.active_patients' doesn't exist
+    at Query.formatError (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:175:14)
+    at Query._callback (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:49:21)
+    at Query.Sequence.end (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Sequence.js:86:24)
+    at Query.ErrorPacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Query.js:88:8)
+    at Protocol._parsePacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:280:23)
+    at Parser.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Parser.js:75:12)
+    at Protocol.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:39:16)
+    at Socket.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:103:28)
+    at emitOne (events.js:96:13)
+    at Socket.emit (events.js:188:7)
+    at readableAddChunk (_stream_readable.js:176:18)
+    at Socket.Readable.push (_stream_readable.js:134:10)
+    at TCP.onread (net.js:548:20)
+  name: 'SequelizeDatabaseError',
+  message: 'ER_NO_SUCH_TABLE: Table \'epilepsy_development.active_patients\' doesn\'t exist',
+  parent: 
+   { Error: ER_NO_SUCH_TABLE: Table 'epilepsy_development.active_patients' doesn't exist
+       at Query.Sequence._packetToError (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Sequence.js:52:14)
+       at Query.ErrorPacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Query.js:77:18)
+       at Protocol._parsePacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:280:23)
+       at Parser.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Parser.js:75:12)
+       at Protocol.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:39:16)
+       at Socket.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:103:28)
+       at emitOne (events.js:96:13)
+       at Socket.emit (events.js:188:7)
+       at readableAddChunk (_stream_readable.js:176:18)
+       at Socket.Readable.push (_stream_readable.js:134:10)
+       at TCP.onread (net.js:548:20)
+       --------------------
+       at Protocol._enqueue (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:141:48)
+       at Connection.query (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:208:25)
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:40:21
+       at Promise._execute (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/debuggability.js:300:9)
+       at Promise._resolveFromExecutor (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:483:18)
+       at new Promise (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:79:10)
+       at Query.run (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:39:17)
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/sequelize.js:849:20
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/retry-as-promised/index.js:40:21
+       at Promise._execute (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/debuggability.js:300:9)
+       at Promise._resolveFromExecutor (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:483:18)
+       at new Promise (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:79:10)
+       at retryAsPromised (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/retry-as-promised/index.js:30:10)
+       at ConnectionManager.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/sequelize.js:848:12)
+       at ConnectionManager.tryCatcher (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/util.js:16:23)
+       at Promise._settlePromiseFromHandler (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:512:31)
+     code: 'ER_NO_SUCH_TABLE',
+     errno: 1146,
+     sqlState: '42S02',
+     index: 0,
+     sql: 'SELECT pa.id, pa.dateStarted, jss.surveyTemplateId, jss.rule\n       FROM active_patients AS pa\n       JOIN stage AS st\n       ON st.id = pa.stageId\n       JOIN join_stages_and_surveys AS jss\n       ON jss.stageId = st.id\n       WHERE \'2017-03-30 00:00:01\' BETWEEN pa.dateStarted AND pa.dateCompleted\n       ORDER BY pa.id, jss.stagePriority' },
+  original: 
+   { Error: ER_NO_SUCH_TABLE: Table 'epilepsy_development.active_patients' doesn't exist
+       at Query.Sequence._packetToError (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Sequence.js:52:14)
+       at Query.ErrorPacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Query.js:77:18)
+       at Protocol._parsePacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:280:23)
+       at Parser.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Parser.js:75:12)
+       at Protocol.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:39:16)
+       at Socket.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:103:28)
+       at emitOne (events.js:96:13)
+       at Socket.emit (events.js:188:7)
+       at readableAddChunk (_stream_readable.js:176:18)
+       at Socket.Readable.push (_stream_readable.js:134:10)
+       at TCP.onread (net.js:548:20)
+       --------------------
+       at Protocol._enqueue (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:141:48)
+       at Connection.query (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:208:25)
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:40:21
+       at Promise._execute (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/debuggability.js:300:9)
+       at Promise._resolveFromExecutor (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:483:18)
+       at new Promise (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:79:10)
+       at Query.run (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:39:17)
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/sequelize.js:849:20
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/retry-as-promised/index.js:40:21
+       at Promise._execute (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/debuggability.js:300:9)
+       at Promise._resolveFromExecutor (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:483:18)
+       at new Promise (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:79:10)
+       at retryAsPromised (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/retry-as-promised/index.js:30:10)
+       at ConnectionManager.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/sequelize.js:848:12)
+   1490857201606:     at ConnectionManager.tryCatcher (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/util.js:16:23)
+       at Promise._settlePromiseFromHandler (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:512:31)
+     code: 'ER_NO_SUCH_TABLE',
+     errno: 1146,
+     sqlState: '42S02',
+     index: 0,
+     sql: 'SELECT pa.id, pa.dateStarted, jss.surveyTemplateId, jss.rule\n       FROM active_patients AS pa\n       JOIN stage AS st\n       ON st.id = pa.stageId\n       JOIN join_stages_and_surveys AS jss\n       ON jss.stageId = st.id\n       WHERE \'2017-03-30 00:00:01\' BETWEEN pa.dateStarted AND pa.dateCompleted\n       ORDER BY pa.id, jss.stagePriority' },
+  sql: 'SELECT pa.id, pa.dateStarted, jss.surveyTemplateId, jss.rule\n       FROM active_patients AS pa\n       JOIN stage AS st\n       ON st.id = pa.stageId\n       JOIN join_stages_and_surveys AS jss\n       ON jss.stageId = st.id\n       WHERE \'2017-03-30 00:00:01\' BETWEEN pa.dateStarted AND pa.dateCompleted\n       ORDER BY pa.id, jss.stagePriority' }
+{ SequelizeDatabaseError: ER_NO_SUCH_TABLE: Table 'epilepsy_development.survey_instance' doesn't exist
+    at Query.formatError (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:175:14)
+    at Query._callback (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:49:21)
+    at Query.Sequence.end (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Sequence.js:86:24)
+    at Query.ErrorPacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Query.js:88:8)
+    at Protocol._parsePacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:280:23)
+    at Parser.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Parser.js:75:12)
+    at Protocol.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:39:16)
+    at Socket.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:103:28)
+    at emitOne (events.js:96:13)
+    at Socket.emit (events.js:188:7)
+    at readableAddChunk (_stream_readable.js:176:18)
+    at Socket.Readable.push (_stream_readable.js:134:10)
+    at TCP.onread (net.js:548:20)
+  name: 'SequelizeDatabaseError',
+  message: 'ER_NO_SUCH_TABLE: Table \'epilepsy_development.survey_instance\' doesn\'t exist',
+  parent: 
+   { Error: ER_NO_SUCH_TABLE: Table 'epilepsy_development.survey_instance' doesn't exist
+       at Query.Sequence._packetToError (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Sequence.js:52:14)
+       at Query.ErrorPacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Query.js:77:18)
+       at Protocol._parsePacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:280:23)
+       at Parser.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Parser.js:75:12)
+       at Protocol.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:39:16)
+       at Socket.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:103:28)
+       at emitOne (events.js:96:13)
+       at Socket.emit (events.js:188:7)
+       at readableAddChunk (_stream_readable.js:176:18)
+       at Socket.Readable.push (_stream_readable.js:134:10)
+       at TCP.onread (net.js:548:20)
+       --------------------
+       at Protocol._enqueue (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:141:48)
+       at Connection.query (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:208:25)
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:40:21
+       at Promise._execute (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/debuggability.js:300:9)
+       at Promise._resolveFromExecutor (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:483:18)
+       at new Promise (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:79:10)
+       at Query.run (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:39:17)
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/sequelize.js:849:20
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/retry-as-promised/index.js:40:21
+       at Promise._execute (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/debuggability.js:300:9)
+       at Promise._resolveFromExecutor (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:483:18)
+       at new Promise (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:79:10)
+       at retryAsPromised (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/retry-as-promised/index.js:30:10)
+       at ConnectionManager.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/sequelize.js:848:12)
+       at ConnectionManager.tryCatcher (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/util.js:16:23)
+       at Promise._settlePromiseFromHandler (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:512:31)
+     code: 'ER_NO_SUCH_TABLE',
+     errno: 1146,
+     sqlState: '42S02',
+     index: 0,
+     sql: 'UPDATE `survey_instance` SET `state`=\'expired\',`updatedAt`=\'2017-03-30 07:00:01\' WHERE (`endTime` < \'2017-03-30 07:00:01\' AND (`state` = \'pending\' OR `state` = \'in progress\'))' },
+  original: 
+   { Error: ER_NO_SUCH_TABLE: Table 'epilepsy_development.survey_instance' doesn't exist
+       at Query.Sequence._packetToError (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Sequence.js:52:14)
+       at Query.ErrorPacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Query.js:77:18)
+       at Protocol._parsePacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:280:23)
+       at Parser.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Parser.js:75:12)
+       at Protocol.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:39:16)
+       at Socket.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:103:28)
+       at emitOne (events.js:96:13)
+       at Socket.emit (events.js:188:7)
+       at readableAddChunk (_stream_readable.js:176:18)
+       at Socket.Readable.push (_stream_readable.js:134:10)
+       at TCP.onread (net.js:548:20)
+       --------------------
+       at Protocol._enqueue (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:141:48)
+       at Connection.query (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:208:25)
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:40:21
+       at Promise._execute (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/debuggability.js:300:9)
+       at Promise._resolveFromExecutor (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:483:18)
+       at new Promise (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:79:10)
+       at Query.run (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/seq1490857201606: uelize/lib/dialects/mysql/query.js:39:17)
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/sequelize.js:849:20
+       at /Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/retry-as-promised/index.js:40:21
+       at Promise._execute (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/debuggability.js:300:9)
+       at Promise._resolveFromExecutor (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:483:18)
+       at new Promise (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:79:10)
+       at retryAsPromised (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/retry-as-promised/index.js:30:10)
+       at ConnectionManager.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/sequelize.js:848:12)
+       at ConnectionManager.tryCatcher (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/util.js:16:23)
+       at Promise._settlePromiseFromHandler (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/bluebird/js/release/promise.js:512:31)
+     code: 'ER_NO_SUCH_TABLE',
+     errno: 1146,
+     sqlState: '42S02',
+     index: 0,
+     sql: 'UPDATE `survey_instance` SET `state`=\'expired\',`updatedAt`=\'2017-03-30 07:00:01\' WHERE (`endTime` < \'2017-03-30 07:00:01\' AND (`state` = \'pending\' OR `state` = \'in progress\'))' },
+  sql: 'UPDATE `survey_instance` SET `state`=\'expired\',`updatedAt`=\'2017-03-30 07:00:01\' WHERE (`endTime` < \'2017-03-30 07:00:01\' AND (`state` = \'pending\' OR `state` = \'in progress\'))' }

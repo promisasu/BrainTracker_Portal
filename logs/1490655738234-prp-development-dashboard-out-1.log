@@ -1,0 +1,309 @@
+1490655739448: Server running at: http://localhost:3000
+1490655739502: Executing (default): CREATE OR REPLACE VIEW active_patients AS
+        SELECT *
+        FROM patient
+        WHERE deletedAt IS NULL
+1490655790515: Executing (default): SELECT `id`, `username`, `role`, `passwordHash`, `createdAt`, `updatedAt`, `deletedAt` FROM `user` AS `user` WHERE (`user`.`deletedAt` IS NULL AND `user`.`username` = 'dipak') LIMIT 1;
+1490655790601: Executing (default): SELECT t.*, s.StageId, count(1) as recruitedCount from trial t, stage s INNER JOIN patients pa ON s.StageId = pa.StageIdFK  WHERE t.TrialId = s.trialId GROUP BY s.StageId;
+1490655790606: Testing
+1490655790608: [ { TrialId: '2',
+    Name: 'Epilepsy',
+    Description: 'Weekly Survey for Sickle Cell Disease pain',
+    IRBID: 'scd01',
+    IRBStart: 2015-11-09T09:29:38.000Z,
+    IRBEnd: 2016-12-25T09:29:38.000Z,
+    TargetCount: 100,
+    PatientPinCounter: 16,
+    CreatedAt: 2016-05-18T21:15:56.000Z,
+    UpdatedAt: 2016-05-31T21:12:26.000Z,
+    DeletedAt: null,
+    Duration: 6,
+    StageId: '1',
+    recruitedCount: 37 } ]
+1490655790609: Trail from process percent
+1490655790609: { TrialId: '2',
+  Name: 'Epilepsy',
+  Description: 'Weekly Survey for Sickle Cell Disease pain',
+  IRBID: 'scd01',
+  IRBStart: 2015-11-09T09:29:38.000Z,
+  IRBEnd: 2016-12-25T09:29:38.000Z,
+  TargetCount: 100,
+  PatientPinCounter: 16,
+  CreatedAt: 2016-05-18T21:15:56.000Z,
+  UpdatedAt: 2016-05-31T21:12:26.000Z,
+  DeletedAt: null,
+  Duration: 6,
+  StageId: '1',
+  recruitedCount: 37 }
+1490655790609: logging all percent
+1490655790609: { recruitedPercent: 37,
+  unrecruitedPercent: 63,
+  completedPercent: NaN,
+  activePercent: NaN }
+1490655790611: Trial data is below
+1490655790611: [ { TrialId: '2',
+    Name: 'Epilepsy',
+    Description: 'Weekly Survey for Sickle Cell Disease pain',
+    IRBID: 'scd01',
+    IRBStart: 2015-11-09T09:29:38.000Z,
+    IRBEnd: 2016-12-25T09:29:38.000Z,
+    TargetCount: 100,
+    PatientPinCounter: 16,
+    CreatedAt: 2016-05-18T21:15:56.000Z,
+    UpdatedAt: 2016-05-31T21:12:26.000Z,
+    DeletedAt: null,
+    Duration: 6,
+    StageId: '1',
+    recruitedCount: 37,
+    name: 'Epilepsy',
+    start: '2015-11-09',
+    end: '2016-12-25',
+    recruitedPercent: 37,
+    unrecruitedPercent: 63,
+    activePercent: NaN,
+    completedPercent: NaN } ]
+1490655798855: Executing (default): SELECT `id`, `username`, `role`, `passwordHash`, `createdAt`, `updatedAt`, `deletedAt` FROM `user` AS `user` WHERE (`user`.`deletedAt` IS NULL AND `user`.`username` = 'dipak') LIMIT 1;
+1490655798940: req params - 2
+1490655798942: Executing (default): SELECT StageId, Name, CreatedAt, UpdatedAt, DeletedAt, TrialId FROM stage AS stage WHERE stage.DeletedAt IS NULL AND stage.TrialId = 2
+1490655798948: Executing (default): SELECT tr.*, pa.PatientPin, pa.DateStarted, pa.DateCompleted, st.Name AS stage
+                FROM trial AS tr
+                JOIN stage AS st
+                ON st.TrialId = tr.TrialId
+                JOIN patients AS pa
+                ON pa.StageIdFK = st.StageId
+                WHERE tr.TrialId = 2
+                ORDER BY pa.DateCompleted DESC
+1490655798954: Executing (default): SELECT pa.PatientPin,
+                SUM(si.State = 'expired') AS expiredCount,
+                SUM(si.State = 'completed') AS completedCount
+                FROM activity_instance AS si
+                JOIN patients AS pa
+                ON pa.PatientPin = si.PatientPinFK
+                JOIN stage AS st
+                ON st.StageId = pa.StageIdFK
+                WHERE st.TrialId = 2
+                AND si.EndTime > '2016-11-23T07:00:00.000Z'
+                GROUP BY pa.PatientPin
+1490655798955: Executing (default): SELECT `TrialId`, `Name`, `Description`, `IRBID`, `IRBStart`, `IRBEnd`, `TargetCount`, `PatientPinCounter`, `createdAt`, `updatedAt`, `deletedAt` FROM `trial` AS `trial` WHERE (`trial`.`deletedAt` IS NULL AND `trial`.`TrialId` = 2);
+1490655798960: ===============================================
+1490655798960: Epilepsy test log:{"TrialId":"2","Name":"Epilepsy","Description":"Weekly Survey for Sickle Cell Disease pain","IRBID":"scd01","IRBStart":"2015-11-09T09:29:38.000Z","IRBEnd":"2016-12-25T09:29:38.000Z","TargetCount":100,"PatientPinCounter":16,"createdAt":"2016-05-18T21:15:56.000Z","updatedAt":"2016-05-31T21:12:26.000Z","deletedAt":null}
+===============================================
+1490655798966: This is Trial Name :Epilepsy
+1490655798966: Trail from process percent
+1490655798968: Instance {
+  dataValues: 
+   { TrialId: '2',
+     Name: 'Epilepsy',
+     Description: 'Weekly Survey for Sickle Cell Disease pain',
+     IRBID: 'scd01',
+     IRBStart: 2015-11-09T09:29:38.000Z,
+     IRBEnd: 2016-12-25T09:29:38.000Z,
+     TargetCount: 100,
+     PatientPinCounter: 16,
+     createdAt: 2016-05-18T21:15:56.000Z,
+     updatedAt: 2016-05-31T21:12:26.000Z,
+     deletedAt: null },
+  _previousDataValues: 
+   { TrialId: '2',
+     Name: 'Epilepsy',
+     Description: 'Weekly Survey for Sickle Cell Disease pain',
+     IRBID: 'scd01',
+     IRBStart: 2015-11-09T09:29:38.000Z,
+     IRBEnd: 2016-12-25T09:29:38.000Z,
+     TargetCount: 100,
+     PatientPinCounter: 16,
+     createdAt: 2016-05-18T21:15:56.000Z,
+     updatedAt: 2016-05-31T21:12:26.000Z,
+     deletedAt: null },
+  _changed: {},
+  '$modelOptions': 
+   { timestamps: true,
+     instanceMethods: {},
+     classMethods: {},
+     validate: {},
+     freezeTableName: true,
+     underscored: false,
+     underscoredAll: false,
+     paranoid: true,
+     rejectOnEmpty: false,
+     whereCollection: { TrialId: 2 },
+     schema: null,
+     schemaDelimiter: '',
+     defaultScope: {},
+     scopes: [],
+     hooks: {},
+     indexes: [],
+     name: { plural: 'trials', singular: 'trial' },
+     omitNul: false,
+     sequelize: 
+      Sequelize {
+        options: [Object],
+        config: [Object],
+        dialect: [Object],
+        models: [Object],
+        modelManager: [Object],
+        connectionManager: [Object],
+        importCache: {},
+        test: [Object],
+        queryInterface: [Object] },
+     uniqueKeys: {},
+     hasPrimaryKeys: true },
+  '$options': 
+   { isNewRecord: false,
+     '$schema': null,
+     '$schemaDelimiter': '',
+     raw: true,
+     attributes: 
+      [ 'TrialId',
+        'Name',
+        'Description',
+        'IRBID',
+        'IRBStart',
+        'IRBEnd',
+        'TargetCount',
+        'PatientPinCounter',
+        'createdAt',
+        'updatedAt',
+        'deletedAt' ] },
+  hasPrimaryKeys: true,
+  __eagerlyLoadedAssociations: [],
+  isNewRecord: false }
+1490655798968: logging all percent
+{ recruitedPercent: NaN,
+  unrecruitedPercent: NaN,
+  completedPercent: 0,
+  activePercent: 0 }
+1490655930939: Executing (default): SELECT `id`, `username`, `role`, `passwordHash`, `createdAt`, `updatedAt`, `deletedAt` FROM `user` AS `user` WHERE (`user`.`deletedAt` IS NULL AND `user`.`username` = 'dipak') LIMIT 1;
+1490655931024: req params - 2
+1490655931025: Executing (default): SELECT StageId, Name, CreatedAt, UpdatedAt, DeletedAt, TrialId FROM stage AS stage WHERE stage.DeletedAt IS NULL AND stage.TrialId = 2
+1490655931031: Executing (default): SELECT tr.*, pa.PatientPin, pa.DateStarted, pa.DateCompleted, st.Name AS stage
+                FROM trial AS tr
+                JOIN stage AS st
+                ON st.TrialId = tr.TrialId
+                JOIN patients AS pa
+                ON pa.StageIdFK = st.StageId
+                WHERE tr.TrialId = 2
+                ORDER BY pa.DateCompleted DESC
+1490655931033: Executing (default): SELECT pa.PatientPin,
+                SUM(si.State = 'expired') AS expiredCount,
+                SUM(si.State = 'completed') AS completedCount
+                FROM activity_instance AS si
+                JOIN patients AS pa
+                ON pa.PatientPin = si.PatientPinFK
+                JOIN stage AS st
+                ON st.StageId = pa.StageIdFK
+                WHERE st.TrialId = 2
+                AND si.EndTime > '2016-11-23T07:00:00.000Z'
+                GROUP BY pa.PatientPin
+1490655931042: Executing (default): SELECT `TrialId`, `Name`, `Description`, `IRBID`, `IRBStart`, `IRBEnd`, `TargetCount`, `PatientPinCounter`, `createdAt`, `updatedAt`, `deletedAt` FROM `trial` AS `trial` WHERE (`trial`.`deletedAt` IS NULL AND `trial`.`TrialId` = 2);
+1490655931045: ===============================================
+1490655931045: Epilepsy test log:{"TrialId":"2","Name":"Epilepsy","Description":"Weekly Survey for Sickle Cell Disease pain","IRBID":"scd01","IRBStart":"2015-11-09T09:29:38.000Z","IRBEnd":"2016-12-25T09:29:38.000Z","TargetCount":100,"PatientPinCounter":16,"createdAt":"2016-05-18T21:15:56.000Z","updatedAt":"2016-05-31T21:12:26.000Z","deletedAt":null}
+===============================================
+1490655931056: This is Trial Name :Epilepsy
+Trail from process percent
+1490655931057: Instance {
+  dataValues: 
+   { TrialId: '2',
+     Name: 'Epilepsy',
+     Description: 'Weekly Survey for Sickle Cell Disease pain',
+     IRBID: 'scd01',
+     IRBStart: 2015-11-09T09:29:38.000Z,
+     IRBEnd: 2016-12-25T09:29:38.000Z,
+     TargetCount: 100,
+     PatientPinCounter: 16,
+     createdAt: 2016-05-18T21:15:56.000Z,
+     updatedAt: 2016-05-31T21:12:26.000Z,
+     deletedAt: null },
+  _previousDataValues: 
+   { TrialId: '2',
+     Name: 'Epilepsy',
+     Description: 'Weekly Survey for Sickle Cell Disease pain',
+     IRBID: 'scd01',
+     IRBStart: 2015-11-09T09:29:38.000Z,
+     IRBEnd: 2016-12-25T09:29:38.000Z,
+     TargetCount: 100,
+     PatientPinCounter: 16,
+     createdAt: 2016-05-18T21:15:56.000Z,
+     updatedAt: 2016-05-31T21:12:26.000Z,
+     deletedAt: null },
+  _changed: {},
+  '$modelOptions': 
+   { timestamps: true,
+     instanceMethods: {},
+     classMethods: {},
+     validate: {},
+     freezeTableName: true,
+     underscored: false,
+     underscoredAll: false,
+     paranoid: true,
+     rejectOnEmpty: false,
+     whereCollection: { TrialId: 2 },
+     schema: null,
+     schemaDelimiter: '',
+     defaultScope: {},
+     scopes: [],
+     hooks: {},
+     indexes: [],
+     name: { plural: 'trials', singular: 'trial' },
+     omitNul: false,
+     sequelize: 
+      Sequelize {
+        options: [Object],
+        config: [Object],
+        dialect: [Object],
+        models: [Object],
+        modelManager: [Object],
+        connectionManager: [Object],
+        importCache: {},
+        test: [Object],
+        queryInterface: [Object] },
+     uniqueKeys: {},
+     hasPrimaryKeys: true },
+  '$options': 
+   { isNewRecord: false,
+     '$schema': null,
+     '$schemaDelimiter': '',
+     raw: true,
+     attributes: 
+      [ 'TrialId',
+        'Name',
+        'Description',
+        'IRBID',
+        'IRBStart',
+        'IRBEnd',
+        'TargetCount',
+        'PatientPinCounter',
+        'createdAt',
+        'updatedAt',
+        'deletedAt' ] },
+  hasPrimaryKeys: true,
+  __eagerlyLoadedAssociations: [],
+  isNewRecord: false }
+1490655931057: logging all percent
+{ recruitedPercent: NaN,
+  unrecruitedPercent: NaN,
+  completedPercent: 0,
+  activePercent: 0 }
+1490655934038: Executing (default): SELECT `id`, `username`, `role`, `passwordHash`, `createdAt`, `updatedAt`, `deletedAt` FROM `user` AS `user` WHERE (`user`.`deletedAt` IS NULL AND `user`.`username` = 'dipak') LIMIT 1;
+1490655934125: Executing (default): SELECT pa.PatientPin, st.Name AS stage
+                FROM patients AS pa
+                JOIN stage AS st
+                ON st.StageId = pa.StageIdFK
+                WHERE pa.PatientPin = 3021
+1490655934126: Executing (default): SELECT pa.DateCompleted, si.ActivityInstanceId, si.StartTime, si.EndTime, si.UserSubmissionTime,
+                si.ActualSubmissionTime, si.activityTitle,si.State as state, st.Name AS stageName
+                FROM patients AS pa
+                JOIN activity_instance AS si
+                ON si.PatientPinFK = pa.PatientPin
+                JOIN stage AS st
+                ON st.StageId = pa.StageIdFK
+                WHERE pa.PatientPin = 3021
+                ORDER BY si.StartTime
+1490655934126: Executing (default): SELECT tr.Name, tr.TrialId
+                FROM patients AS pa
+                JOIN stage AS st
+                ON st.StageId = pa.StageIdFK
+                JOIN trial AS tr
+                ON tr.TrialId = st.TrialId
+                WHERE pa.PatientPin = 3021
+1490655934133: Query executed in Database. Here is the trail result{"Name":"Epilepsy","TrialId":"2"}

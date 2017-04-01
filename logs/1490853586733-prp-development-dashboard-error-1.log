@@ -1,0 +1,15 @@
+1490853588095: You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+SequelizeDatabaseError: ER_NO_SUCH_TABLE: Table 'epilepsy_development.patient' doesn't exist
+    at Query.formatError (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:175:14)
+    at Query._callback (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:49:21)
+    at Query.Sequence.end (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Sequence.js:86:24)
+    at Query.ErrorPacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Query.js:88:8)
+    at Protocol._parsePacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:280:23)
+    at Parser.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Parser.js:75:12)
+    at Protocol.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:39:16)
+    at Socket.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:103:28)
+    at emitOne (events.js:96:13)
+    at Socket.emit (events.js:188:7)
+    at readableAddChunk (_stream_readable.js:176:18)
+    at Socket.Readable.push (_stream_readable.js:134:10)
+    at TCP.onread (net.js:548:20)

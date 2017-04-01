@@ -1,0 +1,29 @@
+1490654578409: You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+SequelizeDatabaseError: ER_NO_SUCH_TABLE: Table 'epilepsy_development.patient' doesn't exist
+    at Query.formatError (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:175:14)
+    at Query._callback (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/sequelize/lib/dialects/mysql/query.js:49:21)
+    at Query.Sequence.end (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Sequence.js:86:24)
+    at Query.ErrorPacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/sequences/Query.js:88:8)
+    at Protocol._parsePacket (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:280:23)
+    at Parser.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Parser.js:75:12)
+    at Protocol.write (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/protocol/Protocol.js:39:16)
+    at Socket.<anonymous> (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/mysql/lib/Connection.js:103:28)
+    at emitOne (events.js:96:13)
+    at Socket.emit (events.js:188:7)
+    at readableAddChunk (_stream_readable.js:176:18)
+    at Socket.Readable.push (_stream_readable.js:134:10)
+    at TCP.onread (net.js:548:20)
+1490654592347: Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are discouraged and will be removed in an upcoming major release. Please refer to http://momentjs.com/guides/#/warnings/js-date/ for more info.
+Arguments: 
+[0] _isAMomentObject: true, _isUTC: false, _useUTC: false, _l: undefined, _i: 12-16-2016 00:24, _f: undefined, _strict: undefined, _locale: [object Object]
+Error
+    at Function.createFromInputFallback (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/moment/moment.js:320:94)
+    at configFromString (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/moment/moment.js:2178:11)
+    at configFromInput (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/moment/moment.js:2547:9)
+    at prepareConfig (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/moment/moment.js:2530:9)
+    at createFromConfig (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/moment/moment.js:2497:40)
+    at createLocalOrUTC (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/moment/moment.js:2584:12)
+    at createLocal (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/moment/moment.js:2588:12)
+    at hooks (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/node_modules/moment/moment.js:16:25)
+    at processSurveyInstances (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/controller/helper/process-survey-instances.js:37:29)
+    at Promise.all.then (/Users/dpurbey/Desktop/sem-2/ser590/Epilepsy/Portal/controller/handler/patient.js:79:27)

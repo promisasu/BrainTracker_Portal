@@ -1,0 +1,9 @@
+1490738646469: Server running at: http://localhost:3000
+1490738646538: Executing (default): CREATE OR REPLACE VIEW active_patients AS
+        SELECT *
+        FROM patient
+        WHERE deletedAt IS NULL
+1490738649733: Executing (default): SELECT `id`, `username`, `role`, `passwordHash`, `createdAt`, `updatedAt`, `deletedAt` FROM `user` AS `user` WHERE (`user`.`deletedAt` IS NULL AND `user`.`username` = 'dipak') LIMIT 1;
+1490738649820: [ '3021', 'task1' ]
+1490738687356: Executing (default): SELECT `id`, `username`, `role`, `passwordHash`, `createdAt`, `updatedAt`, `deletedAt` FROM `user` AS `user` WHERE (`user`.`deletedAt` IS NULL AND `user`.`username` = 'dipak') LIMIT 1;
+1490738687437: [ '3021', 'task1' ]

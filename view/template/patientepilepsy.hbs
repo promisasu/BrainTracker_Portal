@@ -1,0 +1,138 @@
+<div class="container-fluid">
+    <br>
+    <ol class="breadcrumb">
+        <li>
+            <a href="/">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="/trial/{{ trial.TrialId }}">
+                Trial: {{ trial.Name }}
+            </a>
+        </li>
+        <li>
+            <a>
+             tasks   
+            </a>
+        </li>
+        <li class="active">
+            Patient: {{ patient.PatientPin }}
+        </li>
+
+
+    </ol>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="chartCanvasDiv" class="card">
+            <div>
+                    <span class="pull-left">
+                     <p class="h5"> Pattern Comparision Test</p>
+                    </span>
+                    <span class="pull-right">
+                           
+                           <button id="deactivate-patient" class="btn btn-primary btn-sm" disabled = "disabled">
+                               View Detail
+                            </button>
+                    </span>
+            </div>
+                <canvas id="patternComparision" width="200" height="100px"></canvas>           
+            </div>
+        
+        </div>
+
+        
+        <div class="col-md-6">
+        <div id="chartCanvasDiv" class ="card">
+            <div>
+                    <span class="pull-left">
+                     <p class="h5"> Finger Tapping</p>
+                    </span>
+                    <span class="pull-right">
+                           
+                           <button id="viewdetail" class="btn btn-primary btn-sm" disabled = "disabled">
+                               View Detail
+                            </button>
+                    </span>
+            </div>
+                <canvas id="fingerTapping" width="200" height="100px"></canvas>
+         </div>
+        </div>
+        
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+            <div>
+                    <span class="pull-left">
+                     <p class="h5">Spatial Span</p>
+                    </span>
+                    <span class="pull-right">
+                           
+                           <button id="deactivate-patient" class="btn btn-primary btn-sm" disabled = "disabled">
+                               View Detail
+                            </button>
+                    </span>
+            </div>
+                <canvas id="spatialSpan" width="200" height="100px"></canvas>
+            </div>
+        
+        </div>
+
+        
+        <div class="col-md-6">
+        <div class ="card">
+                       <div>
+                    <span class="pull-left">
+                     <p class="h5">Flanker Test</p>
+                    </span>
+                    <span class="pull-right">
+                           
+                           <button id="flankerDetail" class="btn btn-primary btn-sm" disabled = "disabled">
+                               View Detail
+                            </button>
+                    </span>
+            </div>
+                 <canvas id="flankerTest" width="200" height="100px"></canvas>
+        </div>
+        </div>
+        
+    </div>
+     <div class="row">
+        <div class="col-sm-12">
+             <div id="chartCanvasDiv" class="card">
+                <div>
+
+                        <span class="pull-right">
+                           
+                            <button id="deactivate-patient" class="btn btn-primary btn-sm" disabled = "disabled">
+                               View Detail
+                            </button>
+                        </span>
+               </div>
+              <br>
+              <canvas id="complianceChart" width="400px" height="100px"></canvas>
+            </div>
+        
+        </div>
+
+    </div>
+
+
+
+
+
+</div>
+
+{{> remember-patient-pin}}
+
+<script>
+    window.dates = JSON.parse('{{{ datesJson }}}');
+</script>
+<script src="/static/script/epilepsypatient.js" defer></script>
+<script src="/static/script/patterncomparision.js" defer></script>
+<script src="/static/script/fingertapping.js" defer></script>
+<script src="/static/script/spatialspan.js" defer></script>
+<script src="/static/script/flankertest.js" defer></script>
