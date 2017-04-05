@@ -23,7 +23,10 @@
 
 
     </ol>
+
+    <!-- Pattern Comparison & Finger Tapping Row -->
     <div class="row">
+        <!-- Pattern Comparison Column -->
         <div class="col-md-6">
             <div id="chartCanvasDiv" class="card">
             <div>
@@ -42,7 +45,7 @@
         
         </div>
 
-        
+        <!-- Finger Tapping Column -->
         <div class="col-md-6">
             <div class="card card-info-outline">
                 <div class="card-header white-background">
@@ -65,26 +68,31 @@
         </div>
     </div>
 
+    <!-- Spatial Span & Flanker Test Row -->
     <div class="row">
+        <!-- Spatial Span Column -->
         <div class="col-md-6">
-            <div class="card">
-            <div>
-                    <span class="pull-left">
-                     <p class="h5">Spatial Span</p>
-                    </span>
-                    <span class="pull-right">
-                           
-                           <button id="deactivate-patient" class="btn btn-primary btn-sm" disabled = "disabled">
-                               View Detail
-                            </button>
-                    </span>
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Spatial Span
+
+                        <span class="pull-right">
+                            <a href="#" class="btn btn-sm btn-primary" disabled="disabled">
+                                <i class="fa fa-align-center"></i>
+                                View Detail
+                            </a>
+                        </span>
+
+                    </h5>
+                </div>
+                <div class="card-block">
+                    <canvas id="spatialSpan" width="200" height="100px"></canvas>
+                </div>
             </div>
-                <canvas id="spatialSpan" width="200" height="100px"></canvas>
-            </div>
-        
         </div>
 
-        
+        <!-- Flanker Test Column -->
         <div class="col-md-6">
         <div class ="card">
                        <div>
