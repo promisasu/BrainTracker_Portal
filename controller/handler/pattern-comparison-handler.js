@@ -10,17 +10,6 @@
  * @returns {View} Rendered page
  */
 function patternComparisonView(request, reply){
-
-    const userParts = request.params.pin.split('/');
-    console.log(userParts);
-
-    const patientPin = encodeURIComponent(userParts[0]);
-    const patientTask = encodeURIComponent(userParts[1]);
-
-    // TODO check for positive integer type for patientPin and PatientTask == pattern-comparison
-
-    //reply('Hello ' + encodeURIComponent(userParts[0]) + ' ' + encodeURIComponent(userParts[1]) + '!');
-
     var data = {
         attempts: [
             {
