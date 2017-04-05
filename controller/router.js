@@ -14,7 +14,7 @@ const trialCSV = require('./handler/trial-csv');
 const epilepsyPresenter = require('./handler/patientepilepsy');
 const surveyPresenter = require('./handler/survey');
 
-const patternComparisonPresenter = require('./handler/pattern-comparison-handler');
+const patientTaskHandler = require('./handler/patient-task-handler');
 
 const minimumNameLength = 3;
 const minimumIrbLength = 4;
@@ -185,8 +185,8 @@ module.exports = [
     },
     {
         method: 'GET',
-        path: '/patient/{pin*2}',
-        handler: patternComparisonPresenter
+        path: '/patient/{pin*3}',
+        handler: patientTaskHandler
     },
     {
         method: 'DELETE',
