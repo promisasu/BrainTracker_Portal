@@ -47,7 +47,7 @@
         }
     };
 
-    var ctx = document.getElementById('patternComparision').getContext('2d');
+    var ctx = document.getElementById('patternComparison').getContext('2d');
 
     function redirect () {
         window.location = '/';
@@ -57,7 +57,7 @@
         alert('patient could not be deactivated');
     }
 
-    document.getElementById('deactivate-patient')
+    /*document.getElementById('deactivate-patient')
     .addEventListener('click', function deactivate () {
         $.ajax({
             url: window.location.pathname,
@@ -65,7 +65,7 @@
         })
         .done(redirect)
         .fail(warningMessage);
-    });
+    });*/
 
     if (isNewPatientRegex.test(isNewPatient)) {
         $('#remember-patient-dialog').modal('show');

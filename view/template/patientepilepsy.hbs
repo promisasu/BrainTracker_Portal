@@ -28,21 +28,24 @@
     <div class="row">
         <!-- Pattern Comparison Column -->
         <div class="col-md-6">
-            <div id="chartCanvasDiv" class="card">
-            <div>
-                    <span class="pull-left">
-                     <p class="h5"> Pattern Comparision Test</p>
-                    </span>
-                    <span class="pull-right">
-                           
-                           <button id="deactivate-patient" class="btn btn-primary btn-sm" disabled = "disabled">
-                               View Detail
-                            </button>
-                    </span>
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Pattern Comparison
+
+                        <span class="pull-right">
+                            <a href="#" class="btn btn-sm btn-primary">
+                                <i class="fa fa-list-alt"></i>
+                                View Detail
+                            </a>
+                        </span>
+
+                    </h5>
+                </div>
+                <div class="card-block">
+                    <canvas id="patternComparison" width="200" height="100px"></canvas>
+                </div>
             </div>
-                <canvas id="patternComparision" width="200" height="100px"></canvas>           
-            </div>
-        
         </div>
 
         <!-- Finger Tapping Column -->
@@ -54,7 +57,7 @@
 
                         <span class="pull-right">
                             <a href="#" class="btn btn-sm btn-primary">
-                                <i class="fa fa-align-center"></i>
+                                <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
                         </span>
@@ -78,8 +81,8 @@
                         Spatial Span
 
                         <span class="pull-right">
-                            <a href="#" class="btn btn-sm btn-primary" disabled="disabled">
-                                <i class="fa fa-align-center"></i>
+                            <a href="#" class="btn btn-sm btn-primary">
+                                <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
                         </span>
