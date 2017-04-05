@@ -44,22 +44,25 @@
 
         
         <div class="col-md-6">
-        <div id="chartCanvasDiv" class ="card">
-            <div>
-                    <span class="pull-left">
-                     <p class="h5"> Finger Tapping</p>
-                    </span>
-                    <span class="pull-right">
-                           
-                           <button id="viewdetail" class="btn btn-primary btn-sm" disabled = "disabled">
-                               View Detail
-                            </button>
-                    </span>
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Finger Tapping
+
+                        <span class="pull-right">
+                            <a href="#" class="btn btn-sm btn-primary">
+                                <i class="fa fa-align-center"></i>
+                                View Detail
+                            </a>
+                        </span>
+
+                    </h5>
+                </div>
+                <div class="card-block">
+                    <canvas id="fingerTapping" width="200" height="100px"></canvas>
+                </div>
             </div>
-                <canvas id="fingerTapping" width="200" height="100px"></canvas>
-         </div>
         </div>
-        
     </div>
 
     <div class="row">

@@ -57,7 +57,7 @@
         alert('patient could not be deactivated');
     }
 
-    document.getElementById('viewdetail')
+    /*document.getElementById('viewdetail')
     .addEventListener('click', function deactivate () {
         $.ajax({
             url: window.location.pathname,
@@ -65,7 +65,7 @@
         })
         .done(redirect)
         .fail(warningMessage);
-    });
+    });*/
 
     if (isNewPatientRegex.test(isNewPatient)) {
         $('#remember-patient-dialog').modal('show');
