@@ -20,8 +20,6 @@
         <li class="active">
             Patient: {{ patient.PatientPin }}
         </li>
-
-
     </ol>
 
     <!-- Pattern Comparison & Finger Tapping Row -->
@@ -70,6 +68,7 @@
             </div>
         </div>
     </div>
+    <br />
 
     <!-- Spatial Span & Flanker Test Row -->
     <div class="row">
@@ -97,41 +96,44 @@
 
         <!-- Flanker Test Column -->
         <div class="col-md-6">
-        <div class ="card">
-                       <div>
-                    <span class="pull-left">
-                     <p class="h5">Flanker Test</p>
-                    </span>
-                    <span class="pull-right">
-                           
-                           <button id="flankerDetail" class="btn btn-primary btn-sm" disabled = "disabled">
-                               View Detail
-                            </button>
-                    </span>
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Flanker Test
+
+                        <span class="pull-right">
+                            <a href="#" class="btn btn-sm btn-primary">
+                                <i class="fa fa-list-alt"></i>
+                                View Detail
+                            </a>
+                        </span>
+
+                    </h5>
+                </div>
+                <div class="card-block">
+                    <canvas id="flankerTest" width="200" height="100px"></canvas>
+                </div>
             </div>
-                 <canvas id="flankerTest" width="200" height="100px"></canvas>
         </div>
-        </div>
-        
     </div>
+    <br />
+
+    <!-- Survey Graph Row -->
      <div class="row">
         <div class="col-sm-12">
              <div id="chartCanvasDiv" class="card">
                 <div>
+                    <span class="pull-right">
 
-                        <span class="pull-right">
-                           
-                            <button id="deactivate-patient" class="btn btn-primary btn-sm" disabled = "disabled">
-                               View Detail
-                            </button>
-                        </span>
+                        <button id="deactivate-patient" class="btn btn-primary btn-sm" disabled = "disabled">
+                           View Detail
+                        </button>
+                    </span>
                </div>
               <br>
               <canvas id="complianceChart" width="400px" height="100px"></canvas>
             </div>
-        
         </div>
-
     </div>
 
 
