@@ -1,4 +1,4 @@
-# Pain Reporting Portal
+Epilepsy Portal
 
 [![Build Status](https://travis-ci.org/promisasu/Portal.svg?branch=seed-task)](https://travis-ci.org/promisasu/Portal)
 [![Dependency Status](https://david-dm.org/promisasu/Portal.svg)](https://david-dm.org/promisasu/Portal)
@@ -8,8 +8,8 @@
 
 ## About
 
-The pain reporting portal is de-identified patient and survey management system.
-It allows clinicians to schedule digital surveys to be delivered to patients.
+The Epilepsy portal is de-identified patient and survey management system.
+It allows clinicians to view the response collected through mobile application.
 As well as allowing clinicians to monitor patient responses to look for possible interventions.
 
 ## Installation Instructions
@@ -68,12 +68,10 @@ Tasks can be run by calling `npm run <task>`
 * `log` view server logs
 * `seed` fill database with sample data
 * `start` start all services
-* `start-api` start api service
 * `start-dashboard` start dashboard service
 * `start-scheduler` start scheduler service
 * `status` check service statuses
 * `stop` stop all services
-* `stop-api` stop api service
 * `stop-dashboard` stop dashboard service
 * `stop-scheduler` stop scheduler service
 * `sync` synchronize database schema

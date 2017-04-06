@@ -98,98 +98,98 @@ function trialView (request, reply) {
             // )
         ])
         .then(([currentTrial, stages, patients, compliance]) => {
-            const rules = [];
-            console.log("Epilepsy test log:"+JSON.stringify(currentTrial));
+        const rules = [];
+    console.log("Epilepsy test log:"+JSON.stringify(currentTrial));
 
-            if (!currentTrial) {
-                throw new Error('trial does not exist');
-            }
-            const ruleValues = rules.map((ruleData) => {
-                return parseInt(ruleData.rule, 10);
-            });
-            const complianceCount = processComplianceCount(compliance);
-            const patientCount = patients.length;
-            const patientStatuses = compliance.map(processPatientStatus);
+    if (!currentTrial) {
+        throw new Error('trial does not exist');
+    }
+    const ruleValues = rules.map((ruleData) => {
+            return parseInt(ruleData.rule, 10);
+});
+    const complianceCount = processComplianceCount(compliance);
+    const patientCount = patients.length;
+    const patientStatuses = compliance.map(processPatientStatus);
 
-            const patientArray = patients.map((patient) => {
-                  // check for patient's status
+    const patientArray = patients.map((patient) => {
+            // check for patient's status
 
-                const patientStatus = patientStatuses.find((status) => {
+            const patientStatus = patientStatuses.find((status) => {
 
                     return status.PatientPin === patient.PatientPin;
-                });
-                // collect the compliance status as well as expiredCount
-                if (patientStatus) {
-                    patient.status = patientStatus.status;
-                    patient.totalMissed = patientStatus.expiredCount;
-                } else {
-                    patient.status = 'Pending';
-                    patient.totalMissed = 0;
-                }
-                patient.DateStarted = moment(patient.DateStarted)
-                    .format('MM-DD-YYYY');
-                patient.DateCompleted = moment(patient.DateCompleted)
-                    .format('MM-DD-YYYY');
+});
+    // collect the compliance status as well as expiredCount
+    if (patientStatus) {
+        patient.status = patientStatus.status;
+        patient.totalMissed = patientStatus.expiredCount;
+    } else {
+        patient.status = 'Pending';
+        patient.totalMissed = 0;
+    }
+    patient.DateStarted = moment(patient.DateStarted)
+        .format('MM-DD-YYYY');
+    patient.DateCompleted = moment(patient.DateCompleted)
+        .format('MM-DD-YYYY');
 
-                return patient;
-            });
+    return patient;
+});
 
-            const endDate = processRules(ruleValues, Date.now());
-            console.log("This is Trial Name :"+currentTrial.Name);
-            if(currentTrial.Name == "Epilepsy")
-            {
+    const endDate = processRules(ruleValues, Date.now());
+    console.log("This is Trial Name :"+currentTrial.Name);
+    if(currentTrial.Name == "Epilepsy")
+    {
 
-            return reply.view('epilepsytrial', {
-                title: 'Pain Reporting Portal',
-                trial: processTrial(currentTrial),
-                stages,
-                endDate,
-                patients: patientArray,
-                complianceCount,
-                patientCount,
-                graphData: JSON.stringify({
-                    datasets: complianceCount,
-                    labels: [
-                        'Compliant',
-                        'Semicompliant',
-                        'Noncompliant'
-                    ]
-                })
-            });
-            }
-            else
-            {
-
-             return reply.view('trial', {
-                title: 'Pain Reporting Portal',
-                trial: processTrial(currentTrial),
-                stages,
-                endDate,
-                patients: patientArray,
-                complianceCount,
-                patientCount,
-                graphData: JSON.stringify({
-                    datasets: complianceCount,
-                    labels: [
-                        'Compliant',
-                        'Semicompliant',
-                        'Noncompliant'
-                    ]
-                })
-            });
-            }
-
-        })
-        .catch((err) => {
-            console.log("ERRORCUSTOM - ", err);
-            request.log('error', err);
-
-            reply
-            .view('404', {
-                title: 'Not Found'
+        return reply.view('epilepsytrial', {
+            title: 'Pain Reporting Portal',
+            trial: processTrial(currentTrial),
+            stages,
+            endDate,
+            patients: patientArray,
+            complianceCount,
+            patientCount,
+            graphData: JSON.stringify({
+                datasets: complianceCount,
+                labels: [
+                    'Compliant',
+                    'Semicompliant',
+                    'Noncompliant'
+                ]
             })
-            .code(httpNotFound);
         });
+    }
+    else
+    {
+
+        return reply.view('trial', {
+            title: 'Pain Reporting Portal',
+            trial: processTrial(currentTrial),
+            stages,
+            endDate,
+            patients: patientArray,
+            complianceCount,
+            patientCount,
+            graphData: JSON.stringify({
+                datasets: complianceCount,
+                labels: [
+                    'Compliant',
+                    'Semicompliant',
+                    'Noncompliant'
+                ]
+            })
+        });
+    }
+
+})
+.catch((err) => {
+        console.log("ERRORCUSTOM - ", err);
+    request.log('error', err);
+
+    reply
+        .view('404', {
+            title: 'Not Found'
+        })
+        .code(httpNotFound);
+});
 }
 
 module.exports = trialView;
