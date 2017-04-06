@@ -7,4 +7,4 @@
  */
 
 exports.dashboard = require('./controller/server');
-exports.api = require('./api/server');
+// exports.api = require('./api/server');

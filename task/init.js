@@ -46,28 +46,8 @@ read({
     });
 })
 .then((port) => {
+    // set dashboard port
     config.dashboard.port = port;
-
-    console.log('');
-    console.log('setup for pain reporting portal api');
-    console.log('');
-
-    return read({
-        prompt: 'hostname:',
-        default: 'localhost'
-    });
-})
-.then((hostname) => {
-    config.api = {};
-    config.api.hostname = hostname;
-
-    return read({
-        prompt: 'port number:',
-        default: 3001
-    });
-})
-.then((port) => {
-    config.api.port = port;
 
     console.log('');
     console.log('setup for pain reporting portal database');
@@ -84,7 +64,7 @@ read({
 
     return read({
         prompt: 'database name:',
-        default: 'prp_development'
+        default: 'epilepsy_development'
     });
 })
 .then((databaseName) => {
