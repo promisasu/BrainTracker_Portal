@@ -10,7 +10,7 @@ const configuration = require('../config.json');
 
 processManager.connect(() => {
     processManager.delete(
-        `prp-${configuration.environment}-dashboard`,
+        `epilepsy-${configuration.environment}-dashboard`,
         (err) => {
             if (err) {
                 console.error(err);

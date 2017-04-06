@@ -10,7 +10,7 @@ const configuration = require('../config.json');
 
 processManager.connect(() => {
     processManager.delete(
-        `prp-${configuration.environment}-scheduler`,
+        `epilepsy-${configuration.environment}-scheduler`,
         (err) => {
             if (err) {
                 console.error(err);
