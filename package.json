@@ -1,7 +1,7 @@
 {
-  "name": "pain-reporting-portal",
+  "name": "epilepsy-portal",
   "version": "0.1.0",
-  "description": "Pain Reporting Portal",
+  "description": "Epilepsy Portal",
   "main": "index.js",
   "scripts": {
     "check": "npm outdated && nsp check && bower list",
@@ -15,15 +15,13 @@
     "seed": "node task/seed",
     "postseed": "node task/user",
     "prestart": "jsonlint config.json --validate config-schema.json --quiet",
-    "start": "node task/start-api && node task/start-dashboard && node task/start-scheduler",
+    "start": "node task/start-dashboard && node task/start-scheduler",
     "poststart": "pm2 ls",
-    "start-api": "node task/start-api",
     "start-dashboard": "node task/start-dashboard",
     "start-scheduler": "node task/start-scheduler",
     "status": "pm2 ls",
-    "stop": "node task/stop-api && node task/stop-dashboard && node task/stop-scheduler",
+    "stop": "node task/stop-dashboard && node task/stop-scheduler",
     "poststop": "pm2 ls",
-    "stop-api": "node task/stop-api",
     "stop-dashboard": "node task/stop-dashboard",
     "stop-scheduler": "node task/stop-scheduler",
     "sync": "node task/sync",
@@ -34,19 +32,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/promisasu/Portal.git"
+    "url": "git+https://github.com/chintanallstarz/Epilepsy-Portal.git"
   },
   "keywords": [
     "medical",
+    "epilepsy",
     "portal"
   ],
   "author": "Arizona State University",
   "license": "UNLICENSED",
   "private": true,
   "bugs": {
-    "url": "https://github.com/promisasu/Portal/issues"
+    "url": "https://github.com/chintanallstarz/Epilepsy-Portal/issues"
   },
-  "homepage": "https://github.com/promisasu/Portal#readme",
+  "homepage": "https://github.com/chintanallstarz/Epilepsy-Portal#readme",
   "dependencies": {
     "boom": "^3.1.2",
     "bower": "^1.7.9",

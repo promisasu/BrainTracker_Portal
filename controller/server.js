@@ -84,7 +84,7 @@ function dashboardServer (configuration) {
                             {
                                 module: 'good-file',
                                 args: [
-                                    `./logs/${Date.now()}-prp-${configuration.environment}-dashboard-access.log`
+                                    `./logs/${Date.now()}-epilepsy-${configuration.environment}-dashboard-access.log`
                                 ]
                             }
                         ],
@@ -103,7 +103,7 @@ function dashboardServer (configuration) {
                             {
                                 module: 'good-file',
                                 args: [
-                                    `./logs/${Date.now()}-prp-${configuration.environment}-dashboard-ops.log`
+                                    `./logs/${Date.now()}-epilepsy-${configuration.environment}-dashboard-ops.log`
                                 ]
                             }
                         ]
@@ -144,7 +144,7 @@ function dashboardServer (configuration) {
         layoutPath: 'layout',
         // partial elements that can be mixed into pages
         partialsPath: 'partial',
-        // helpers to generate snippets programatticaly
+        // helpers to generate snippets through program
         helpersPath: 'helper',
         // sets default layout to 'layout/default.handlebars'
         layout: 'default'

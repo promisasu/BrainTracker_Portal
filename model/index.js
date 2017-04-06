@@ -74,7 +74,8 @@ function setup (configuration) {
     addJoinCurrentAndNextStages(sequelize);
 
     // add the database views
-    addViewActivePatients(sequelize);
+    // commented because deletedAt column is not present in patients table
+    // addViewActivePatients(sequelize);
 
     // Get the newly created ORM wrappers
     const user = sequelize.model('user');
