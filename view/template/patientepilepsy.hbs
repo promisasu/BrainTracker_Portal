@@ -125,13 +125,14 @@
                 <div>
                     <span class="pull-right">
 
-                        <button id="deactivate-patient" class="btn btn-primary btn-sm" disabled = "disabled">
-                           View Detail
-                        </button>
+                        <a href ="/patient/survey-detail/{{ patient.PatientPin }}"  class="btn btn-primary btn-sm" >
+                           <i class="fa fa-list-alt"></i>
+                            View Detail
+                        </a>
                     </span>
                </div>
               <br>
-              <canvas id="complianceChart" width="400px" height="100px"></canvas>
+              <canvas id="complianceChartSummary" width="400px" height="100px"></canvas>
             </div>
         </div>
     </div>
@@ -147,6 +148,7 @@
 <script>
     window.dates = JSON.parse('{{{ datesJson }}}');
 </script>
+
 <script src="/static/script/epilepsypatient.js" defer></script>
 <script src="/static/script/patterncomparision.js" defer></script>
 <script src="/static/script/fingertapping.js" defer></script>

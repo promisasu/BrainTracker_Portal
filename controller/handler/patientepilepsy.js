@@ -79,8 +79,11 @@ function patientView (request, reply) {
                 throw new Error('patient does not exist');
             }
             console.log("Query executed in Database. Here is the trail result"+ JSON.stringify(currentTrial));
+            console.log("Query executed in Database. Here is the current patient Query"+ JSON.stringify(currentPatient));
+            console.log("Query executed in Database. Here is the result of surveyInstances query:"+ JSON.stringify(surveyInstances));
+
             return reply.view('patientepilepsy', {
-                title: 'Pain Reporting Portal',
+                title: 'Epilepsy Portal',
                 patient: currentPatient,
                 trial: currentTrial,
                 surveys: surveyInstances.map((surveyInstance) => {
@@ -100,6 +103,7 @@ function patientView (request, reply) {
                 }),
                 datesJson: JSON.stringify(processSurveyInstances(surveyInstances))
             });
+
         })
         .catch((err) => {
             request.log('error', err);
