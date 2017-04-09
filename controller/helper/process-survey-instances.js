@@ -17,13 +17,15 @@ const viewDateFormat = 'MM-DD-YYYY HH:mm';
  * @returns {Object} Complience chart data
  */
 function processSurveyInstances (surveys) {
-  // //////console.log("In process Survey Instances");
-  // // ////console.log(surveys);
+
     const filterSurveyByState = surveys.filter((survey) => {
-        return survey.State === 'completed';
+        return survey.state === 'completed';
     });
+
+    //console.log("After filtering to only completed state records :"+(filterSurveyByState.log) );
     // const filterSurveyByState = surveys;
     var datasets = pickTimeLeft(filterSurveyByState);
+
     var labels = [];
     for (var i = 0; i < datasets.length; i++) {
       var dataSet = datasets[i];
@@ -38,12 +40,13 @@ function processSurveyInstances (surveys) {
     const numberOfDays = 7;
     const endDateforChart = moment(labels[labels.length - 1]).add(numberOfDays, 'day');
     labels.push(moment(endDateforChart).format(viewDateFormat));
-
+    console.log("Labels of length "+labels.length+" is passing from process-survey-instance.js: ");
+    console.log("Dataset of length "+datasets.length+" is passing from process-survey-instance.js: ");
     return {
         labels: labels,
         datasets: datasets
     };
-    return pickTimeLeft(filterSurveyByState);
+    //return pickTimeLeft(filterSurveyByState);
 }
 
 /**
@@ -65,7 +68,7 @@ function pickDates (surveys) {
         dates.push(moment(endDateforChart).format(viewDateFormat));
     }
 
-    console.log(dates);
+    console.log("Dates Object ::"+dates);
     return dates;
 }
 
@@ -75,6 +78,7 @@ function pickDates (surveys) {
  * @returns {Object} processed list of % time left data
  */
 function pickTimeLeft (surveys) {
+    console.log("Picking Time left:"+JSON.stringify(surveys)+"in pickTimeLeft")
     var surveySet = new Set();
     for (var i = 0; i < surveys.length; i++) {
       surveySet.add(surveys[i].activityTitle);
@@ -109,7 +113,9 @@ function pickTimeLeft (surveys) {
         returnArray.push(dataArr);
       }
     }
-  return returnArray;
+    console.log("Data Set passing to render in Charts "+returnArray.toString());
+    return returnArray;
+
 }
 
 function getRGBA(){

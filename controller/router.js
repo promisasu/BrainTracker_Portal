@@ -170,7 +170,7 @@ module.exports = [
     },
     {
         method: 'GET',
-        path: '/patient/{pin}',
+        path: '/patient/survey-detail/{pin}',
         handler: patientPresenter,
         config: {
             validate: {

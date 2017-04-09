@@ -6,6 +6,7 @@
 
     // Makes a copy of window.dates
     var allDatesConfig = Object.create(window.dates);
+
     var config = {
         type: 'line',
         data: '',
@@ -60,7 +61,7 @@
         }
     };
 
-    var ctx = document.getElementById('complianceChart').getContext('2d');
+    var ctx = document.getElementById('complianceChartSummary').getContext('2d');
 
     function redirect () {
         window.location = '/';
@@ -70,15 +71,7 @@
         alert('patient could not be deactivated');
     }
 
-    document.getElementById('deactivate-patient')
-    .addEventListener('click', function deactivate () {
-        $.ajax({
-            url: window.location.pathname,
-            type: 'DELETE'
-        })
-        .done(redirect)
-        .fail(warningMessage);
-    });
+
 
     if (isNewPatientRegex.test(isNewPatient)) {
         $('#remember-patient-dialog').modal('show');
@@ -86,4 +79,4 @@
 
     config.data = allDatesConfig;
     new Chart(ctx, config);
-}());
+})();
