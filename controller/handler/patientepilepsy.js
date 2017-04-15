@@ -83,7 +83,7 @@ function patientView (request, reply) {
             console.log("Query executed in Database. Here is the result of surveyInstances query:"+ JSON.stringify(surveyInstances));
 
             return reply.view('patientepilepsy', {
-                title: 'Epilepsy Portal',
+                title: 'Epilepsy | Patient',
                 patient: currentPatient,
                 trial: currentTrial,
                 surveys: surveyInstances.map((surveyInstance) => {

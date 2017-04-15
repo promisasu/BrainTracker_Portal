@@ -87,7 +87,7 @@ function patientView (request, reply) {
             }
 
             return reply.view('patient', {
-                title: 'Epilepsy Portal',
+                title: 'Epilepsy | Survey',
                 patient: currentPatient,
                 trial: currentTrial,
                 surveys: surveyInstances.map((surveyInstance) => {

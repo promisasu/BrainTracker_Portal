@@ -33,3 +33,21 @@ input[type='date'] {
 .white-background{
     background-color: white !important;
 }
+
+#footer{
+    clear: both;
+    margin-left: 0;
+    padding-left: inherit;
+    border-top: 1px solid #ccc;
+    height: 13%;
+    overflow: hidden;
+    background-color: #f5f5f5;
+}
+
+#footer .footer-body {
+    color: #006699;
+    line-height: 1.66666666666667;
+    padding-top: 20px;
+    min-height: 44px;
+    text-align: center;
+}

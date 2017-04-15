@@ -185,6 +185,7 @@ module.exports = [
     },
     {
         method: 'GET',
+        // sample : /patient/{pin}/task/{task-name}
         path: '/patient/{pin*3}',
         handler: patientTaskHandler
     },
