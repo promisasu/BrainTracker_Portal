@@ -6,6 +6,7 @@
 
 const database = require('../../model');
 const processSurveyInstances = require('../helper/process-survey-instances');
+const processFingerTapping = require('../helper/process-finger-tapping');
 const moment = require('moment');
 const sqlDateFormat = 'ddd MMM DD YYYY HH:mm:ss ZZ';
 const httpNotFound = 404;
@@ -71,16 +72,34 @@ function patientView (request, reply) {
                     ],
                     plain: true
                 }
-            )
-        ])
-        .then(([currentPatient, surveyInstances, currentTrial]) => {
+            ),
+            database.sequelize.query(
+            `
+        SELECT ft.id,ft.CreatedAt,
+               ft.result 
+               FROM finger_tapping AS ft 
+               JOIN activity_instance as si 
+               ON ft.ActivityInstanceIdFK = si.ActivityInstanceId 
+               JOIN patients as pa ON ft.PatientPinFK = pa.PatientPin
+                WHERE pa.PatientPin = ?
+                 ORDER BY ft.CreatedAt desc
+              `,
+            {
+                type: database.sequelize.QueryTypes.SELECT,
+                replacements: [
+                    request.params.pin
+                ]
+            })
+           ])
+        .then(([currentPatient, surveyInstances, currentTrial,fingerTappings]) => {
             // patient not found
             if (!currentPatient) {
                 throw new Error('patient does not exist');
             }
             console.log("Query executed in Database. Here is the trail result"+ JSON.stringify(currentTrial));
             console.log("Query executed in Database. Here is the current patient Query"+ JSON.stringify(currentPatient));
-            console.log("Query executed in Database. Here is the result of surveyInstances query:"+ JSON.stringify(surveyInstances));
+
+            console.log("Here is the result after processing Query:"+ (processFingerTapping(fingerTappings)));
 
             return reply.view('patientepilepsy', {
                 title: 'Epilepsy Portal',
@@ -101,7 +120,8 @@ function patientView (request, reply) {
 
                     return surveyInstanceCopy;
                 }),
-                datesJson: JSON.stringify(processSurveyInstances(surveyInstances))
+                datesJson: JSON.stringify(processSurveyInstances(surveyInstances)),
+                tapsJson : JSON.stringify(processFingerTapping(fingerTappings))
             });
 
         })
