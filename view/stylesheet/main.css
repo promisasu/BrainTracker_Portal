@@ -51,3 +51,8 @@ input[type='date'] {
     min-height: 44px;
     text-align: center;
 }
+
+.content-div{
+    min-height: 580px;
+    display: block;
+}

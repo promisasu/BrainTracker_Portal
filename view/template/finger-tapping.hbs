@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid content-div">
 
     <br/>
     <!-- Breadcrumb Row -->
@@ -6,8 +6,8 @@
         <div class="col-md-12">
             <ol class="breadcrumb">
                 <li><a href="/">Dashboard</a></li>
-                <li><a href="#">Trial:</a></li>
-                <li><a href="#">Patient:</a></li>
+                <li><a href="/trial/{{breadCrumbData.TrialId}}">Trial: {{breadCrumbData.Name}}</a></li>
+                <li><a href="/patient/tasks/{{breadCrumbData.PatientPin}}">Patient: {{breadCrumbData.PatientPin}}</a></li>
                 <li class="active">Finger Tapping</li>
             </ol>
         </div>
@@ -17,7 +17,9 @@
     <!-- Activities Row -->
     <div class="row">
         <div class="col-md-12">
-            TODO
+            {{# each fingerTapping as |tapValue tapKey|}}
+                <p>{{tapValue.result}}</p>
+            {{/each}}
         </div>
     </div>
 
