@@ -2,6 +2,7 @@
 "use strict";
 
 const database = require('../../model');
+const moment = require('moment');
 
 function fingerTappingView(request, reply, patientPin){
 
@@ -9,11 +10,16 @@ function fingerTappingView(request, reply, patientPin){
         getTrialAndPatientIds(patientPin),
         getAllFingerTapping(patientPin)
     ]).then(function(values){
+        var fingerTapping = values[1];
+
+        fingerTapping.forEach(function (tap){
+            tap.CreatedAt = moment(tap.CreatedAt).format('MM-DD-YYYY h:mm a');
+        });
 
         return reply.view('finger-tapping', {
             title: 'Epilepsy | Finger-Tapping',
             breadCrumbData: values[0][0],   // get the first record of trialAndPatientIds Query
-            fingerTapping: values[1]
+            fingerTapping: fingerTapping
         });
 
     }).catch(function(err){

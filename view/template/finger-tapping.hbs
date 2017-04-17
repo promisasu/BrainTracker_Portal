@@ -14,14 +14,42 @@
     </div>
 
     <br />
+    <!-- Chart Display row -->
+    <div class="row">
+        <div class="col-md-12">
+            // TODO -- display the aggregate chart here
+        </div>
+    </div>
+    <br />
+
     <!-- Activities Row -->
     <div class="row">
         <div class="col-md-12">
-            {{# each fingerTapping as |tapValue tapKey|}}
-                <p>{{tapValue.result}}</p>
-            {{/each}}
+
+            <div class="col-md-6">
+                Select Activity:
+                <select id="selectActivity" class="form-control" onchange="displayActivityDetail()">
+                    <option selected>Select An Activity</option>
+                    {{# each fingerTapping as |tapValue tapKey|}}
+                        <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <!-- Activity Detail Column -->
+            <div class="col-md-6"></div>
         </div>
     </div>
 
-
 </div>
+
+<script type="text/javascript">
+    function displayActivityDetail(){
+        //var selectedActivityId = document.getElementById('selectActivity').value;
+
+        var selectedActivityId = $('#selectActivity').val();
+        //alert('test: '+selectedActivityId);
+
+    }
+
+</script>
