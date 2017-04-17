@@ -29,34 +29,31 @@
         <script src="/vendor/better-dateinput-polyfill/dist/better-dateinput-polyfill.js" defer></script>
     </head>
     <body>
-        <!-- Navigation Bar-->
-        <nav class="navbar navbar-dark bg-inverse">
-            <div class="container-fluid">
-                <a class="navbar-brand" href='/'>
-                    Epilepsy Portal
-                </a>
-                <ul class="nav navbar-nav pull-right">
-                    <li class="nav-item active">
-                        <a href="#" class="nav-link">
-                            <i class="fa fa-cog fa-lg"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <!-- display the content -->
-        {{{ content }}}
-
-        <!-- Footer -->
-        <footer id="footer">
+        <div class = "hexagon-background">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="col-md-offset-4 col-md-4 footer-body">
-                        <p>Copyright © HEAL ASU 2017 </p>
+                    <div class="col-md-6">
+                        <img src="/static/image/asu_logo.png" class="epilepsy-asu-logo" alt="ASU" />
+                        <img src="/static/image/ch_logo.png" class="epilepsy-hospital-logo" alt="Children's Hospital" />
                     </div>
+                    <!-- blank div -->
+                    <div class="col-md-6"></div>
                 </div>
             </div>
-        </footer>
+
+            <!-- display the content -->
+            {{{ content }}}
+
+            <!-- Footer -->
+            <footer id="footer">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-offset-4 col-md-4 footer-body">
+                            <p>Copyright © HEAL ASU 2017 </p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
     </body>
 </html>
