@@ -50,3 +50,11 @@ input[type='date'] {
 .white-background{
     background-color: white !important;
 }
+
+.epilepsy-asu-logo{
+    width: 150px;
+}
+
+.epilepsy-hospital-logo{
+    width: 40px;
+}
