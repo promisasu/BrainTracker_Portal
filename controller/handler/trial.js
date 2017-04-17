@@ -140,7 +140,7 @@ function trialView (request, reply) {
     {
 
         return reply.view('epilepsytrial', {
-            title: 'Pain Reporting Portal',
+            title: 'Epilepsy | Trial',
             trial: processTrial(currentTrial),
             stages,
             endDate,
@@ -161,7 +161,7 @@ function trialView (request, reply) {
     {
 
         return reply.view('trial', {
-            title: 'Pain Reporting Portal',
+            title: 'Epilepsy | Trial',
             trial: processTrial(currentTrial),
             stages,
             endDate,

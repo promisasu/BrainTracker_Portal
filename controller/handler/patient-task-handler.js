@@ -16,7 +16,7 @@ function patientTaskHandler(request, reply){
             break;
 
         case 'finger-tapping':
-            fingerTappingPresenter(request, reply);
+            fingerTappingPresenter(request, reply, patientPin);
             break;
 
         case 'spatial-span':

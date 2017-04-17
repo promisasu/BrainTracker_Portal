@@ -102,7 +102,7 @@ function patientView (request, reply) {
             console.log("Here is the result after processing Query:"+ (processFingerTapping(fingerTappings)));
 
             return reply.view('patientepilepsy', {
-                title: 'Epilepsy Portal',
+                title: 'Epilepsy | Patient',
                 patient: currentPatient,
                 trial: currentTrial,
                 surveys: surveyInstances.map((surveyInstance) => {

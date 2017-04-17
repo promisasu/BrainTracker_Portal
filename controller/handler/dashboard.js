@@ -39,7 +39,7 @@ function dashboardView (request, reply) {
             console.log(trialData);
             // Display view
             return reply.view('dashboard', {
-                title: 'Epilepsy Portal',
+                title: 'Epilepsy | Dashboard',
                 user: request.auth.credentials,
                 trials: trialData
             });
