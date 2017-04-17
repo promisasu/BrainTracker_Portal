@@ -23,13 +23,38 @@ input[type='date'] {
     color: #55595c !important;
 }
 
+.hexagon-background {
+    background: url('/static/image/background.png');
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    overflow: hidden;
+    background-repeat: repeat;
+}
+
 .bear-background {
     background: url('/static/image/bear.svg');
     background-position: left;
     background-repeat: no-repeat;
     height: 300px;
 }
-
+.pink-navbar {
+    color: #eceeef;
+    background-color: #E74C3C;
+}
+.pink-btn
+{
+    background-color: #e74c3c;
+    border-color : #E74C3C;
+}
 .white-background{
     background-color: white !important;
+}
+
+.epilepsy-asu-logo{
+    width: 150px;
+}
+
+.epilepsy-hospital-logo{
+    width: 40px;
 }
