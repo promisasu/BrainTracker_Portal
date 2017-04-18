@@ -41,23 +41,25 @@
             {{#if activitiesData}}
 
                 <div class="card card-default-outline">
-
-                    <div class="col-md-6">
-                        Select Activity:
-                        <select id="selectActivity" class="form-control">
-                            <option selected>Select An Activity</option>
-                            {{# each fingerTapping as |tapValue tapKey|}}
-                                <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
-                            {{/each}}
-                        </select>
+                    <div class="card-block white-background">
+                        <div class="col-sm-6">
+                            Select Activity:
+                            <select id="selectedActivity" class="form-control" onchange="displayActivity();">
+                                <option value="null" selected>Select An Activity</option>
+                                {{# each fingerTapping as |tapValue tapKey|}}
+                                    <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div id="activityDetailDiv" class="col-sm-6 text-hide">
+                            <p class="text-justify">Right-Hand Taps: <span id="rightHandTaps"></span></p>
+                            <p class="text-justify">Left-Hand Taps: <span id="leftHandTaps"></span></p>
+                        </div>
                     </div>
-
-                    <!-- Activity Detail Column -->
-                    <div class="col-md-6"></div>
-
                 </div>
 
             {{else}}
+
                 <div class="card card-default-outline">
                     <div class="card-block white-background">
                         <div class="alert alert-info" role="alert">
@@ -69,6 +71,7 @@
                         </div>
                     </div>
                 </div>
+
             {{/if}}
 
         </div>
@@ -78,5 +81,37 @@
 
 <script>
     window.taps = JSON.parse('{{{ chartData }}}');
+    var activitiesData = JSON.parse('{{{activitiesData}}}');
+
+    function displayActivity(){
+        var selectedActivityId = $('#selectedActivity').val();
+
+        if (selectedActivityId == 'null'){
+
+            $('#activityDetailDiv').addClass('text-hide');
+        } else {
+
+            $('#activityDetailDiv').removeClass('text-hide');
+            var selectedActivity = getSelectedActivityDetail(selectedActivityId);
+
+            if (selectedActivity != null){
+                $('#rightHandTaps').html(selectedActivity.result.right);
+                $('#leftHandTaps').html(selectedActivity.result.left);
+            }
+        }
+    }
+
+    function getSelectedActivityDetail(selectedActivityId){
+        var foundActivity = null;
+
+        activitiesData.forEach(function(activity){
+
+            if (activity.id == selectedActivityId) {
+                foundActivity =  activity;
+            }
+        });
+
+        return foundActivity;
+    }
 </script>
 <script src="/static/script/fingertapping.js" defer></script>

@@ -12,7 +12,9 @@ function fingerTappingView(request, reply, patientPin){
         getAllFingerTapping(patientPin)
     ]).then(function(values){
         var fingerTapping = values[1];
+
         fingerTapping.forEach(function (tap){
+            tap.result = JSON.parse(tap.result);
             tap.CreatedAt = moment(tap.CreatedAt).format(viewDateTimeFormat);
         });
 
@@ -75,13 +77,11 @@ function generateFingerTappingChartData(fingerTapping){
 
     fingerTapping.forEach(function(tap){
         // populate the labels array
-        chartData.labels.push(moment(tap.CreatedAt).format(viewDateTimeFormat));
+        chartData.labels.push(tap.CreatedAt);
 
-        // populate the individual data records of each operating hand
-        var resultData = JSON.parse(tap.result);
-
-        chartData.datasets[0].data.push(resultData.right);
-        chartData.datasets[1].data.push(resultData.left);
+        // populate the datasets
+        chartData.datasets[0].data.push(tap.result.right);
+        chartData.datasets[1].data.push(tap.result.left);
     });
 
     return chartData;
@@ -110,10 +110,8 @@ function generateAverageTaps(fingerTapping){
 
     if (numberOfTaps > 0) {
         fingerTapping.forEach(function(tap){
-            var result = JSON.parse(tap.result);
-
-            leftHandSum += result.left;
-            rightHandSum += result.right;
+            leftHandSum += tap.result.left;
+            rightHandSum += tap.result.right;
         });
 
         averageTaps.rightHand = rightHandSum / numberOfTaps;
