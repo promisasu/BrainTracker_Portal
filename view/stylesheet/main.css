@@ -86,3 +86,11 @@ input[type='date'] {
     font-size: 12px;
     font-weight: normal;
 }
+
+.hide{
+    display: none;
+}
+
+.padding-10{
+    padding: 10px !important;
+}

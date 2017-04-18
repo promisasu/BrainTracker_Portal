@@ -40,35 +40,51 @@
 
             {{#if activitiesData}}
 
-                <div class="card card-default-outline">
-                    <div class="card-block white-background">
-                        <div class="col-sm-6">
-                            Select Activity:
-                            <select id="selectedActivity" class="form-control" onchange="displayActivity();">
-                                <option value="null" selected>Select An Activity</option>
-                                {{# each fingerTapping as |tapValue tapKey|}}
-                                    <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
-                                {{/each}}
-                            </select>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-block" style="height: 305px;">
+                                Select Activity:
+                                <select id="selectedActivity" class="form-control" onchange="displayActivity();">
+                                    <option value="null" selected>Select An Activity</option>
+                                    {{# each fingerTapping as |tapValue tapKey|}}
+                                        <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
+                                    {{/each}}
+                                </select>
+
+                                <div id="activityDetailDiv" class="padding-10 hide">
+                                    <p class="text-justify"> Time To Tap: <span id="timeToTap"></span></p>
+                                    <p class="text-justify">Right-Hand Taps: <span id="rightHandTaps"></span></p>
+                                    <p class="text-justify">Left-Hand Taps: <span id="leftHandTaps"></span></p>
+                                </div>
+                            </div>
                         </div>
-                        <div id="activityDetailDiv" class="col-sm-6 text-hide">
-                            <p class="text-justify">Right-Hand Taps: <span id="rightHandTaps"></span></p>
-                            <p class="text-justify">Left-Hand Taps: <span id="leftHandTaps"></span></p>
+                    </div>
+                    <div id="activityDetailGraphDiv" class="col-sm-6 hide">
+                        <div class="card">
+                            <div class="card-block">
+                                <canvas id="myChart" height="80px" width="200"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
 
             {{else}}
+                <div class="row">
+                    <div class="col-sm-12">
 
-                <div class="card card-default-outline">
-                    <div class="card-block white-background">
-                        <div class="alert alert-info" role="alert">
-                            <h4 class="alert-heading">Heads up!</h4>
-                            <p>
-                                It seems that there are no finger-tapping task taken by this patient. Please make sure that the
-                                patients take their assigned task to have better result.
-                            </p>
+                        <div class="card card-warning-outline">
+                            <div class="card-block white-background">
+                                <div class="alert alert-info" role="alert">
+                                    <h4 class="alert-heading">Heads up!</h4>
+                                    <p>
+                                        It seems that there are no finger-tapping task taken by this patient. Please make sure that the
+                                        patients take their assigned task to have better result.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -88,17 +104,44 @@
 
         if (selectedActivityId == 'null'){
 
-            $('#activityDetailDiv').addClass('text-hide');
+            $('#activityDetailDiv').addClass('hide');
+            $('#activityDetailGraphDiv').addClass('hide');
         } else {
 
-            $('#activityDetailDiv').removeClass('text-hide');
+            $('#activityDetailDiv').removeClass('hide');
+            $('#activityDetailGraphDiv').removeClass('hide');
+
             var selectedActivity = getSelectedActivityDetail(selectedActivityId);
 
             if (selectedActivity != null){
+                // show activity hand taps using bar graph
+                displayActivityDetailGraph(selectedActivity);
+
+                // set the properties value
+                $('#timeToTap').html(selectedActivity.TimeToTap+" s");
                 $('#rightHandTaps').html(selectedActivity.result.right);
                 $('#leftHandTaps').html(selectedActivity.result.left);
             }
         }
+    }
+
+    function displayActivityDetailGraph(selectedActivity){
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [selectedActivity.CreatedAt],
+                datasets: [{
+                    label: 'Right-Hand',
+                    data: [selectedActivity.result.right],
+                    backgroundColor: 'rgba(44, 62, 80,0.5)'
+                }, {
+                    label: 'Left-Hand',
+                    data: [selectedActivity.result.left],
+                    backgroundColor: 'rgba(231, 76, 60,0.5)'
+                }]
+            }
+        });
     }
 
     function getSelectedActivityDetail(selectedActivityId){
