@@ -17,6 +17,11 @@ function fingerTappingView(request, reply, patientPin){
             tap.CreatedAt = moment(tap.CreatedAt).format(viewDateTimeFormat);
         });
 
+        fingerTapping.averageTaps = generateAveragetaps(fingerTapping);
+
+        console.log(fingerTapping);
+        console.log('-----------');
+
         return reply.view('finger-tapping', {
             title: 'Epilepsy | Finger-Tapping',
             breadCrumbData: values[0][0],   // get the first record of trialAndPatientIds Query
@@ -88,6 +93,31 @@ function generateFingerTappingChartData(fingerTapping){
 
 function generateFingerTappingActivitiesData(fingerTapping){
     // TODO
+}
+
+function generateAveragetaps(fingerTapping){
+    var averageTaps = {
+        "rightHandAverage": 0,
+        "leftHandAverage": 0
+    };
+
+    var numberOfTaps = fingerTapping.length;
+    var leftHandSum = 0;
+    var rightHandSum = 0;
+
+    if (numberOfTaps > 0) {
+        fingerTapping.forEach(function(tap){
+            var result = JSON.parse(tap.result);
+
+            leftHandSum += result.left;
+            rightHandSum += result.right;
+        });
+
+        averageTaps.rightHandAverage = rightHandSum / numberOfTaps;
+        averageTaps.leftHandAverage = leftHandSum / numberOfTaps;
+    }
+
+    return averageTaps;
 }
 
 module.exports = fingerTappingView;

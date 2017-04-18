@@ -81,3 +81,8 @@ input[type='date'] {
 .epilepsy-hospital-logo{
     width: 40px;
 }
+
+.card-info-label{
+    font-size: 12px;
+    font-weight: normal;
+}
