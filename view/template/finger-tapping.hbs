@@ -21,8 +21,8 @@
                         Finger Tapping Graph
 
                         <span class="pull-right">
-                            <label class="label label-success card-info-label">Right Hand Average: {{fingerTapping.averageTaps.rightHandAverage}} Taps</label>
-                            <label class="label label-success card-info-label">Left Hand Average: {{fingerTapping.averageTaps.leftHandAverage}} Taps</label>
+                            <label class="label label-success card-info-label">Right Hand Average: {{averageTaps.rightHand}} Taps</label>
+                            <label class="label label-success card-info-label">Left Hand Average: {{averageTaps.leftHand}} Taps</label>
                         </span>
                     </h5>
                 </div>
@@ -38,18 +38,39 @@
     <div class="row">
         <div class="col-md-12">
 
-            <div class="col-md-6">
-                Select Activity:
-                <select id="selectActivity" class="form-control" onchange="displayActivityDetail()">
-                    <option selected>Select An Activity</option>
-                    {{# each fingerTapping as |tapValue tapKey|}}
-                        <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
-                    {{/each}}
-                </select>
-            </div>
+            {{#if activitiesData}}
 
-            <!-- Activity Detail Column -->
-            <div class="col-md-6"></div>
+                <div class="card card-default-outline">
+
+                    <div class="col-md-6">
+                        Select Activity:
+                        <select id="selectActivity" class="form-control">
+                            <option selected>Select An Activity</option>
+                            {{# each fingerTapping as |tapValue tapKey|}}
+                                <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+                    <!-- Activity Detail Column -->
+                    <div class="col-md-6"></div>
+
+                </div>
+
+            {{else}}
+                <div class="card card-default-outline">
+                    <div class="card-block white-background">
+                        <div class="alert alert-info" role="alert">
+                            <h4 class="alert-heading">Heads up!</h4>
+                            <p>
+                                It seems that there are no finger-tapping task taken by this patient. Please make sure that the
+                                patients take their assigned task to have better result.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {{/if}}
+
         </div>
     </div>
 

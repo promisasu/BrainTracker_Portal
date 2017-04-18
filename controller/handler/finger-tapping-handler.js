@@ -12,21 +12,17 @@ function fingerTappingView(request, reply, patientPin){
         getAllFingerTapping(patientPin)
     ]).then(function(values){
         var fingerTapping = values[1];
-
         fingerTapping.forEach(function (tap){
             tap.CreatedAt = moment(tap.CreatedAt).format(viewDateTimeFormat);
         });
-
-        fingerTapping.averageTaps = generateAveragetaps(fingerTapping);
-
-        console.log(fingerTapping);
-        console.log('-----------');
 
         return reply.view('finger-tapping', {
             title: 'Epilepsy | Finger-Tapping',
             breadCrumbData: values[0][0],   // get the first record of trialAndPatientIds Query
             fingerTapping: fingerTapping,
-            chartData: JSON.stringify(generateFingerTappingChartData(fingerTapping))
+            averageTaps: generateAverageTaps(fingerTapping),
+            chartData: JSON.stringify(generateFingerTappingChartData(fingerTapping)),
+            activitiesData: generateFingerTappingActivitiesData(fingerTapping)
         });
 
     }).catch(function(err){
@@ -92,13 +88,20 @@ function generateFingerTappingChartData(fingerTapping){
 }
 
 function generateFingerTappingActivitiesData(fingerTapping){
-    // TODO
+    var activitiesData = [];
+
+    if (fingerTapping.length > 0){
+        activitiesData = JSON.stringify(fingerTapping);
+    }
+
+    return activitiesData;
 }
 
-function generateAveragetaps(fingerTapping){
+// generate average taps for each hand
+function generateAverageTaps(fingerTapping){
     var averageTaps = {
-        "rightHandAverage": 0,
-        "leftHandAverage": 0
+        "rightHand": 0,
+        "leftHand": 0
     };
 
     var numberOfTaps = fingerTapping.length;
@@ -113,8 +116,8 @@ function generateAveragetaps(fingerTapping){
             rightHandSum += result.right;
         });
 
-        averageTaps.rightHandAverage = rightHandSum / numberOfTaps;
-        averageTaps.leftHandAverage = leftHandSum / numberOfTaps;
+        averageTaps.rightHand = rightHandSum / numberOfTaps;
+        averageTaps.leftHand = leftHandSum / numberOfTaps;
     }
 
     return averageTaps;
