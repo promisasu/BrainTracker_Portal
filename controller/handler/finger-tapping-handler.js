@@ -3,6 +3,7 @@
 
 const database = require('../../model');
 const moment = require('moment');
+const viewDateTimeFormat = "MM-DD-YYYY h:mm a";
 
 function fingerTappingView(request, reply, patientPin){
 
@@ -13,13 +14,14 @@ function fingerTappingView(request, reply, patientPin){
         var fingerTapping = values[1];
 
         fingerTapping.forEach(function (tap){
-            tap.CreatedAt = moment(tap.CreatedAt).format('MM-DD-YYYY h:mm a');
+            tap.CreatedAt = moment(tap.CreatedAt).format(viewDateTimeFormat);
         });
 
         return reply.view('finger-tapping', {
             title: 'Epilepsy | Finger-Tapping',
             breadCrumbData: values[0][0],   // get the first record of trialAndPatientIds Query
-            fingerTapping: fingerTapping
+            fingerTapping: fingerTapping,
+            chartData: JSON.stringify(generateFingerTappingChartData(fingerTapping))
         });
 
     }).catch(function(err){
@@ -51,6 +53,41 @@ function getAllFingerTapping(patientPin){
         replacements: { pin: patientPin },
         type: database.sequelize.QueryTypes.SELECT
     });
+}
+
+function generateFingerTappingChartData(fingerTapping){
+    var chartData = {
+        labels: [],
+        datasets: [
+            {
+                label: 'Right-Hand',
+                backgroundColor: 'rgba(44, 62, 80,0.5)',
+                data: []
+            },
+            {
+                label: 'Left-Hand',
+                backgroundColor: 'rgba(231, 76, 60,0.5)',
+                data: []
+            }
+        ]
+    };
+
+    fingerTapping.forEach(function(tap){
+        // populate the labels array
+        chartData.labels.push(moment(tap.CreatedAt).format(viewDateTimeFormat));
+
+        // populate the individual data records of each operating hand
+        var resultData = JSON.parse(tap.result);
+
+        chartData.datasets[0].data.push(resultData.right);
+        chartData.datasets[1].data.push(resultData.left);
+    });
+
+    return chartData;
+}
+
+function generateFingerTappingActivitiesData(fingerTapping){
+    // TODO
 }
 
 module.exports = fingerTappingView;

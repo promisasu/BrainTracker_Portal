@@ -1,6 +1,5 @@
 <div class="container-fluid content-div">
 
-    <br/>
     <!-- Breadcrumb Row -->
     <div class="row">
         <div class="col-md-12">
@@ -13,14 +12,22 @@
         </div>
     </div>
 
-    <br />
     <!-- Chart Display row -->
     <div class="row">
         <div class="col-md-12">
-            // TODO -- display the aggregate chart here
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Finger Tapping Graph
+                    </h5>
+                </div>
+                <div class="card-block white-background">
+                    <canvas id="fingerTapping" width="400" height="100px"></canvas>
+                </div>
+            </div>
+
         </div>
     </div>
-    <br />
 
     <!-- Activities Row -->
     <div class="row">
@@ -43,13 +50,7 @@
 
 </div>
 
-<script type="text/javascript">
-    function displayActivityDetail(){
-        //var selectedActivityId = document.getElementById('selectActivity').value;
-
-        var selectedActivityId = $('#selectActivity').val();
-        //alert('test: '+selectedActivityId);
-
-    }
-
+<script>
+    window.taps = JSON.parse('{{{ chartData }}}');
 </script>
+<script src="/static/script/fingertapping.js" defer></script>
