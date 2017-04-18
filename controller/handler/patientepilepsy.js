@@ -18,6 +18,7 @@ const httpNotFound = 404;
  * @returns {View} Rendered page
  */
 function patientView (request, reply) {
+var tapsReturn ={};
     Promise
         .all([
             database.sequelize.query(

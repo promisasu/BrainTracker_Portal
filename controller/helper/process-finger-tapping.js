@@ -15,9 +15,40 @@ const viewDateFormat = 'MM-DD-YYYY HH:mm';
  * @returns {Object} Complience chart data
  */
 function processFingerTapping (surveys) {
-    console.log("Started from Finger tapping Block");
+    console.log("Started from Finger tapping Block:: "+surveys.length);
 
+    if(surveys.length == 0 )
 
+    {
+
+        console.log("Entered conditional block ");
+        var now = new Date().getTime();
+        var labelsarray = [];
+         console.log("Time Stamp:: ",moment(now).format('MM-DD-YYYY HH:mm'));
+        labelsarray[0] = moment(now).format('MM-DD-YYYY HH:mm');
+
+        var dataArray = [
+            {
+                label: 'Right - No Data',
+                backgroundColor : "rgba(44, 62, 80,0.5)",
+                data : [0]
+            },
+            {
+                label: 'Left - No Data',
+                backgroundColor : "rgba(231, 76, 60,0.5)",
+                data : [0]
+            }
+        ];
+        console.log("Data Array::"+dataArray);
+       var returnObject = {
+            labels : labelsarray ,
+            datasets : dataArray
+        };
+
+       console.log("Object Returning::"+JSON.stringify(returnObject));
+       return returnObject;
+
+    }
     var labels =[];
     var rightHanddata= [];
     var leftHanddata= [];
@@ -39,15 +70,7 @@ function processFingerTapping (surveys) {
     returnArray.push(rightHanddata);
     returnArray.push(leftHanddata);
 
-    if(labels.length< 5 && rightHanddata.length < 5 && leftHanddata.length < 5 )
-    {
-        for(var i = labels.length; i < 5; i++)
-        {
-            labels.push(moment().toDate().format('MM-DD-YYYY HH:mm'));
-            rightHanddata.push(0);
-            leftHanddata.push(0);
-        }
-    }
+
 
 
     console.log("RIGHT HAND::",rightHanddata.toString());
