@@ -1,6 +1,5 @@
 <div class="container-fluid content-div">
 
-    <br/>
     <!-- Breadcrumb Row -->
     <div class="row">
         <div class="col-md-12">
@@ -13,43 +12,149 @@
         </div>
     </div>
 
-    <br />
     <!-- Chart Display row -->
     <div class="row">
         <div class="col-md-12">
-            // TODO -- display the aggregate chart here
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Finger Tapping Graph
+
+                        <span class="pull-right">
+                            <label class="label label-success card-info-label">Right Hand Average: {{averageTaps.rightHand}} Taps</label>
+                            <label class="label label-success card-info-label">Left Hand Average: {{averageTaps.leftHand}} Taps</label>
+                        </span>
+                    </h5>
+                </div>
+                <div class="card-block white-background">
+                    <canvas id="fingerTapping" width="400" height="100px"></canvas>
+                </div>
+            </div>
+
         </div>
     </div>
-    <br />
 
     <!-- Activities Row -->
     <div class="row">
         <div class="col-md-12">
 
-            <div class="col-md-6">
-                Select Activity:
-                <select id="selectActivity" class="form-control" onchange="displayActivityDetail()">
-                    <option selected>Select An Activity</option>
-                    {{# each fingerTapping as |tapValue tapKey|}}
-                        <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
-                    {{/each}}
-                </select>
-            </div>
+            {{#if activitiesData}}
 
-            <!-- Activity Detail Column -->
-            <div class="col-md-6"></div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-block" style="height: 305px;">
+                                Select Activity:
+                                <select id="selectedActivity" class="form-control" onchange="displayActivity();">
+                                    <option value="null" selected>Select An Activity</option>
+                                    {{# each fingerTapping as |tapValue tapKey|}}
+                                        <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
+                                    {{/each}}
+                                </select>
+
+                                <div id="activityDetailDiv" class="padding-10 hide">
+                                    <p class="text-justify"> Time To Tap: <span id="timeToTap"></span></p>
+                                    <p class="text-justify">Right-Hand Taps: <span id="rightHandTaps"></span></p>
+                                    <p class="text-justify">Left-Hand Taps: <span id="leftHandTaps"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="activityDetailGraphDiv" class="col-sm-6 hide">
+                        <div class="card">
+                            <div class="card-block">
+                                <canvas id="myChart" height="80px" width="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {{else}}
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <div class="card card-warning-outline">
+                            <div class="card-block white-background">
+                                <div class="alert alert-info" role="alert">
+                                    <h4 class="alert-heading">Heads up!</h4>
+                                    <p>
+                                        It seems that there are no finger-tapping task taken by this patient. Please make sure that the
+                                        patients take their assigned task to have better result.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            {{/if}}
+
         </div>
     </div>
 
 </div>
 
-<script type="text/javascript">
-    function displayActivityDetail(){
-        //var selectedActivityId = document.getElementById('selectActivity').value;
+<script>
+    window.taps = JSON.parse('{{{ chartData }}}');
+    var activitiesData = JSON.parse('{{{activitiesData}}}');
 
-        var selectedActivityId = $('#selectActivity').val();
-        //alert('test: '+selectedActivityId);
+    function displayActivity(){
+        var selectedActivityId = $('#selectedActivity').val();
 
+        if (selectedActivityId == 'null'){
+
+            $('#activityDetailDiv').addClass('hide');
+            $('#activityDetailGraphDiv').addClass('hide');
+        } else {
+
+            $('#activityDetailDiv').removeClass('hide');
+            $('#activityDetailGraphDiv').removeClass('hide');
+
+            var selectedActivity = getSelectedActivityDetail(selectedActivityId);
+
+            if (selectedActivity != null){
+                // show activity hand taps using bar graph
+                displayActivityDetailGraph(selectedActivity);
+
+                // set the properties value
+                $('#timeToTap').html(selectedActivity.TimeToTap+" s");
+                $('#rightHandTaps').html(selectedActivity.result.right);
+                $('#leftHandTaps').html(selectedActivity.result.left);
+            }
+        }
     }
 
+    function displayActivityDetailGraph(selectedActivity){
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [selectedActivity.CreatedAt],
+                datasets: [{
+                    label: 'Right-Hand',
+                    data: [selectedActivity.result.right],
+                    backgroundColor: 'rgba(44, 62, 80,0.5)'
+                }, {
+                    label: 'Left-Hand',
+                    data: [selectedActivity.result.left],
+                    backgroundColor: 'rgba(231, 76, 60,0.5)'
+                }]
+            }
+        });
+    }
+
+    function getSelectedActivityDetail(selectedActivityId){
+        var foundActivity = null;
+
+        activitiesData.forEach(function(activity){
+
+            if (activity.id == selectedActivityId) {
+                foundActivity =  activity;
+            }
+        });
+
+        return foundActivity;
+    }
 </script>
+<script src="/static/script/fingertapping.js" defer></script>
