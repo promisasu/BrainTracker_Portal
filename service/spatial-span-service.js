@@ -6,7 +6,6 @@ const database = require('../model');
 const moment = require('moment');
 const viewDateTimeFormat = "MM-DD-YYYY h:mm a";
 
-
 // fetch trial Id and patient's pin for breadcrumb
 function getTrialAndPatientIds(patientPin){
     var rawQuery = "SELECT tr.TrialId, tr.Name, pt.PatientPin " +
@@ -94,9 +93,21 @@ function calculateAccuracy(chances){
     return chances.length === 0 ? 0 : ((trueCount/chances.length) * 100);
 }
 
+function generateAverageAccuracy(spatialSpanActivities){
+    var totalActivities = spatialSpanActivities.length;
+    var totalAccuracy = 0;
+
+    spatialSpanActivities.forEach(function(activity){
+        totalAccuracy += calculateAccuracy(activity.result);
+    });
+
+    return totalAccuracy / totalActivities;
+}
+
 // module exports
 module.exports.fetchAllSpatialSpanActivities = getAllSpatialSpanActivities;
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
 module.exports.fetchFormattedSpatialSpanActivities = formatSpatialSpanActivities;
 module.exports.fetchSelectListData = generateSelectListData;
 module.exports.fetchSpatialSpanChartData = generateSpatialSpanChartData;
+module.exports.fetchAverageAccuracy = generateAverageAccuracy;

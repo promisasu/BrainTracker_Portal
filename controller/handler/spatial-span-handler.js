@@ -18,6 +18,7 @@ function spatialSpanView(request, reply, patientPin){
             breadCrumbData: values[0][0],
             spatialSpanActivities: spatialSpanService.fetchSelectListData(spatialSpanActivities),
             chartData: spatialSpanService.fetchSpatialSpanChartData(spatialSpanActivities),
+            averageAccuracy: spatialSpanService.fetchAverageAccuracy(spatialSpanActivities),
             activitiesData: []
         });
 
