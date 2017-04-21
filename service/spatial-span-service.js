@@ -114,6 +114,10 @@ function generateActivitiesData(spatialSpanActivities){
     return activitiesData;
 }
 
+function getRecentFiveActivities(patientPin){
+    // TODO
+}
+
 // module exports
 module.exports.fetchAllSpatialSpanActivities = getAllSpatialSpanActivities;
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
@@ -122,3 +126,4 @@ module.exports.fetchSelectListData = generateSelectListData;
 module.exports.fetchSpatialSpanChartData = generateSpatialSpanChartData;
 module.exports.fetchAverageAccuracy = generateAverageAccuracy;
 module.exports.fetchActivitiesData = generateActivitiesData;
+module.exports.fetchRecentFiveActivities = getRecentFiveActivities;

@@ -7,6 +7,7 @@
 const database = require('../../model');
 const processSurveyInstances = require('../helper/process-survey-instances');
 const processFingerTapping = require('../helper/process-finger-tapping');
+const spatialSpanService = require('../../service/spatial-span-service');
 const moment = require('moment');
 const sqlDateFormat = 'ddd MMM DD YYYY HH:mm:ss ZZ';
 const httpNotFound = 404;
@@ -84,24 +85,40 @@ var tapsReturn ={};
                JOIN patients as pa ON ft.PatientPinFK = pa.PatientPin
                 WHERE pa.PatientPin = ?
                  ORDER BY ft.CreatedAt desc
+                  LIMIT 5
               `,
             {
                 type: database.sequelize.QueryTypes.SELECT,
                 replacements: [
                     request.params.pin
                 ]
-            })
+            }),
+            database.sequelize.query(
+                `
+       SELECT ss.id,ss.CreatedAt,
+               ss.result 
+               FROM spatial_span AS ss 
+               JOIN activity_instance as si 
+               ON ss.ActivityInstanceIdFK = si.ActivityInstanceId 
+               JOIN patients as pa ON ss.PatientPinFK = pa.PatientPin
+                WHERE pa.PatientPin = ?               
+                 ORDER BY ss.CreatedAt desc
+                LIMIT 5
+              `,
+                {
+                    type: database.sequelize.QueryTypes.SELECT,
+                    replacements: [
+                        request.params.pin
+                    ]
+                })
+
            ])
-        .then(([currentPatient, surveyInstances, currentTrial,fingerTappings]) => {
+        .then(([currentPatient, surveyInstances, currentTrial,fingerTappings,spatialSpan]) => {
             // patient not found
             if (!currentPatient) {
                 throw new Error('patient does not exist');
             }
-            console.log("Query executed in Database. Here is the trail result"+ JSON.stringify(currentTrial));
-            console.log("Query executed in Database. Here is the current patient Query"+ JSON.stringify(currentPatient));
-
-            console.log("Here is the result after processing Query:"+ (processFingerTapping(fingerTappings)));
-
+            var formattedSpatialSpanResult = spatialSpanService.fetchFormattedSpatialSpanActivities(spatialSpan);
             return reply.view('patientepilepsy', {
                 title: 'Epilepsy | Patient',
                 patient: currentPatient,
@@ -122,7 +139,8 @@ var tapsReturn ={};
                     return surveyInstanceCopy;
                 }),
                 datesJson: JSON.stringify(processSurveyInstances(surveyInstances)),
-                tapsJson : JSON.stringify(processFingerTapping(fingerTappings))
+                tapsJson : JSON.stringify(processFingerTapping(fingerTappings)),
+                spatialJson : spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpanResult)
             });
 
         })

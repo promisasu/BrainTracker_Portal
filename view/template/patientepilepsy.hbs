@@ -89,7 +89,7 @@
                     </h5>
                 </div>
                 <div class="card-block white-background">
-                    <canvas id="spatialSpan" width="200" height="100px"></canvas>
+                    <canvas id="spatialSpanGraph" width="200" height="100px"></canvas>
                 </div>
             </div>
         </div>
@@ -148,6 +148,7 @@
 <script>
     window.dates = JSON.parse('{{{ datesJson }}}');
    window.taps = JSON.parse('{{{ tapsJson }}}');
+   window.spatialSpans = JSON.parse('{{{spatialJson}}}')
 </script>
 
 <script src="/static/script/epilepsypatient.js" defer></script>
@@ -155,3 +156,4 @@
 <script src="/static/script/fingertapping.js" defer></script>
 <script src="/static/script/spatialspan.js" defer></script>
 <script src="/static/script/flankertest.js" defer></script>
+

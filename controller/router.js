@@ -40,6 +40,7 @@ module.exports = [
     {
         method: 'GET',
         path: '/static/style/{param*}',
+
         handler: {
             directory: {
                 path: 'view/stylesheet'
