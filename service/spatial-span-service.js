@@ -104,6 +104,16 @@ function generateAverageAccuracy(spatialSpanActivities){
     return totalAccuracy / totalActivities;
 }
 
+function generateActivitiesData(spatialSpanActivities){
+    var activitiesData = [];
+
+    if (spatialSpanActivities.length === 0) {
+        activitiesData = JSON.stringify(spatialSpanActivities);
+    }
+
+    return activitiesData;
+}
+
 // module exports
 module.exports.fetchAllSpatialSpanActivities = getAllSpatialSpanActivities;
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
@@ -111,3 +121,4 @@ module.exports.fetchFormattedSpatialSpanActivities = formatSpatialSpanActivities
 module.exports.fetchSelectListData = generateSelectListData;
 module.exports.fetchSpatialSpanChartData = generateSpatialSpanChartData;
 module.exports.fetchAverageAccuracy = generateAverageAccuracy;
+module.exports.fetchActivitiesData = generateActivitiesData;
