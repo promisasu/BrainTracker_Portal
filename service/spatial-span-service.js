@@ -34,7 +34,7 @@ function getAllSpatialSpanActivities(patientPin){
 function formatSpatialSpanActivities(queryResults){
     queryResults.forEach(function(instance){
         instance.result = JSON.parse(instance.result);
-        instance.createdAt = moment(instance.CreatedAt).format(viewDateTimeFormat);
+        instance.CreatedAt = moment(instance.CreatedAt).format(viewDateTimeFormat);
     });
 
     return queryResults;
@@ -44,7 +44,7 @@ function formatSpatialSpanActivities(queryResults){
 function generateSelectListData(spatialSpanActivities){
     var listData = [];
     spatialSpanActivities.forEach(function(instance){
-        listData.push({id: instance.id, createdAt: instance.CreatedAt});
+        listData.push({id: instance.id, CreatedAt: instance.CreatedAt});
     });
 
     return listData;
@@ -70,7 +70,7 @@ function generateSpatialSpanChartData(spatialSpanActivities){
     };
 
     spatialSpanActivities.forEach(function(instance){
-        chartData.labels.push(instance.createdAt);
+        chartData.labels.push(instance.CreatedAt);
         chartData.datasets[0].data.push(calculateAccuracy(instance.result));
     });
 
@@ -107,7 +107,7 @@ function generateAverageAccuracy(spatialSpanActivities){
 function generateActivitiesData(spatialSpanActivities){
     var activitiesData = [];
 
-    if (spatialSpanActivities.length === 0) {
+    if (spatialSpanActivities.length !== 0) {
         activitiesData = JSON.stringify(spatialSpanActivities);
     }
 

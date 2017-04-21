@@ -39,7 +39,55 @@
     <div class="row">
         <div class="col-md-12">
 
-            LIST ACTIVITIES:
+            {{#if activitiesData}}
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-block" style="height: 305px;">
+                                Select Activity:
+                                <select id="selectedActivity" class="form-control">
+                                    <option value="null" selected>Select An Activity</option>
+                                    {{# each spatialSpanActivities as |spanValue spanKey|}}
+                                        <option value="{{spanValue.id}}">Activity - {{spanValue.CreatedAt}}</option>
+                                    {{/each}}
+                                </select>
+
+                                <div id="activityDetailDiv" class="padding-10 hide">
+                                    <!-- TODO -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="activityDetailGraphDiv" class="col-sm-6 hide">
+                        <div class="card">
+                            <div class="card-block">
+                                <canvas id="myChart" height="80px" width="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {{else}}
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <div class="card card-warning-outline">
+                            <div class="card-block white-background">
+                                <div class="alert alert-info" role="alert">
+                                    <h4 class="alert-heading">Heads up!</h4>
+                                    <p>
+                                        It seems that there are no Spatial Span Task taken by this patient. Please make sure that the
+                                        patients take their assigned task to have better result.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            {{/if}}
 
         </div>
     </div>
