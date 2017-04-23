@@ -64,7 +64,19 @@ function generateSpatialSpanChartData(spatialSpanActivities){
                 borderWidth: 2,
                 hoverBackgroundColor: "rgba(255,99,132,0.4)",
                 hoverBorderColor: "rgba(255,99,132,1)",
-                data: []
+                data: [],
+                yAxisID: 'y-axis-1'
+            },
+            {
+                type: 'bar',
+                label: "Level",
+                data: [],
+                fill: false,
+                backgroundColor: '#2C3E50',
+                borderColor: '#2C3E50',
+                hoverBackgroundColor: '#2C3E50',
+                hoverBorderColor: '#2C3E50',
+                yAxisID: 'y-axis-2'
             }
         ]
     };
@@ -72,6 +84,7 @@ function generateSpatialSpanChartData(spatialSpanActivities){
     spatialSpanActivities.forEach(function(instance){
         chartData.labels.push(instance.CreatedAt);
         chartData.datasets[0].data.push(calculateAccuracy(instance.result));
+        chartData.datasets[1].data.push(calculateMaxLevel(instance.result));
     });
 
     return JSON.stringify(chartData);
@@ -91,6 +104,16 @@ function calculateAccuracy(chances){
     });
 
     return chances.length === 0 ? 0 : ((trueCount/chances.length) * 100);
+}
+function calculateMaxLevel(chances){
+    var maxDifficulty = 1;
+    chances.forEach(function(chance){
+        if (chance.difficulty > maxDifficulty) {
+            maxDifficulty = chance.difficulty;
+        }
+    });
+
+    return maxDifficulty;
 }
 
 function generateAverageAccuracy(spatialSpanActivities){
