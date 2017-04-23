@@ -44,17 +44,50 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="card">
-                            <div class="card-block" style="height: 305px;">
+                            <div class="card-block" style="min-height: 305px;">
                                 Select Activity:
-                                <select id="selectedActivity" class="form-control">
+                                <select id="selectedActivity" class="form-control" onchange="displayActivity()">
                                     <option value="null" selected>Select An Activity</option>
                                     {{# each spatialSpanActivities as |spanValue spanKey|}}
-                                        <option value="{{spanValue.id}}">Activity - {{spanValue.CreatedAt}}</option>
+                                        <option value="{{spanKey}}">Activity - {{spanValue.CreatedAt}}</option>
                                     {{/each}}
                                 </select>
 
-                                <div id="activityDetailDiv" class="padding-10 hide">
-                                    <!-- TODO -->
+                                <div class="row">
+                                    <div id="activityDetailDiv" class="padding-10">
+
+                                        <div id="messageDiv" class="alert alert-info hide" role="alert">
+                                            <strong>Heads Up!</strong> Please select an Activity first!.
+                                        </div>
+
+                                        <ul id="activityInfoList" class="list-group list-group-flush hide">
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Patient Pin:</span>
+                                                <span id="patientPinValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Time Taken to Complete (s):</span>
+                                                <span id="timeToCompleteValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Accuracy (%):</span>
+                                                <span id="accuracyValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Max Level Reached:</span>
+                                                <span id="maxLevelValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Date Taken:</span>
+                                                <span id="createdAtValue"></span>
+                                            </li>
+
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -62,7 +95,7 @@
                     <div id="activityDetailGraphDiv" class="col-sm-6 hide">
                         <div class="card">
                             <div class="card-block">
-                                <canvas id="myChart" height="80px" width="200"></canvas>
+                                <canvas id="spatialSpanChanceGraph" height="93px" width="200"></canvas>
                             </div>
                         </div>
                     </div>
@@ -86,14 +119,94 @@
 
                     </div>
                 </div>
-
             {{/if}}
-
         </div>
     </div>
 
 </div>
 <script type="text/javascript">
     window.spatialSpans = JSON.parse('{{{chartData}}}');
+    var activitiesData = JSON.parse('{{{activitiesData}}}');
+
+    function displayActivity(){
+        var selectedActivityKey = $('#selectedActivity').val();
+
+        if (selectedActivityKey != 'null'){
+            $('#messageDiv').addClass('hide');
+            $('#activityInfoList').removeClass('hide');
+            $('#activityDetailGraphDiv').removeClass('hide');
+
+            var selectedActivity = activitiesData[selectedActivityKey];
+            //console.log(selectedActivity.result);
+
+            displayChancesGraph(selectedActivity);
+            setActivityPropertyValues(selectedActivity);
+        } else {
+            $('#messageDiv').removeClass('hide');
+            $('#activityInfoList').addClass('hide');
+            $('#activityDetailGraphDiv').addClass('hide');
+            clearActivityPropertyValues();
+        }
+    }
+
+    function setActivityPropertyValues(activityDetail){
+        $('#patientPinValue').html(activityDetail.PatientPinFK);
+        $('#timeToCompleteValue').html(activityDetail.TimeToComplete);
+        $('#accuracyValue').html(activityDetail.accuracy);
+        $('#maxLevelValue').html(activityDetail.maxLevel);
+        $('#createdAtValue').html(activityDetail.CreatedAt);
+    }
+
+    function clearActivityPropertyValues(){
+        $('#patientPinValue').html("");
+        $('#timeToCompleteValue').html("");
+        $('#accuracyValue').html("");
+        $('#maxLevelValue').html("");
+        $('#createdAtValue').html("");
+    }
+
+    function displayChancesGraph(selectedActivity){
+        var graphData = [];
+        var barColors = ["#2C3E50", "#E74C3C"];
+        for(var i=0; i<selectedActivity.result.length; i++){
+            graphData.push({
+                label: "Q"+(i+1),
+                backgroundColor: (i%2 == 0 ? barColors[0] : barColors[1]),
+                data: [selectedActivity.result[i].difficulty]
+            });
+        }
+
+        var ctx = document.getElementById("spatialSpanChanceGraph").getContext('2d');
+        var spatialSpanChanceGraph = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [selectedActivity.CreatedAt],
+                datasets: graphData
+            },
+            options:{
+                scales: {
+                    yAxes: [
+                        {
+
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                max: 7,
+                                min: 0,
+                                stepSize: 1
+                            },
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Level',
+                                fontStyle: "bold"
+                            }
+                        }
+
+                    ]
+                }
+            }
+        });
+    }
 </script>
 <script src="/static/script/spatialspan.js" defer></script>

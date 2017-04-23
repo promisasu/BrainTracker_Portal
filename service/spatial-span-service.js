@@ -59,7 +59,7 @@ function generateSpatialSpanChartData(spatialSpanActivities){
                 type: 'line',
                 label: 'Spatial Span Accuracy',
                 fill: false,
-                backgroundColor: "rgba(231, 76, 60,0.5)",
+                backgroundColor: "#E74C3C",
                 borderColor: "rgba(231, 76, 60,0.5)",
                 borderWidth: 2,
                 hoverBackgroundColor: "rgba(255,99,132,0.4)",
@@ -108,10 +108,29 @@ function generateActivitiesData(spatialSpanActivities){
     var activitiesData = [];
 
     if (spatialSpanActivities.length !== 0) {
+        // add components accuracy and maximumLevel for view activity details part in dashboard
+        spatialSpanActivities.forEach(function(activity){
+            activity.accuracy = calculateAccuracy(activity.result);
+            activity.maxLevel = calculateMaximumLevelReached(activity.result);
+        });
+
         activitiesData = JSON.stringify(spatialSpanActivities);
     }
 
     return activitiesData;
+}
+
+function calculateMaximumLevelReached(chances){
+    // min level to start the game is 2;
+    var maxLevelReached = 2;
+
+    chances.forEach(function(chance){
+        if (chance.difficulty > maxLevelReached ) {
+            maxLevelReached = chance.difficulty;
+        }
+    });
+
+    return maxLevelReached;
 }
 
 function getRecentFiveActivities(patientPin){
