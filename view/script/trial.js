@@ -10,9 +10,9 @@
         datasets: [{
             data: window.data.datasets,
             backgroundColor: [
-                '#FF4136',
-                '#FFDC00',
-                '#2ECC40'
+                '#E74C3C',
+                '#3498DB',
+                '#2C3E50'
             ]
         }]
     };

@@ -2,6 +2,7 @@
 
 const patternComparisonPresenter = require('./pattern-comparison-handler');
 const fingerTappingPresenter = require('./finger-tapping-handler');
+const spatialSpanPresenter = require('./spatial-span-handler');
 
 function patientTaskHandler(request, reply){
     const patientParams = request.params.pin.split('/');
@@ -20,7 +21,7 @@ function patientTaskHandler(request, reply){
             break;
 
         case 'spatial-span':
-            // TODO
+            spatialSpanPresenter(request, reply, patientPin);
             break;
 
         case 'flanker-test':

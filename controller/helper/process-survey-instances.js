@@ -102,11 +102,12 @@ function pickTimeLeft (surveys) {
         var dates = surveyTypes[i].map((survey) => {
             return moment(survey.StartTime).format(viewDateFormat);
         });
+
         var dataArr = {
             label: '% Time left until '+ samplePoint.activityTitle + ' expired',
-            backgroundColor: getRGBA(),
-            borderColor: getRGBA(),
-            pointBorderColor: getRGBA(),
+            backgroundColor: getRGBA(i),
+            borderColor: getRGBA(i),
+            pointBorderColor: getRGBA(i),
             data: dataPoints,
             dates: dates
         }
@@ -118,11 +119,17 @@ function pickTimeLeft (surveys) {
 
 }
 
-function getRGBA(){
-  var red = Math.floor(Math.random() * 255) + 1;
-  var green = Math.floor(Math.random() * 255) + 1;
-  var blue = Math.floor(Math.random() * 255) + 1;
-  return  'rgba(' + red.toString() + ',' + green.toString() + ',' + blue.toString() + ',0.5)'
+
+
+function getRGBA(i){
+  if(i ==0)
+  {
+      return  'rgba(44, 62, 80,0.5)'
+  }
+  else {
+      return  'rgba(231, 76, 60,0.5)'
+  }
+
 }
 
 /**

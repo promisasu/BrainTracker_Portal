@@ -1,0 +1,222 @@
+<div class="container-fluid content-div">
+
+    <!-- Breadcrumb Row -->
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/trial/{{breadCrumbData.TrialId}}">Trial: {{breadCrumbData.Name}}</a></li>
+                <li><a href="/patient/tasks/{{breadCrumbData.PatientPin}}">Patient: {{breadCrumbData.PatientPin}}</a></li>
+                <li class="active">Spatial Span</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Chart Display row -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Spatial Span Graph
+
+                        <span class="pull-right">
+                            <label class="label label-success card-info-label">
+                                Average Accuracy / Activity : {{averageAccuracy}} %
+                            </label>
+                        </span>
+                    </h5>
+                </div>
+                <div class="card-block white-background">
+                    <canvas id="spatialSpanGraph" width="400" height="100px"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Activities Row -->
+    <div class="row">
+        <div class="col-md-12">
+
+            {{#if activitiesData}}
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-block" style="min-height: 305px;">
+                                Select Activity:
+                                <select id="selectedActivity" class="form-control" onchange="displayActivity()">
+                                    <option value="null" selected>Select An Activity</option>
+                                    {{# each spatialSpanActivities as |spanValue spanKey|}}
+                                        <option value="{{spanKey}}">Activity - {{spanValue.CreatedAt}}</option>
+                                    {{/each}}
+                                </select>
+
+                                <div class="row">
+                                    <div id="activityDetailDiv" class="padding-10">
+
+                                        <div id="messageDiv" class="alert alert-info hide" role="alert">
+                                            <strong>Heads Up!</strong> Please select an Activity first!.
+                                        </div>
+
+                                        <ul id="activityInfoList" class="list-group list-group-flush hide">
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Patient Pin:</span>
+                                                <span id="patientPinValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Time Taken to Complete (s):</span>
+                                                <span id="timeToCompleteValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Accuracy (%):</span>
+                                                <span id="accuracyValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Max Level Reached:</span>
+                                                <span id="maxLevelValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Date Taken:</span>
+                                                <span id="createdAtValue"></span>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="activityDetailGraphDiv" class="col-sm-6 hide">
+                        <div class="card">
+                            <div class="card-block">
+                                <canvas id="spatialSpanChanceGraph" height="93px" width="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {{else}}
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <div class="card card-warning-outline">
+                            <div class="card-block white-background">
+                                <div class="alert alert-info" role="alert">
+                                    <h4 class="alert-heading">Heads up!</h4>
+                                    <p>
+                                        It seems that there are no Spatial Span Task taken by this patient. Please make sure that the
+                                        patients take their assigned task to have better result.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    window.spatialSpans = JSON.parse('{{{chartData}}}');
+    var spatialSpanChanceGraph;
+    var activitiesData = '{{{activitiesData}}}';
+
+    if (activitiesData) {
+        activitiesData = JSON.parse(activitiesData);
+    }
+
+    function displayActivity(){
+        var selectedActivityKey = $('#selectedActivity').val();
+
+        if (selectedActivityKey != 'null'){
+            $('#messageDiv').addClass('hide');
+            $('#activityInfoList').removeClass('hide');
+            $('#activityDetailGraphDiv').removeClass('hide');
+
+            var selectedActivity = activitiesData[selectedActivityKey];
+
+            displayChancesGraph(selectedActivity);
+            setActivityPropertyValues(selectedActivity);
+        } else {
+            $('#messageDiv').removeClass('hide');
+            $('#activityInfoList').addClass('hide');
+            $('#activityDetailGraphDiv').addClass('hide');
+            clearActivityPropertyValues();
+        }
+    }
+
+    function setActivityPropertyValues(activityDetail){
+        $('#patientPinValue').html(activityDetail.PatientPinFK);
+        $('#timeToCompleteValue').html(activityDetail.TimeToComplete);
+        $('#accuracyValue').html(activityDetail.accuracy);
+        $('#maxLevelValue').html(activityDetail.maxLevel);
+        $('#createdAtValue').html(activityDetail.CreatedAt);
+    }
+
+    function clearActivityPropertyValues(){
+        $('#patientPinValue').html("");
+        $('#timeToCompleteValue').html("");
+        $('#accuracyValue').html("");
+        $('#maxLevelValue').html("");
+        $('#createdAtValue').html("");
+    }
+
+    function displayChancesGraph(selectedActivity){
+        var graphData = [];
+        var barColors = ["#2C3E50", "#E74C3C"];
+        for(var i=0; i<selectedActivity.result.length; i++){
+            graphData.push({
+                label: "Chance - "+(i+1),
+                backgroundColor: selectedActivity.result[i].result ? barColors[0] : barColors[1],
+                data: [selectedActivity.result[i].difficulty]
+            });
+        }
+
+        if (spatialSpanChanceGraph) {
+            // update the datasets and update the chart instance
+            spatialSpanChanceGraph.config.data.datasets = graphData;
+            spatialSpanChanceGraph.update();
+        } else {
+            var canvas = document.getElementById("spatialSpanChanceGraph").getContext('2d');
+            spatialSpanChanceGraph = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: [selectedActivity.CreatedAt],
+                    datasets: graphData
+                },
+                options:{
+                    scales: {
+                        yAxes: [
+                            {
+
+                                type: 'linear',
+                                position: 'left',
+                                ticks: {
+                                    max: 7,
+                                    min: 0,
+                                    stepSize: 1
+                                },
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Level',
+                                    fontStyle: "bold"
+                                }
+                            }
+
+                        ]
+                    }
+                }
+            });
+        }
+    }
+</script>
+<script src="/static/script/spatialspan.js" defer></script>

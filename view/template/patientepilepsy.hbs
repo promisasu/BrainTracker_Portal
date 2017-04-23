@@ -12,11 +12,6 @@
                 Trial: {{ trial.Name }}
             </a>
         </li>
-        <li>
-            <a>
-             tasks   
-            </a>
-        </li>
         <li class="active">
             Patient: {{ patient.PatientPin }}
         </li>
@@ -80,7 +75,7 @@
                         Spatial Span
 
                         <span class="pull-right">
-                            <a href="#" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{patient.PatientPin}}/task/spatial-span" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -89,7 +84,7 @@
                     </h5>
                 </div>
                 <div class="card-block white-background">
-                    <canvas id="spatialSpan" width="200" height="100px"></canvas>
+                    <canvas id="spatialSpanGraph" width="200" height="100px"></canvas>
                 </div>
             </div>
         </div>
@@ -148,6 +143,7 @@
 <script>
     window.dates = JSON.parse('{{{ datesJson }}}');
    window.taps = JSON.parse('{{{ tapsJson }}}');
+   window.spatialSpans = JSON.parse('{{{spatialJson}}}')
 </script>
 
 <script src="/static/script/epilepsypatient.js" defer></script>
@@ -155,3 +151,4 @@
 <script src="/static/script/fingertapping.js" defer></script>
 <script src="/static/script/spatialspan.js" defer></script>
 <script src="/static/script/flankertest.js" defer></script>
+
