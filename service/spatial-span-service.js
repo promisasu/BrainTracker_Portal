@@ -105,8 +105,11 @@ function calculateAccuracy(chances){
 
     return chances.length === 0 ? 0 : ((trueCount/chances.length) * 100);
 }
+
 function calculateMaxLevel(chances){
-    var maxDifficulty = 1;
+    // min level to start the game is 2;
+    var maxDifficulty = 2;
+
     chances.forEach(function(chance){
         if (chance.difficulty > maxDifficulty) {
             maxDifficulty = chance.difficulty;
@@ -134,26 +137,13 @@ function generateActivitiesData(spatialSpanActivities){
         // add components accuracy and maximumLevel for view activity details part in dashboard
         spatialSpanActivities.forEach(function(activity){
             activity.accuracy = calculateAccuracy(activity.result);
-            activity.maxLevel = calculateMaximumLevelReached(activity.result);
+            activity.maxLevel = calculateMaxLevel(activity.result);
         });
 
         activitiesData = JSON.stringify(spatialSpanActivities);
     }
 
     return activitiesData;
-}
-
-function calculateMaximumLevelReached(chances){
-    // min level to start the game is 2;
-    var maxLevelReached = 2;
-
-    chances.forEach(function(chance){
-        if (chance.difficulty > maxLevelReached ) {
-            maxLevelReached = chance.difficulty;
-        }
-    });
-
-    return maxLevelReached;
 }
 
 function getRecentFiveActivities(patientPin){

@@ -126,7 +126,12 @@
 </div>
 <script type="text/javascript">
     window.spatialSpans = JSON.parse('{{{chartData}}}');
-    var activitiesData = JSON.parse('{{{activitiesData}}}');
+    var spatialSpanChanceGraph;
+    var activitiesData = '{{{activitiesData}}}';
+
+    if (activitiesData) {
+        activitiesData = JSON.parse(activitiesData);
+    }
 
     function displayActivity(){
         var selectedActivityKey = $('#selectedActivity').val();
@@ -137,7 +142,6 @@
             $('#activityDetailGraphDiv').removeClass('hide');
 
             var selectedActivity = activitiesData[selectedActivityKey];
-            //console.log(selectedActivity.result);
 
             displayChancesGraph(selectedActivity);
             setActivityPropertyValues(selectedActivity);
@@ -170,43 +174,49 @@
         var barColors = ["#2C3E50", "#E74C3C"];
         for(var i=0; i<selectedActivity.result.length; i++){
             graphData.push({
-                label: "Q"+(i+1),
-                backgroundColor: (i%2 == 0 ? barColors[0] : barColors[1]),
+                label: "Chance - "+(i+1),
+                backgroundColor: selectedActivity.result[i].result ? barColors[0] : barColors[1],
                 data: [selectedActivity.result[i].difficulty]
             });
         }
 
-        var ctx = document.getElementById("spatialSpanChanceGraph").getContext('2d');
-        var spatialSpanChanceGraph = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: [selectedActivity.CreatedAt],
-                datasets: graphData
-            },
-            options:{
-                scales: {
-                    yAxes: [
-                        {
+        if (spatialSpanChanceGraph) {
+            // update the datasets and update the chart instance
+            spatialSpanChanceGraph.config.data.datasets = graphData;
+            spatialSpanChanceGraph.update();
+        } else {
+            var canvas = document.getElementById("spatialSpanChanceGraph").getContext('2d');
+            spatialSpanChanceGraph = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: [selectedActivity.CreatedAt],
+                    datasets: graphData
+                },
+                options:{
+                    scales: {
+                        yAxes: [
+                            {
 
-                            type: 'linear',
-                            position: 'left',
-                            ticks: {
-                                max: 7,
-                                min: 0,
-                                stepSize: 1
-                            },
-                            display: true,
-                            scaleLabel: {
+                                type: 'linear',
+                                position: 'left',
+                                ticks: {
+                                    max: 7,
+                                    min: 0,
+                                    stepSize: 1
+                                },
                                 display: true,
-                                labelString: 'Level',
-                                fontStyle: "bold"
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Level',
+                                    fontStyle: "bold"
+                                }
                             }
-                        }
 
-                    ]
+                        ]
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 </script>
 <script src="/static/script/spatialspan.js" defer></script>
