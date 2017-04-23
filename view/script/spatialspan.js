@@ -3,7 +3,7 @@
 
     var allSpatialSpans = Object.create(window.spatialSpans);
     var config = {
-        type: 'line',
+        type: 'bar',
         data: '',
         options: {
             scales: {
@@ -37,7 +37,24 @@
                             display: true,
                             labelString: '% Accuracy',
                             fontStyle: "bold"
-                        }
+                        },
+                        id : "y-axis-1"
+                    },
+                    {
+
+                        type: 'linear',
+                        position: 'right',
+                        ticks: {
+                            max: 10,
+                            min: 0
+                        },
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Max Level',
+                            fontStyle: "bold"
+                        },
+                        id : "y-axis-2"
                     }
 
                 ]
