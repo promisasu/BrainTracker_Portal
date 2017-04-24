@@ -21,7 +21,7 @@ function getAllSpatialSpanActivities(patientPin){
 // format the output of spatial-span activities: format CreatedAt and parse the json format of result column
 function formatSpatialSpanActivities(queryResults){
     queryResults.forEach(function(instance){
-        instance.result = JSON.parse(instance.result);
+        instance.answers = JSON.parse(instance.answers);
         instance.CreatedAt = moment(instance.CreatedAt).format(viewDateTimeFormat);
     });
 
@@ -71,9 +71,12 @@ function generateSpatialSpanChartData(spatialSpanActivities){
 
     spatialSpanActivities.forEach(function(instance){
         chartData.labels.push(instance.CreatedAt);
-        chartData.datasets[0].data.push(calculateAccuracy(instance.result));
-        chartData.datasets[1].data.push(calculateMaxLevel(instance.result));
+        chartData.datasets[0].data.push(calculateAccuracy(instance.answers));
+        chartData.datasets[1].data.push(calculateMaxLevel(instance.answers));
     });
+
+    console.log(chartData);
+    console.log(JSON.stringify(chartData));
 
     return JSON.stringify(chartData);
 }
@@ -112,7 +115,7 @@ function generateAverageAccuracy(spatialSpanActivities){
     var totalAccuracy = 0;
 
     spatialSpanActivities.forEach(function(activity){
-        totalAccuracy += calculateAccuracy(activity.result);
+        totalAccuracy += calculateAccuracy(activity.answers);
     });
 
     return totalAccuracy / totalActivities;
@@ -124,8 +127,8 @@ function generateActivitiesData(spatialSpanActivities){
     if (spatialSpanActivities.length !== 0) {
         // add components accuracy and maximumLevel for view activity details part in dashboard
         spatialSpanActivities.forEach(function(activity){
-            activity.accuracy = calculateAccuracy(activity.result);
-            activity.maxLevel = calculateMaxLevel(activity.result);
+            activity.accuracy = calculateAccuracy(activity.answers);
+            activity.maxLevel = calculateMaxLevel(activity.answers);
         });
 
         activitiesData = JSON.stringify(spatialSpanActivities);

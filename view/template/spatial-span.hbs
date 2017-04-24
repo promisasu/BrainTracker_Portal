@@ -126,6 +126,7 @@
 </div>
 <script type="text/javascript">
     window.spatialSpans = JSON.parse('{{{chartData}}}');
+    console.log(window.spatialSpans);
     var spatialSpanChanceGraph;
     var activitiesData = '{{{activitiesData}}}';
 
@@ -172,11 +173,11 @@
     function displayChancesGraph(selectedActivity){
         var graphData = [];
         var barColors = ["#2C3E50", "#E74C3C"];
-        for(var i=0; i<selectedActivity.result.length; i++){
+        for(var i=0; i<selectedActivity.answers.length; i++){
             graphData.push({
                 label: "Chance - "+(i+1),
-                backgroundColor: selectedActivity.result[i].result ? barColors[0] : barColors[1],
-                data: [selectedActivity.result[i].difficulty]
+                backgroundColor: selectedActivity.answers[i].result ? barColors[0] : barColors[1],
+                data: [selectedActivity.answers[i].difficulty]
             });
         }
 

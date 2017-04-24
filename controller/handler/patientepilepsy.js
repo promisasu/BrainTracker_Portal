@@ -96,7 +96,7 @@ var tapsReturn ={};
             database.sequelize.query(
                 `
        SELECT ss.id,ss.CreatedAt,
-               ss.result 
+               ss.answers 
                FROM spatial_span AS ss 
                JOIN activity_instance as si 
                ON ss.ActivityInstanceIdFK = si.ActivityInstanceId 
