@@ -1,16 +1,16 @@
-//jslint node: true
-'use strict';
+/*jslint node: true */
+"use strict";
 
 // import service module
 var spatialSpanService = require('../../service/spatial-span-service');
+var utilityService = require('../../service/utility-service');
 
 function spatialSpanView(request, reply, patientPin){
 
     Promise.all([
-        spatialSpanService.fetchTrialAndPatientIds(patientPin),
+        utilityService.fetchTrialAndPatientIds(patientPin),
         spatialSpanService.fetchAllSpatialSpanActivities(patientPin)
     ]).then(function(values){
-        // TODO -- calculate average accuracy too
         var spatialSpanActivities = spatialSpanService.fetchFormattedSpatialSpanActivities(values[1]);
 
         return reply.view('spatial-span', {
