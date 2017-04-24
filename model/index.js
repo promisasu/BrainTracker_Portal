@@ -20,7 +20,7 @@ const addSurveyLoggerModel = require('./survey-logger');
 
 // task models
 const addFingerTappingModel = require('./finger-tapping');
-const addSpatialSpanModel = require('./spatial-spand');
+const addSpatialSpanModel = require('./spatial-span');
 
 // Database Join Tables
 const addJoinUsersAndTrials = require('./join-users-and-trials');
