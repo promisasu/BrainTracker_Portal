@@ -6,18 +6,6 @@ const database = require('../model');
 const moment = require('moment');
 const viewDateTimeFormat = "MM-DD-YYYY h:mm a";
 
-// fetch trial Id and patient's pin for breadcrumb
-function getTrialAndPatientIds(patientPin){
-    var rawQuery = "SELECT tr.TrialId, tr.Name, pt.PatientPin " +
-        "FROM trial as tr, stage as st, patients as pt " +
-        "WHERE pt.PatientPin = :pin AND pt.StageIdFK = st.StageId AND st.TrialId = tr.TrialId LIMIT 1";
-
-    return database.sequelize.query(rawQuery, {
-        replacements: {pin: patientPin},
-        type: database.sequelize.QueryTypes.SELECT
-    });
-}
-
 // fetch all spatial-span activities of patient
 function getAllSpatialSpanActivities(patientPin){
     var rawQuery = "SELECT ss.* " +
@@ -152,7 +140,6 @@ function getRecentFiveActivities(patientPin){
 
 // module exports
 module.exports.fetchAllSpatialSpanActivities = getAllSpatialSpanActivities;
-module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
 module.exports.fetchFormattedSpatialSpanActivities = formatSpatialSpanActivities;
 module.exports.fetchSelectListData = generateSelectListData;
 module.exports.fetchSpatialSpanChartData = generateSpatialSpanChartData;

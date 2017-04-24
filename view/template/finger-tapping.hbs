@@ -42,28 +42,59 @@
 
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="card">
-                            <div class="card-block" style="height: 305px;">
+                        <div class="card card-info-outline">
+                            <div class="card-block white-background" style="min-height: 305px;">
                                 Select Activity:
                                 <select id="selectedActivity" class="form-control" onchange="displayActivity();">
                                     <option value="null" selected>Select An Activity</option>
                                     {{# each fingerTapping as |tapValue tapKey|}}
-                                        <option value="{{tapValue.id}}">Activity - {{tapValue.CreatedAt}}</option>
+                                        <option value="{{tapKey}}">Activity - {{tapValue.CreatedAt}}</option>
                                     {{/each}}
                                 </select>
 
-                                <div id="activityDetailDiv" class="padding-10 hide">
-                                    <p class="text-justify"> Time To Tap: <span id="timeToTap"></span></p>
-                                    <p class="text-justify">Right-Hand Taps: <span id="rightHandTaps"></span></p>
-                                    <p class="text-justify">Left-Hand Taps: <span id="leftHandTaps"></span></p>
+
+                                <div class="row">
+                                    <div id="activityDetailDiv" class="padding-10">
+                                        <div id="messageDiv" class="alert alert-info hide" role="alert">
+                                            <strong>Heads Up!</strong> Please select an Activity first!.
+                                        </div>
+
+                                        <ul id="activityInfoList" class="list-group list-group-flush hide">
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Patient Pin:</span>
+                                                <span id="patientPinValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Time To Tap (s):</span>
+                                                <span id="timeToTapValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Right-Hand Taps:</span>
+                                                <span id="rightHandTapValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Left-Hand Taps:</span>
+                                                <span id="leftHandTapValue"></span>
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <span class="card-list-item-bold">Date Taken:</span>
+                                                <span id="createdAtValue"></span>
+                                            </li>
+
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div id="activityDetailGraphDiv" class="col-sm-6 hide">
-                        <div class="card">
-                            <div class="card-block">
-                                <canvas id="myChart" height="80px" width="200"></canvas>
+                        <div class="card card-info-outline">
+                            <div class="card-block white-background">
+                                <canvas id="fingerTappingActivityGraph" height="93px" width="200"></canvas>
                             </div>
                         </div>
                     </div>
@@ -87,9 +118,7 @@
 
                     </div>
                 </div>
-
             {{/if}}
-
         </div>
     </div>
 
@@ -97,64 +126,104 @@
 
 <script>
     window.taps = JSON.parse('{{{ chartData }}}');
-    var activitiesData = JSON.parse('{{{activitiesData}}}');
+    var fingerTappingActivityGraph;
+    var activitiesData = '{{{activitiesData}}}';
+
+    if (activitiesData) {
+        activitiesData = JSON.parse(activitiesData);
+    }
 
     function displayActivity(){
-        var selectedActivityId = $('#selectedActivity').val();
+        var selectedActivityKey = $('#selectedActivity').val();
 
-        if (selectedActivityId == 'null'){
-
-            $('#activityDetailDiv').addClass('hide');
-            $('#activityDetailGraphDiv').addClass('hide');
-        } else {
-
-            $('#activityDetailDiv').removeClass('hide');
+        if (selectedActivityKey != 'null'){
+            $('#messageDiv').addClass('hide');
+            $('#activityInfoList').removeClass('hide');
             $('#activityDetailGraphDiv').removeClass('hide');
 
-            var selectedActivity = getSelectedActivityDetail(selectedActivityId);
+            var selectedActivity = activitiesData[selectedActivityKey];
+            displayActivityDetailGraph(selectedActivity);
+            setActivityPropertyValues(selectedActivity);
 
-            if (selectedActivity != 'null'){
-                // show activity hand taps using bar graph
-                displayActivityDetailGraph(selectedActivity);
-
-                // set the properties value
-                $('#timeToTap').html(selectedActivity.TimeToTap+" s");
-                $('#rightHandTaps').html(selectedActivity.result.right);
-                $('#leftHandTaps').html(selectedActivity.result.left);
-            }
+        } else {
+            $('#messageDiv').removeClass('hide');
+            $('#activityInfoList').addClass('hide');
+            $('#activityDetailGraphDiv').addClass('hide');
+            clearActivityPropertyValues();
         }
     }
 
-    function displayActivityDetailGraph(selectedActivity){
-        var ctx = document.getElementById("myChart").getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: [selectedActivity.CreatedAt],
-                datasets: [{
-                    label: 'Right-Hand',
-                    data: [selectedActivity.result.right],
-                    backgroundColor: 'rgba(44, 62, 80,0.5)'
-                }, {
-                    label: 'Left-Hand',
-                    data: [selectedActivity.result.left],
-                    backgroundColor: 'rgba(231, 76, 60,0.5)'
-                }]
-            }
-        });
+    function setActivityPropertyValues(selectedActivity){
+        $('#patientPinValue').html(selectedActivity.PatientPinFK);
+        $('#timeToTapValue').html(selectedActivity.TimeToTap);
+        $('#rightHandTapValue').html(selectedActivity.result.right);
+        $('#leftHandTapValue').html(selectedActivity.result.left);
+        $('#createdAtValue').html(selectedActivity.CreatedAt);
     }
 
-    function getSelectedActivityDetail(selectedActivityId){
-        var foundActivity = null;
+    function clearActivityPropertyValues(){
+        $('#patientPinValue').html("");
+        $('#timeToTapValue').html("");
+        $('#rightHandTapValue').html("");
+        $('#leftHandTapValue').html("");
+        $('#createdAtValue').html("");
+    }
 
-        activitiesData.forEach(function(activity){
+    function displayActivityDetailGraph(selectedActivity){
+        if (fingerTappingActivityGraph) {
 
-            if (activity.id == selectedActivityId) {
-                foundActivity =  activity;
+            // update the datasets of data for the chart and update the chart
+            fingerTappingActivityGraph.config.data.datasets = getUpdatedGraphDataSets(selectedActivity);
+            fingerTappingActivityGraph.update();
+        } else {
+            // create new chart instance
+            var canvas = document.getElementById("fingerTappingActivityGraph").getContext('2d');
+            fingerTappingActivityGraph = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: [selectedActivity.CreatedAt],
+                    datasets: getUpdatedGraphDataSets(selectedActivity)
+                },
+                options:{
+                    scales: {
+                        yAxes: [
+                            {
+
+                                type: 'linear',
+                                position: 'left',
+                                ticks: {
+                                    max: 100,
+                                    min: 0,
+                                    stepSize: 10
+                                },
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'No. Of Taps',
+                                    fontStyle: "bold"
+                                }
+                            }
+
+                        ]
+                    }
+                }
+            });
+        }
+    }
+
+    function getUpdatedGraphDataSets(selectedActivity){
+        return [
+            {
+                label: 'Right-Hand',
+                backgroundColor: "#E74C3C",
+                data: [selectedActivity.result.right]
+            },
+            {
+                label: 'Left-Hand',
+                backgroundColor: "#2C3E50",
+                data: [selectedActivity.result.left]
             }
-        });
-
-        return foundActivity;
+        ];
     }
 </script>
 <script src="/static/script/fingertapping.js" defer></script>
