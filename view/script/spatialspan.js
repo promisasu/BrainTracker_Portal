@@ -20,7 +20,8 @@
                             display: true,
                             labelString: 'Activity by Date',
                             fontStyle: "bold"
-                        }
+                        },
+                        barPercentage: 0.5
                     }
                 ],
                 yAxes: [
