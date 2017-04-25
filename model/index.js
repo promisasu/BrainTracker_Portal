@@ -21,6 +21,7 @@ const addSurveyLoggerModel = require('./survey-logger');
 // task models
 const addFingerTappingModel = require('./finger-tapping');
 const addSpatialSpanModel = require('./spatial-span');
+const addFlankerTestModel = require('./flanker-test');
 
 // Database Join Tables
 const addJoinUsersAndTrials = require('./join-users-and-trials');
@@ -72,6 +73,7 @@ function setup (configuration) {
     addSurveyLoggerModel(sequelize);
     addFingerTappingModel(sequelize);
     addSpatialSpanModel(sequelize);
+    addFlankerTestModel(sequelize);
 
     // add the many to many join tables
     addJoinUsersAndTrials(sequelize);
@@ -95,6 +97,7 @@ function setup (configuration) {
     const surveyTemplate = sequelize.model('survey_template');
     const fingerTapping = sequelize.model('finger-tapping');
     const spatialSpan = sequelize.model('spatial-span');
+    const flankerTest = sequelize.model('flanker-test');
 
     // Get the join tables
     const joinUsersAndTrials = sequelize.model('join_users_and_trials');
@@ -109,6 +112,7 @@ function setup (configuration) {
     patient.hasMany(surveyInstance);
     patient.hasMany(fingerTapping);
     patient.hasMany(spatialSpan);
+    patient.hasMany(flankerTest);
 
     stage.hasMany(patient);
     surveyTemplate.hasMany(surveyInstance);
