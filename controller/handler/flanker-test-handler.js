@@ -6,7 +6,6 @@ const flankerTestService = require('../../service/flanker-test-service');
 const utilityService = require('../../service/utility-service');
 
 function flankerTestView(request, reply, patientPin){
-    // TODO
 
     Promise.all([
         utilityService.fetchTrialAndPatientIds(patientPin),
@@ -20,8 +19,12 @@ function flankerTestView(request, reply, patientPin){
             breadCrumbData: values[0][0],
             flankerTestListData: flankerTestService.fetchFlankerTestActivitiesSelectData(formattedFlankerTests),
             chartData: flankerTestService.fetchAggregateChartData(formattedFlankerTests),
-            averageAccuracy: flankerTestService.fetchAverageAccuracy(formattedFlankerTests)
+            averageAccuracy: flankerTestService.fetchAverageAccuracy(formattedFlankerTests),
+            flankerTestActivitiesData: flankerTestService.fetchFlankerTestActivitiesData(formattedFlankerTests)
         });
+    }).catch(function(err){
+        console.log(err);
+        return reply({code: 500, message: 'Something went Wrong!'}).code(500);
     });
 
 }

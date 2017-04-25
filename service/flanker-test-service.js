@@ -37,8 +37,6 @@ function generateSelectListData(flankerTests){
 }
 
 function generateAggregateChartData(flankerTests){
-    // TODO
-
     var chartData = {
         labels: [],
         datasets: [
@@ -103,8 +101,24 @@ function generateAverageAccuracyOfFlankerTests(flankerTests){
     return average.toFixed(1);
 }
 
+function generateFlankerTestActivitiesData(flankerTests){
+    var activitiesData = [];
+
+    if (flankerTests.length !== 0) {
+        flankerTests.forEach(function(test){
+            test.accuracy = calculateFlankerTestAccuracy(test.answers);
+        });
+
+        activitiesData = JSON.stringify(flankerTests);
+    }
+
+    return activitiesData;
+}
+
+// exporting modules
 module.exports.fetchAllFlankerTestActivities = getAllFlankerTestActivities;
 module.exports.fetchFormattedFlankerTests = formatFlankerTests;
 module.exports.fetchFlankerTestActivitiesSelectData = generateSelectListData;
 module.exports.fetchAggregateChartData = generateAggregateChartData;
 module.exports.fetchAverageAccuracy = generateAverageAccuracyOfFlankerTests;
+module.exports.fetchFlankerTestActivitiesData = generateFlankerTestActivitiesData;
