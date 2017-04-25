@@ -1,5 +1,50 @@
 <div class="container-fluid content-div">
 
-    <h1>Flanker Test Dashboard</h1>
+    <!-- Breadcrumb Row -->
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/trial/{{breadCrumbData.TrialId}}">Trial: {{breadCrumbData.Name}}</a></li>
+                <li><a href="/patient/tasks/{{breadCrumbData.PatientPin}}">Patient: {{breadCrumbData.PatientPin}}</a></li>
+                <li class="active">Flanker Test</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Chart Display row -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Flanker Test Graph
+
+                        <span class="pull-right">
+                            <label class="label label-success card-info-label">
+                                Average Accuracy / Activity : {{averageAccuracy}} %
+                            </label>
+                        </span>
+                    </h5>
+                </div>
+                <div class="card-block white-background">
+                    <canvas id="flankerTestGraph" width="400" height="100px"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Activities Row -->
+    <div class="row">
+        <div class="col-md-12">
+            Activities ROW
+        </div>
+    </div>
 
 </div>
+
+<script type="text/javascript">
+    window.flankerTests = JSON.parse('{{{chartData}}}');
+</script>
+<script src="/static/script/flankertest.js" defer></script>

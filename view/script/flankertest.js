@@ -1,11 +1,7 @@
 (function patient () {
     'use strict';
 
-    var isNewPatient = window.location.search;
-    var isNewPatientRegex = /newPatient=true/;
-
-    // Makes a copy of window.dates
-    var allDatesConfig = Object.create(window.dates);
+    var allFlankerTests = Object.create(window.flankerTests);
     var config = {
         type: 'line',
         data: '',
@@ -18,7 +14,7 @@
                         time: {
                             format: 'MM-DD-YYYY HHmm',
                             unit: 'day',
-                            round: 'time'
+                            round: 'day'
                         },
                         scaleLabel: {
                             show: true,
@@ -28,7 +24,7 @@
                 ],
                 yAxes: [
                     {
-                        
+
                         type: 'linear',
                         position: 'left',
                         ticks: {
@@ -47,44 +43,8 @@
         }
     };
 
-    var ctx = document.getElementById('flankerTest').getContext('2d');
+    var ctx = document.getElementById('flankerTestGraph').getContext('2d');
+    config.data = allFlankerTests;
 
-    function redirect () {
-        window.location = '/';
-    }
-
-    function warningMessage () {
-        alert('patient could not be deactivated');
-    }
-
-    /*document.getElementById('flankerDetail')
-    .addEventListener('click', function deactivate () {
-        $.ajax({
-            url: window.location.pathname,
-            type: 'DELETE'
-        })
-        .done(redirect)
-        .fail(warningMessage);
-    });*/
-
-    if (isNewPatientRegex.test(isNewPatient)) {
-        $('#remember-patient-dialog').modal('show');
-    }
-
-    config.data = {
-    labels : ['03052017 1501','03052017 1701','03072017 0301','03072017 1501',
-              '03082017 1501','03092017 1501'],
-    datasets : [
-        {
-            label: '% Accuracy of the Pattern Comparision test',
-            fillColor : "rgba(252,233,79,0.5)",
-            strokeColor : "rgba(82,75,25,1)",
-            pointColor : "rgba(166,152,51,1)",
-            pointStrokeColor : "#fff",
-            data : [65,68,90,75,
-                    81,95]
-        }
-    ]
-}
     new Chart(ctx, config);
 }());

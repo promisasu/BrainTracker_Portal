@@ -3,11 +3,108 @@
 
 // import modules
 const database = require('../model');
+const moment = require('moment');
+const viewDateTimeFormat = "MM-DD-YYYY h:mm a";
 
 function getAllFlankerTestActivities(patientPin){
+    var rawQuery = "SELECT ft.* " +
+        "FROM flanker as ft, patients as pt " +
+        "WHERE ft.PatientPinFK = pt.PatientPin AND pt.PatientPin = :pin order by ft.CreatedAt asc";
+
+    return database.sequelize.query(rawQuery, {
+        replacements: { pin: patientPin },
+        type: database.sequelize.QueryTypes.SELECT
+    });
+}
+
+function formatFlankerTests(queryResults){
+    queryResults.forEach(function(instance){
+        instance.answers = JSON.parse(instance.answers);
+        instance.CreatedAt = moment(instance.CreatedAt).format(viewDateTimeFormat);
+    });
+
+    return queryResults;
+}
+
+function generateSelectListData(flankerTests){
+    var listData = [];
+
+    flankerTests.forEach(function(instance){
+        listData.push({id: instance.id, CreatedAt: instance.CreatedAt});
+    });
+
+    return listData;
+}
+
+function generateAggregateChartData(flankerTests){
     // TODO
 
-    return [];
+    var chartData = {
+        labels: [],
+        datasets: [
+            {
+                label: "Flanker-Test Accuracy",
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(231,76,60,0.4)",
+                borderColor: "rgba(231,76,60,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(231,76,60,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(231,76,60,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: [],
+                spanGaps: false
+            }
+        ]
+    };
+
+    flankerTests.forEach(function(instance){
+        chartData.labels.push(instance.CreatedAt);
+        chartData.datasets[0].data.push(calculateFlankerTestAccuracy(instance.answers));
+    });
+
+    return JSON.stringify(chartData);
+}
+
+function calculateFlankerTestAccuracy(flankerTestAnswers){
+    var wrongCount = 0;
+    var rightCount = 0;
+
+    flankerTestAnswers.forEach(function(answer){
+        if (answer.result) {
+            rightCount++;
+        } else {
+            wrongCount++;
+        }
+    });
+
+    return flankerTestAnswers.length === 0 ? 0 : ((rightCount/flankerTestAnswers.length) * 100);
+}
+
+function generateAverageAccuracyOfFlankerTests(flankerTests){
+    var totalFlankerTests = flankerTests.length;
+    var totalAccuracy = 0;
+
+    flankerTests.forEach(function(test){
+        totalAccuracy += calculateFlankerTestAccuracy(test.answers);
+    });
+
+    var average = totalAccuracy / totalFlankerTests;
+
+    return average.toFixed(1);
 }
 
 module.exports.fetchAllFlankerTestActivities = getAllFlankerTestActivities;
+module.exports.fetchFormattedFlankerTests = formatFlankerTests;
+module.exports.fetchFlankerTestActivitiesSelectData = generateSelectListData;
+module.exports.fetchAggregateChartData = generateAggregateChartData;
+module.exports.fetchAverageAccuracy = generateAverageAccuracyOfFlankerTests;
