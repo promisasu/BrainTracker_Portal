@@ -8,6 +8,7 @@ const database = require('../../model');
 const processSurveyInstances = require('../helper/process-survey-instances');
 const processFingerTapping = require('../helper/process-finger-tapping');
 const spatialSpanService = require('../../service/spatial-span-service');
+const fingerTappingService = require('../../service/finger-tapping-service');
 const moment = require('moment');
 const sqlDateFormat = 'ddd MMM DD YYYY HH:mm:ss ZZ';
 const httpNotFound = 404;
@@ -75,24 +76,8 @@ var tapsReturn ={};
                     plain: true
                 }
             ),
-            database.sequelize.query(
-            `
-        SELECT ft.id,ft.CreatedAt,
-               ft.result 
-               FROM finger_tapping AS ft 
-               JOIN activity_instance as si 
-               ON ft.ActivityInstanceIdFK = si.ActivityInstanceId 
-               JOIN patients as pa ON ft.PatientPinFK = pa.PatientPin
-                WHERE pa.PatientPin = ?
-                 ORDER BY ft.CreatedAt desc
-                  LIMIT 5
-              `,
-            {
-                type: database.sequelize.QueryTypes.SELECT,
-                replacements: [
-                    request.params.pin
-                ]
-            }),
+            fingerTappingService.fetchFiveFingerTapping(request.params.pin)
+            ,
             database.sequelize.query(
                 `
        SELECT ss.id,ss.CreatedAt,
@@ -119,6 +104,7 @@ var tapsReturn ={};
                 throw new Error('patient does not exist');
             }
             var formattedSpatialSpanResult = spatialSpanService.fetchFormattedSpatialSpanActivities(spatialSpan);
+            var formattedfingerTapping = fingerTappingService.fetchFormattedFingerTapping(fingerTappings);
             return reply.view('patientepilepsy', {
                 title: 'Epilepsy | Patient',
                 patient: currentPatient,
@@ -139,7 +125,7 @@ var tapsReturn ={};
                     return surveyInstanceCopy;
                 }),
                 datesJson: JSON.stringify(processSurveyInstances(surveyInstances)),
-                tapsJson : JSON.stringify(processFingerTapping(fingerTappings)),
+                tapsJson : fingerTappingService.fetchFingerTappingChartData(formattedfingerTapping),
                 spatialJson : spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpanResult)
             });
 
