@@ -23,7 +23,7 @@ function getFiveFingerTapping(patientPin){
     var rawQuery = "SELECT ft.* " +
         "FROM finger_tapping AS ft, patients AS pt, activity_instance AS at, stage AS st, trial AS tr " +
         "WHERE ft.PatientPinFK = pt.PatientPin AND ft.ActivityInstanceIdFK = at.ActivityInstanceId AND " +
-        "pt.PatientPin = :pin AND pt.StageIdFK = st.StageId AND st.TrialId = tr.TrialId"+
+        "pt.PatientPin = :pin AND pt.StageIdFK = st.StageId AND st.TrialId = tr.TrialId "+
         "ORDER BY ft.CreatedAt desc LIMIT 5";
 
     return database.sequelize.query(rawQuery, {

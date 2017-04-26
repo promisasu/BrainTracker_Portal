@@ -10,7 +10,8 @@ const viewDateTimeFormat = "MM-DD-YYYY h:mm a";
 function getAllSpatialSpanActivities(patientPin){
     var rawQuery = "SELECT ss.* " +
         "FROM spatial_span as ss, patients as pt " +
-        "WHERE ss.PatientPinFK = pt.PatientPin AND pt.PatientPin = :pin order by ss.CreatedAt asc";
+        "WHERE ss.PatientPinFK = pt.PatientPin AND pt.PatientPin = :pin "+
+        " order by ss.CreatedAt asc";
 
     return database.sequelize.query(rawQuery, {
         replacements: { pin: patientPin },
@@ -138,7 +139,16 @@ function generateActivitiesData(spatialSpanActivities){
 }
 
 function getRecentFiveActivities(patientPin){
-    // TODO
+
+    var rawQuery = "SELECT ss.* " +
+        "FROM spatial_span as ss, patients as pt " +
+        "WHERE ss.PatientPinFK = pt.PatientPin AND pt.PatientPin = :pin "+
+        " order by ss.CreatedAt desc LIMIT 5";
+
+    return database.sequelize.query(rawQuery, {
+        replacements: { pin: patientPin },
+        type: database.sequelize.QueryTypes.SELECT
+    });
 }
 
 // module exports

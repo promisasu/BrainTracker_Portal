@@ -6,7 +6,6 @@
 
 const database = require('../../model');
 const processSurveyInstances = require('../helper/process-survey-instances');
-const processFingerTapping = require('../helper/process-finger-tapping');
 const spatialSpanService = require('../../service/spatial-span-service');
 const fingerTappingService = require('../../service/finger-tapping-service');
 const moment = require('moment');
@@ -78,24 +77,7 @@ var tapsReturn ={};
             ),
             fingerTappingService.fetchFiveFingerTapping(request.params.pin)
             ,
-            database.sequelize.query(
-                `
-       SELECT ss.id,ss.CreatedAt,
-               ss.answers 
-               FROM spatial_span AS ss 
-               JOIN activity_instance as si 
-               ON ss.ActivityInstanceIdFK = si.ActivityInstanceId 
-               JOIN patients as pa ON ss.PatientPinFK = pa.PatientPin
-                WHERE pa.PatientPin = ?               
-                 ORDER BY ss.CreatedAt desc
-                LIMIT 5
-              `,
-                {
-                    type: database.sequelize.QueryTypes.SELECT,
-                    replacements: [
-                        request.params.pin
-                    ]
-                })
+            spatialSpanService.fetchRecentFiveActivities(request.params.pin)
 
            ])
         .then(([currentPatient, surveyInstances, currentTrial,fingerTappings,spatialSpan]) => {
