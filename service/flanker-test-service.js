@@ -17,6 +17,18 @@ function getAllFlankerTestActivities(patientPin){
     });
 }
 
+function getRecentFiveFlankerTestActivities(patientPin){
+    var rawQuery = "SELECT ft.* " +
+        "FROM flanker as ft, patients as pt " +
+        "WHERE ft.PatientPinFK = pt.PatientPin AND pt.PatientPin = :pin " +
+        "order by ft.CreatedAt asc LIMIT 5";
+
+    return database.sequelize.query(rawQuery, {
+        replacements: { pin: patientPin },
+        type: database.sequelize.QueryTypes.SELECT
+    });
+}
+
 function formatFlankerTests(queryResults){
     queryResults.forEach(function(instance){
         instance.answers = JSON.parse(instance.answers);
@@ -122,3 +134,4 @@ module.exports.fetchFlankerTestActivitiesSelectData = generateSelectListData;
 module.exports.fetchAggregateChartData = generateAggregateChartData;
 module.exports.fetchAverageAccuracy = generateAverageAccuracyOfFlankerTests;
 module.exports.fetchFlankerTestActivitiesData = generateFlankerTestActivitiesData;
+module.exports.fetchRecentFiveActivities = getRecentFiveFlankerTestActivities;
