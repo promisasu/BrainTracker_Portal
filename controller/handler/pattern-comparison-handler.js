@@ -16,12 +16,17 @@ const utilityService = require('../../service/utility-service');
  */
 function patternComparisonView(request, reply, patientPin){
     Promise.all([
-        utilityService.fetchTrialAndPatientIds(patientPin)
+        utilityService.fetchTrialAndPatientIds(patientPin),
+        patternComparisonService.fetchAllPatternComparisons(patientPin)
     ]).then(function(values){
+
+        var formattedPatternComparisons = patternComparisonService.fetchFormattedPatternComparisons(values[1]);
 
         return reply.view('pattern-comparison', {
             title: 'Epilepsy | Pattern Comparison',
-            breadCrumbData: values[0][0]
+            breadCrumbData: values[0][0],
+            averageAccuracy: patternComparisonService.fetchAverageAccuracy(formattedPatternComparisons),
+            chartData: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons)
         });
 
     }).catch(function(err){

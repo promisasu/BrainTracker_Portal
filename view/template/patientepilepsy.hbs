@@ -27,7 +27,7 @@
                         Pattern Comparison
 
                         <span class="pull-right">
-                            <a href="/patient/{{patient.PatientPin}}/task/pattern-comparison" class="btn btn-sm btn-primary">
+                            <a href="#" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -36,7 +36,7 @@
                     </h5>
                 </div>
                 <div class="card-block white-background">
-                    <canvas id="patternComparison" width="200" height="100px"></canvas>
+                    <canvas id="patternComparisonGraph" width="200" height="100px"></canvas>
                 </div>
             </div>
         </div>
@@ -141,11 +141,12 @@
     window.taps = JSON.parse('{{{ tapsJson }}}');
     window.spatialSpans = JSON.parse('{{{spatialJson}}}');
     window.flankerTests = JSON.parse('{{{flankerTests}}}');
+    window.patternComparisons = JSON.parse('{{{patternComparisons}}}');
 </script>
 
 <script src="/static/script/epilepsypatient.js" defer></script>
-<script src="/static/script/patterncomparision.js" defer></script>
 <script src="/static/script/fingertapping.js" defer></script>
 <script src="/static/script/spatialspan.js" defer></script>
 <script src="/static/script/flankertest.js" defer></script>
+<script src="/static/script/patterncomparision.js" defer></script>
 

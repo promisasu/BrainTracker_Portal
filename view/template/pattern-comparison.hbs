@@ -12,18 +12,33 @@
         </div>
     </div>
 
-    <!--Aggregate Chart Row-->
+    <!-- Chart Display row -->
     <div class="row">
         <div class="col-md-12">
-            <h3>Aggregate Chart</h3>
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Pattern Comparison Graph
 
-            <div>
-                <canvas id="aggregatePatternComparisonChart"></canvas>
+                        <span class="pull-right">
+                            <label class="label label-success card-info-label">
+                                Average Accuracy / Activity : {{averageAccuracy}} %
+                            </label>
+                        </span>
+                    </h5>
+                </div>
+                <div class="card-block white-background">
+                    <canvas id="patternComparisonGraph" width="400" height="100px"></canvas>
+                </div>
             </div>
 
         </div>
     </div>
 
-    <br />
-    <!-- Attempt Details Row -->
 </div>
+
+<script type="text/javascript">
+    window.patternComparisons = JSON.parse('{{{chartData}}}');
+    //console.log(window.patternComparisons);
+</script>
+<script src="/static/script/patterncomparision.js" defer></script>
