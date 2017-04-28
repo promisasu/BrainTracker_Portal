@@ -1,4 +1,9 @@
 'use strict';
+
+// import modules;
+const patternComparisonService = require('../../service/pattern-comparison-service');
+const utilityService = require('../../service/utility-service');
+
 /**
  * @module controller/handler/pattern-comparison-handler
  */
@@ -9,71 +14,20 @@
  * @param {Reply} reply - Hapi Reply
  * @returns {View} Rendered page
  */
-function patternComparisonView(request, reply){
-    var data = {
-        attempts: [
-            {
-                accuracy: 60,
-                averageTime: 4258,
-                createdAt: "03/02/2017",
-                questions:[
-                    {
-                        timeTaken: 13624,
-                        questionOrder: 1,
-                        isCorrect: 1,
-                        question: ''
-                    },
-                    {
-                        timeTaken: 1539,
-                        questionOrder: 2,
-                        isCorrect: 1,
-                        question: ''
-                    }
-                ]
-            },
-            {
-                accuracy: 50,
-                averageTime: 2258,
-                createdAt: "03/14/2017",
-                questions:[
-                    {
-                        timeTaken: 13624,
-                        questionOrder: 1,
-                        isCorrect: 1,
-                        question: ''
-                    },
-                    {
-                        timeTaken: 1539,
-                        questionOrder: 2,
-                        isCorrect: 0,
-                        question: ''
-                    },
-                    {
-                        timeTaken: 2909,
-                        questionOrder: 3,
-                        isCorrect: 0,
-                        question: ''
-                    },
-                    {
-                        timeTaken: 2018,
-                        questionOrder: 4,
-                        isCorrect: 0,
-                        question: ''
-                    },
-                    {
-                        timeTaken: 1200,
-                        questionOrder: 5,
-                        isCorrect: 1,
-                        question: ''
-                    }
+function patternComparisonView(request, reply, patientPin){
+    Promise.all([
+        utilityService.fetchTrialAndPatientIds(patientPin)
+    ]).then(function(values){
 
-                ]
-            }
-        ]
-    };
+        return reply.view('pattern-comparison', {
+            title: 'Epilepsy | Pattern Comparison',
+            breadCrumbData: values[0][0]
+        });
 
-    reply.view('pattern-comparison', data);
-
+    }).catch(function(err){
+        console.log(err);
+        return reply({code: 500, message: 'Something went Wrong!'}).code(500);
+    });
 }
 
 module.exports = patternComparisonView;

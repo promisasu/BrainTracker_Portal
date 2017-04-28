@@ -14,7 +14,7 @@ function patientTaskHandler(request, reply){
 
     switch (patientTask){
         case 'pattern-comparison':
-            patternComparisonPresenter(request, reply);
+            patternComparisonPresenter(request, reply, patientPin);
             break;
 
         case 'finger-tapping':

@@ -27,7 +27,7 @@
                         Pattern Comparison
 
                         <span class="pull-right">
-                            <a href="#" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{patient.PatientPin}}/task/pattern-comparison" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -138,9 +138,9 @@
 
 <script>
     window.dates = JSON.parse('{{{ datesJson }}}');
-   window.taps = JSON.parse('{{{ tapsJson }}}');
-   window.spatialSpans = JSON.parse('{{{spatialJson}}}');
-   window.flankerTests = JSON.parse('{{{flankerTests}}}');
+    window.taps = JSON.parse('{{{ tapsJson }}}');
+    window.spatialSpans = JSON.parse('{{{spatialJson}}}');
+    window.flankerTests = JSON.parse('{{{flankerTests}}}');
 </script>
 
 <script src="/static/script/epilepsypatient.js" defer></script>

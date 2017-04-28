@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @module model/trial
+ * @module model/finger-tapping
  */
 
 const Sequelize = require('sequelize');

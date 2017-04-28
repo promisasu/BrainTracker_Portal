@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @module model/spatial-span
+ * @module model/pattern-comparison
  */
 
 const Sequelize = require('sequelize');
@@ -11,20 +11,20 @@ const Sequelize = require('sequelize');
  * @param {Sequelize} sequelize - database instance
  * @returns {Null} nothing
  */
-
-/**
- * a patient has many finger-tapping tasks to take.
- * @typedef {Object}  spatial-span
- * @property {Number} id - finger-tapping id
- * @property {Number} PatientPinFK - related patient's id
- * @property {Number} ActivityInstanceIdFK - related activity_instance's id
- * @property {Number} TimeToComplete - time taken to complete the activity
- * @property {Number} ScreenHeight - Height of the mobile device used for taking task
- * @property {Number} ScreenWidth - Width of the mobile device used for taking task
- * @property {String} answers - json format containing an array of objects where each object has difficulty and result property
- */
 function register(sequelize){
-    sequelize.define('spatial-span', {
+    /**
+     * a patient has many pattern-comparison tasks to take.
+     * @typedef  {Object}  pattern-comparison
+     * @property {Number} id - finger-tapping id
+     * @property {Number} PatientPinFK - related patient's id
+     * @property {Number} ActivityInstanceIdFK - related activity_instance's id
+     * @property {Number} TotalTimeTaken - Number of seconds taken to complete the task
+     * @property {Number} ScreenHeight - Height of the mobile device used for taking task
+     * @property {Number} ScreenWidth - Width of the mobile device used for taking task
+     * @property {String} answers - json format containing the detail about the questions encountered
+     */
+
+    sequelize.define('pattern-comparison', {
         id:{
             type:Sequelize.INTEGER,
             primaryKey: true
@@ -37,7 +37,7 @@ function register(sequelize){
             type: Sequelize.INTEGER,
 
         },
-        TimeToComplete: {
+        TotalTimeTaken: {
             type: Sequelize.INTEGER,
             allowNull: false,
             validate: {

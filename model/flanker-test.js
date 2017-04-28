@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @module model/trial
+ * @module model/flanker-test
  */
 
 const Sequelize = require('sequelize');

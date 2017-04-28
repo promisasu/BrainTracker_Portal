@@ -1,12 +1,12 @@
 <div class="container-fluid">
     <br />
-    <!--breadcrumb row-->
+    <!-- Breadcrumb Row -->
     <div class="row">
         <div class="col-md-12">
             <ol class="breadcrumb">
-                <li><a href="#">Dashboard</a></li>
-                <li><a href="#">Trail</a></li>
-                <li><a href="#">Patient</a></li>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/trial/{{breadCrumbData.TrialId}}">Trial: {{breadCrumbData.Name}}</a></li>
+                <li><a href="/patient/tasks/{{breadCrumbData.PatientPin}}">Patient: {{breadCrumbData.PatientPin}}</a></li>
                 <li class="active">Pattern Comparison</li>
             </ol>
         </div>
@@ -26,57 +26,4 @@
 
     <br />
     <!-- Attempt Details Row -->
-    <div class="row">
-        <div class="col-md-12">
-
-            <!-- attempt collapsible list-->
-            <div class="col-md-6">
-                <div id="accordion" role="tablist" aria-multiselectable="true">
-                    {{#each attempts as |attemptValue attemptKey|}}
-
-                        <div class="card card-default">
-                            <div class="card-header" role="tab" id="heading{{attemptKey}}">
-                                <h5 class="mb-0">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{attemptKey}}" aria-expanded="true" aria-controls="collapse{{attemptKey}}">
-                                        Attempt: {{attemptValue.createdAt}}
-                                    </a>
-                                </h5>
-                            </div>
-                            <div id="collapse{{attemptKey}}" class="collapse hide" role="tabpanel" aria-labelledby="heading{{attemptKey}}">
-                                {{#each attemptValue.questions as |questionValue questionKey|}}
-
-                                    <div class="card" id="questionBlock{{attemptKey}}{{questionKey}}">
-                                        <div class="card-header">
-                                            Question: {{questionValue.questionOrder}}
-
-                                            {{#if questionValue.isCorrect}}
-                                                <label class="label label-success pull-right"> Correct </label>
-                                            {{else}}
-                                                <label class="label label-danger pull-right"> InCorrect </label>
-                                            {{/if}}
-                                        </div>
-                                        <div class="card-block">
-                                            <p class="card-text">
-                                                Display the image <br />
-                                                {{questionValue.timeTaken}} | {{questionValue.questionOrder}} <br />
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                {{/each}}
-
-                            </div>
-                        </div>
-                    {{/each}}
-                </div>
-
-            </div>
-
-            <!-- selected attempt graph of time taken for each question-->
-            <div class="col-md-6">
-                time graph for each question attempt-wise
-            </div>
-
-        </div>
-    </div>
 </div>
