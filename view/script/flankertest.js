@@ -9,13 +9,7 @@
             scales: {
                 xAxes: [
                     {
-                        type: 'time',
-                        display: true,
-                        time: {
-                            format: 'MM-DD-YYYY HHmm',
-                            unit: 'day',
-                            round: 'day'
-                        },
+
                         scaleLabel: {
                             show: true,
                             labelString: ''
