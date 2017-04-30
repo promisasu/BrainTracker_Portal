@@ -17,6 +17,30 @@
         </li>
     </ol>
 
+    <!-- Survey Graph Row -->
+    <div class="row">
+        <div class="col-sm-12 ">
+             <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Survey Graph
+
+                        <span class="pull-right">
+                            <a href ="/patient/survey-detail/{{ patient.PatientPin }}"  class="btn btn-primary btn-sm" >
+                                <i class="fa fa-list-alt"></i>
+                                View Detail
+                            </a>
+                        </span>
+
+                    </h5>
+                </div>
+                 <div class="card-block white-background">
+                <canvas id="complianceChartSummary" width="400px" height="100px"></canvas>
+                 </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Pattern Comparison & Finger Tapping Row -->
     <div class="row">
         <!-- Pattern Comparison Column -->
@@ -113,24 +137,7 @@
     </div>
     <br />
 
-    <!-- Survey Graph Row -->
-     <div class="row">
-        <div class="col-sm-12">
-             <div id="chartCanvasDiv" class="card">
-                <div>
-                    <span class="pull-right">
 
-                        <a href ="/patient/survey-detail/{{ patient.PatientPin }}"  class="btn btn-primary btn-sm" >
-                           <i class="fa fa-list-alt"></i>
-                            View Detail
-                        </a>
-                    </span>
-               </div>
-              <br>
-              <canvas id="complianceChartSummary" width="400px" height="100px"></canvas>
-            </div>
-        </div>
-    </div>
 
 </div>
 
