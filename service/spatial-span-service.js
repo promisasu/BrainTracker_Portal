@@ -143,7 +143,7 @@ function getRecentFiveActivities(patientPin){
     var rawQuery = "SELECT ss.* " +
         "FROM spatial_span as ss, patients as pt " +
         "WHERE ss.PatientPinFK = pt.PatientPin AND pt.PatientPin = :pin "+
-        " order by ss.CreatedAt desc LIMIT 5";
+        " order by ss.CreatedAt asc LIMIT 5";
 
     return database.sequelize.query(rawQuery, {
         replacements: { pin: patientPin },
