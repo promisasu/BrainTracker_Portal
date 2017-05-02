@@ -9,16 +9,15 @@
             scales: {
                 xAxes: [
                     {
-
                         scaleLabel: {
-                            show: true,
-                            labelString: ''
+                            display: true,
+                            labelString: 'Activity By Date',
+                            fontStyle: 'bold'
                         }
                     }
                 ],
                 yAxes: [
                     {
-
                         type: 'linear',
                         position: 'left',
                         ticks: {
@@ -27,8 +26,9 @@
                         },
                         display: true,
                         scaleLabel: {
-                            show: true,
-                            labelString: '% Accuracy'
+                            display: true,
+                            labelString: '% Accuracy',
+                            fontStyle: 'bold'
                         }
                     }
 
