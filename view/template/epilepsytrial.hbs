@@ -96,26 +96,32 @@
                 <div class="table-responsive">
                     <table id="patients-table" class="table table-hover">
                         <thead>
-                            <tr>
-                                <th>
-                                    Patient Pin
-                                </th>
-                                <th>
-                                    Compliance Status
-                                </th>
-                                <th>
-                                    Stage
-                                </th>
-                                <th>
-                                    Start
-                                </th>
-                                <th>
-                                    End
-                                </th>
-                                <th>
-                                    Total Missed Past Week
-                                </th>
-                            </tr>
+                        <tr>
+                            <th>
+                                Patient Pin
+                            </th>
+                            <th>
+                                Trial Status
+                            </th>
+                            <th>
+                                Compliance Status
+                            </th>
+                            <th>
+                                Start
+                            </th>
+                            <th>
+                                End
+                            </th>
+                            <th>
+                                Compliance %
+                            </th>
+                            <th>
+                                Compliance % Last Week
+                            </th>
+                            <th>
+                                Last Weekly
+                            </th>
+                        </tr>
                         </thead>
                         <tbody>
                             {{#unless patients.length}}
@@ -141,10 +147,10 @@
                                         </a>
                                     </td>
                                     <td>
-                                        {{ status }}
+                                        {{ trialStatus }}
                                     </td>
                                     <td>
-                                        {{ stage }}
+                                        {{ status }}
                                     </td>
                                     <td>
                                         {{ DateStarted }}
@@ -153,7 +159,13 @@
                                         {{ DateCompleted }}
                                     </td>
                                     <td>
-                                        {{ totalMissed }}
+                                        {{ compliancePercentage }}
+                                    </td>
+                                    <td>
+                                        {{ trendingCompliance }}
+                                    </td>
+                                    <td>
+                                        {{ lastWeekly }}
                                     </td>
                                 </tr>
                             {{/each}}
