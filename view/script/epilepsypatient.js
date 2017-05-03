@@ -6,7 +6,7 @@
 
     // Makes a copy of window.dates
     var allDatesConfig = Object.create(window.dates);
-
+    var allClinicalValues = Object.create(window.clinicalValues);
     var config = {
         type: 'line',
         data: '',
@@ -61,8 +61,21 @@
         }
     };
 
-    var ctx = document.getElementById('complianceChartSummary').getContext('2d');
+   // var ctx = document.getElementById('complianceChartSummary').getContext('2d');
+    var surveyContext = document.getElementById('surveyComplianceChart').getContext('2d');
+    var scoresContext = document.getElementById('scoresComplianceChart').getContext('2d');
 
+    var clinicalChartConfig = {
+        type: 'line',
+        options: {
+            scales: {
+                yAxes: [{
+                    stacked: false,
+                    display: false
+                }]
+            }
+        }
+    };
     function redirect () {
         window.location = '/';
     }
@@ -78,5 +91,8 @@
     }
 
     config.data = allDatesConfig;
-    new Chart(ctx, config);
+    new Chart(surveyContext, config);
+
+    clinicalChartConfig.data = allClinicalValues;
+    new Chart(scoresContext, clinicalChartConfig);
 })();
