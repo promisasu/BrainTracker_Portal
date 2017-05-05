@@ -36,6 +36,84 @@
     </div>
 
     <!-- Activities Row -->
+    <div class="row">
+        <div class="col-md-12">
+
+            {{# if flankerTestActivitiesData}}
+                <div class="row">
+
+                    <!-- Activity List & Info Column -->
+                    <div class="col-sm-6">
+                        <div class="card card-info-outline">
+                            <div class="card-block white-background" style="min-height: 305px;">
+                                <!-- Select Activity Row -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        Select Activity:
+                                        <select id="selectedActivity" class="form-control" onchange="displayQuestionsAndGraph();">
+                                            <option value="null" selected>Select An Activity</option>
+                                            {{# each flankerTestListData as |flankerValue flankerKey|}}
+                                                <option value="{{flankerValue.id}}">Activity - {{flankerValue.CreatedAt}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+
+                                <!-- information display row -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+
+                                        <div id="messageDiv" class="alert alert-info hide" role="alert">
+                                            <strong>Heads Up!</strong> Please select an Activity first!.
+                                        </div>
+
+                                        <div id="activityInfoDiv" class="card text-center hide">
+                                            <div id="activityHeader" class="card-header white-background"></div>
+
+                                            <div id="activityQuestions" class="card-block"></div>
+
+                                            <div class="card-footer text-muted white-background">
+                                                <a href="#" class="btn btn-primary">Previous</a>
+                                                <a href="#" class="btn btn-primary">Next</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Chart Column -->
+                    <div class="col-md-6">
+                        TODO display the chart here
+                    </div>
+
+                </div>
+
+            {{else}}
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <div class="card card-warning-outline">
+                            <div class="card-block white-background">
+                                <div class="alert alert-info" role="alert">
+                                    <h4 class="alert-heading">Heads up!</h4>
+                                    <p>
+                                        It seems that there are no flanker-test task taken by this patient. Please make sure that the
+                                        patients take their assigned task to have better result.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {{/if}}
+
+        </div>
+    </div>
 
 </div>
 
@@ -47,6 +125,88 @@
 
     if (activitiesData) {
         activitiesData = JSON.parse(activitiesData);
+    }
+    console.log(JSON.stringify(activitiesData));
+
+    function displayQuestionsAndGraph(){
+        // TODO
+        console.log('in displayQuestionsAndGraph function');
+
+        var selectedActivityId = $('#selectedActivity').val();
+        console.log("selectedActivity: ", selectedActivityId);
+
+        if (selectedActivityId !== "null") {
+            var selectedActivity = getSelectedActivityData(selectedActivityId);
+            console.log(JSON.stringify(selectedActivity));
+
+            // proceed to display questions
+            $('#messageDiv').addClass('hide');
+            $('#activityInfoDiv').removeClass('hide');
+
+            // set values
+            $('#activityHeader').html(selectedActivity.CreatedAt);
+
+            var activityQuestionsDivNode = document.getElementById("activityQuestions");
+            //activityQuestionsDivNode.appendContent('test')
+
+            for(var i=0; i< selectedActivity.answers.length; i++){
+                // TODO
+                var ulElement = '<ul>';
+
+                for (property in selectedActivity.answers[i]){
+                    // TODO
+                    console.log(property);
+                    console.log(selectedActivity.answers[i][property]);
+
+                    //var listElement = '<li class=\'list-group-item\'>Pattern: '+
+
+                    if (property === "pattern") {
+                        var formattedPattern = "";
+
+                        Array.from(selectedActivity.answers[i][property]).forEach(function(i){
+                            if (i === "0") {
+                                formattedPattern += '<i class="fa fa-arrow-right" aria-hidden="true"></i>'
+                            }
+                        });
+
+                    }
+
+                }
+
+                ulElement+"</ul>";
+            }
+
+        } else {
+            // display the message to display info alert
+            $('#messageDiv').removeClass('hide');
+            $('#activityInfoDiv').addClass('hide');
+        }
+
+    }
+
+    function getSelectedActivityData(selectedId){
+        var selectedActivity = null;
+
+        for (var i=0; i< activitiesData.length; i++) {
+            if (activitiesData[i].id === parseInt(selectedId)) {
+                selectedActivity = activitiesData[i];
+                break;
+            }
+        }
+
+        // sort activity.answers based on questionIndex property
+        if (selectedActivity !== null) {
+            selectedActivity.answers.sort(function(a, b){
+                return parseInt(a.questionIndex) - parseInt(b.questionIndex);
+            });
+        }
+
+        return selectedActivity;
+    }
+
+    function displayGraph(){
+        // TODO
+        console.log('in displayGraph function');
     }
 </script>
 <script src="/static/script/flankertest.js" defer></script>
