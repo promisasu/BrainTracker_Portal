@@ -69,13 +69,14 @@
                                         </div>
 
                                         <div id="activityInfoDiv" class="card text-center hide">
+
                                             <div id="activityHeader" class="card-header white-background"></div>
 
                                             <div id="activityQuestions" class="card-block"></div>
 
                                             <div class="card-footer text-muted white-background">
-                                                <a href="#" class="btn btn-primary">Previous</a>
-                                                <a href="#" class="btn btn-primary">Next</a>
+                                                <button class="btn btn-sm btn-primary-outline"> << Previous </button>
+                                                <button class="btn btn-sm btn-success-outline pull-right" onclick="showNextQuestion();"> Next >> </button>
                                             </div>
                                         </div>
                                     </div>
@@ -118,26 +119,26 @@
 </div>
 
 <script type="text/javascript">
+    'use strict';
     window.flankerTests = JSON.parse('{{{chartData}}}');
 
-    var flankerTestActivityGraph;
+    // global variables
+    var currentActivityId = null;
+    var currentQuestionId = null;
+    var selectedActivity = null;
+    var flankerTestActivityGraph = null;
     var activitiesData = '{{{flankerTestActivitiesData}}}';
 
     if (activitiesData) {
         activitiesData = JSON.parse(activitiesData);
     }
-    console.log(JSON.stringify(activitiesData));
 
     function displayQuestionsAndGraph(){
-        // TODO
-        console.log('in displayQuestionsAndGraph function');
-
         var selectedActivityId = $('#selectedActivity').val();
-        console.log("selectedActivity: ", selectedActivityId);
 
         if (selectedActivityId !== "null") {
-            var selectedActivity = getSelectedActivityData(selectedActivityId);
-            console.log(JSON.stringify(selectedActivity));
+            selectedActivity = getSelectedActivityData(selectedActivityId);
+            currentActivityId = selectedActivity.id;
 
             // proceed to display questions
             $('#messageDiv').addClass('hide');
@@ -145,43 +146,89 @@
 
             // set values
             $('#activityHeader').html(selectedActivity.CreatedAt);
-
-            var activityQuestionsDivNode = document.getElementById("activityQuestions");
-            //activityQuestionsDivNode.appendContent('test')
+            // remove previous content if any
+            $('#activityQuestions').empty();
 
             for(var i=0; i< selectedActivity.answers.length; i++){
-                // TODO
-                var ulElement = '<ul>';
-
-                for (property in selectedActivity.answers[i]){
-                    // TODO
-                    console.log(property);
-                    console.log(selectedActivity.answers[i][property]);
-
-                    //var listElement = '<li class=\'list-group-item\'>Pattern: '+
-
-                    if (property === "pattern") {
-                        var formattedPattern = "";
-
-                        Array.from(selectedActivity.answers[i][property]).forEach(function(i){
-                            if (i === "0") {
-                                formattedPattern += '<i class="fa fa-arrow-right" aria-hidden="true"></i>'
-                            }
-                        });
-
-                    }
-
-                }
-
-                ulElement+"</ul>";
+                $("#activityQuestions").append(getQuestionList(selectedActivity.answers[i], i));
             }
 
+            // TODO -- display the graph
         } else {
             // display the message to display info alert
             $('#messageDiv').removeClass('hide');
             $('#activityInfoDiv').addClass('hide');
         }
+    }
 
+    function togglePreviousButton(){
+        // TODO
+    }
+
+    function toggleNextButton(){
+        // TODO
+    }
+
+    function getQuestionList(question, questionIndex){
+        // question object -- {"result":true,"timeTaken":1045,"questionIndex":2,"pattern":"00000"}
+        var ulElement;
+        console.log();
+        // hide the remaining questions of selected activity by default
+        if (questionIndex === 0) {
+            ulElement = "<ul id='activity-"+ selectedActivity.id +"-question-"+ (questionIndex+1) +"' class='list-group list-group-flush'>";
+            currentQuestionId = questionIndex+1;
+        } else {
+            ulElement = "<ul id='activity-"+ selectedActivity.id +"-question-"+ (questionIndex+1) +"' class='list-group list-group-flush hide'>";
+        }
+
+        ulElement += addPatternListItem(question["pattern"]);
+        ulElement += addTimeTakenListItem(question["timeTaken"]);
+        ulElement += addResultListItem(question["result"]);
+        ulElement += "</ul>";
+
+        return ulElement;
+    }
+
+    function addPatternListItem(questionPattern){
+        var patternListItem = "<li class='list-group-item'>" +
+                "<span><i class='fa fa-arrow-right fa-3x'></i><i class='fa fa-arrow-right fa-3x'></i>";
+
+        // convert the pattern property to array of strings to check third element value
+        var patternAsArray = Array.from(questionPattern);
+
+        // based on third element -> or <- is decided
+        if (patternAsArray[2] === "0") {
+            patternListItem += "<i class='fa fa-arrow-left fa-3x'></i>";
+        } else {
+            patternListItem += "<i class='fa fa-arrow-right fa-3x'></i>";
+        }
+
+        // close the list element
+        patternListItem += "<i class='fa fa-arrow-right fa-3x'></i><i class='fa fa-arrow-right fa-3x'></i></span></li>";
+
+        return patternListItem;
+    }
+
+    function addTimeTakenListItem(questionTimeTaken){
+        return "<li class='list-group-item'>Time Taken: "+questionTimeTaken+" (ms)</li>";
+    }
+
+    function addResultListItem(questionResult){
+        var resultDisplay = "<i class='fa fa-close fa-2x text-danger'></i>";
+
+        if (questionResult) {
+            resultDisplay = "<i class='fa fa-check-square-o fa-2x text-success'></i>";
+        }
+
+        return "<li class='list-group-item'>Result: "+resultDisplay+"</li>";
+    }
+
+    function showNextQuestion(){
+        // TODO
+    }
+
+    function showPreviousQuestion(){
+        // TODO
     }
 
     function getSelectedActivityData(selectedId){
