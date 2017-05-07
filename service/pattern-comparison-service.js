@@ -112,12 +112,25 @@ function generatePatternComparisonActivities(patternComparisons){
     if (patternComparisons.length !== 0) {
         patternComparisons.forEach(function(instance){
             instance.accuracy = calculatePatternComparisonAccuracy(instance.answers);
+            instance.correctQuestions = countCorrectQuestions(instance.answers);
         });
 
-        activitiesData = JSON.stringify(flankerTests);
+        activitiesData = JSON.stringify(patternComparisons);
     }
 
     return activitiesData;
+}
+
+function countCorrectQuestions(patternComparisonQuestions){
+    var count = 0;
+
+    patternComparisonQuestions.forEach(function(question){
+        if (question.result) {
+            count++;
+        }
+    });
+
+    return count;
 }
 
 function generatePatternComparisonActivitiesListData(patternComparisons){
