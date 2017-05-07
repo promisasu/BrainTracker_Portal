@@ -75,8 +75,8 @@
                                             <div id="activityQuestions" class="card-block"></div>
 
                                             <div class="card-footer text-muted white-background">
-                                                <button class="btn btn-sm btn-primary-outline"> << Previous </button>
-                                                <button class="btn btn-sm btn-success-outline pull-right" onclick="showNextQuestion();"> Next >> </button>
+                                                <button id="previousButton" class="btn btn-sm btn-primary-outline" onclick="showPreviousQuestion();"> << Previous </button>
+                                                <button id="nextButton" class="btn btn-sm btn-success-outline pull-right" onclick="showNextQuestion();"> Next >> </button>
                                             </div>
                                         </div>
                                     </div>
@@ -124,7 +124,8 @@
 
     // global variables
     var currentActivityId = null;
-    var currentQuestionId = null;
+    var currentQuestionIndex = null;
+    var totalQuestions = 0;
     var selectedActivity = null;
     var flankerTestActivityGraph = null;
     var activitiesData = '{{{flankerTestActivitiesData}}}';
@@ -139,12 +140,14 @@
         if (selectedActivityId !== "null") {
             selectedActivity = getSelectedActivityData(selectedActivityId);
             currentActivityId = selectedActivity.id;
+            totalQuestions = selectedActivity.answers.length;
 
             // proceed to display questions
             $('#messageDiv').addClass('hide');
             $('#activityInfoDiv').removeClass('hide');
 
             // set values
+            // TODO -- show accuracy for the selected activity on header too
             $('#activityHeader').html(selectedActivity.CreatedAt);
             // remove previous content if any
             $('#activityQuestions').empty();
@@ -152,6 +155,7 @@
             for(var i=0; i< selectedActivity.answers.length; i++){
                 $("#activityQuestions").append(getQuestionList(selectedActivity.answers[i], i));
             }
+            toggleNextPreviousButtons();
 
             // TODO -- display the graph
         } else {
@@ -161,24 +165,36 @@
         }
     }
 
+    function toggleNextPreviousButtons(){
+        togglePreviousButton();
+        toggleNextButton();
+    }
+
     function togglePreviousButton(){
-        // TODO
+        if (currentQuestionIndex === 1){
+            $('#previousButton').prop('disabled', true);
+        } else {
+            $('#previousButton').prop('disabled', false);
+        }
     }
 
     function toggleNextButton(){
-        // TODO
+        if (currentQuestionIndex === totalQuestions) {
+            $('#nextButton').prop('disabled', true);
+        } else {
+            $('#nextButton').prop('disabled', false);
+        }
     }
 
-    function getQuestionList(question, questionIndex){
+    function getQuestionList(question, index){
         // question object -- {"result":true,"timeTaken":1045,"questionIndex":2,"pattern":"00000"}
         var ulElement;
-        console.log();
         // hide the remaining questions of selected activity by default
-        if (questionIndex === 0) {
-            ulElement = "<ul id='activity-"+ selectedActivity.id +"-question-"+ (questionIndex+1) +"' class='list-group list-group-flush'>";
-            currentQuestionId = questionIndex+1;
+        if (index === 0) {
+            ulElement = "<ul id='activity-"+ selectedActivity.id +"-question-"+ question.questionIndex +"' class='list-group list-group-flush'>";
+            currentQuestionIndex = question.questionIndex;
         } else {
-            ulElement = "<ul id='activity-"+ selectedActivity.id +"-question-"+ (questionIndex+1) +"' class='list-group list-group-flush hide'>";
+            ulElement = "<ul id='activity-"+ selectedActivity.id +"-question-"+ question.questionIndex +"' class='list-group list-group-flush hide'>";
         }
 
         ulElement += addPatternListItem(question["pattern"]);
@@ -224,11 +240,33 @@
     }
 
     function showNextQuestion(){
-        // TODO
+        console.log('in next: ');
+
+        var previousQuestionId = "activity-"+selectedActivity.id+"-question-"+currentQuestionIndex;
+        var nextQuestionId = "activity-"+selectedActivity.id+"-question-"+(currentQuestionIndex+1);
+
+        $('#'+nextQuestionId).removeClass('hide');
+        $('#'+previousQuestionId).addClass('hide');
+
+        // increment the questionIndex
+        currentQuestionIndex += 1;
+
+        // check for disabled status after every next/previous navigation
+        toggleNextPreviousButtons();
     }
 
     function showPreviousQuestion(){
-        // TODO
+        var previousQuestionId = "activity-"+selectedActivity.id+"-question-"+(currentQuestionIndex-1);
+        var currentQuestionId = "activity-"+selectedActivity.id+"-question-"+currentQuestionIndex;
+
+        $('#'+currentQuestionId).addClass('hide');
+        $('#'+previousQuestionId).removeClass('hide');
+
+        // decrement the questionIndex
+        currentQuestionIndex -= 1;
+
+        // check for disabled status after every next/previous navigation
+        toggleNextPreviousButtons();
     }
 
     function getSelectedActivityData(selectedId){
