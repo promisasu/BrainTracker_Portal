@@ -7,6 +7,7 @@
     // Makes a copy of window.dates
     var allDatesConfig = Object.create(window.dates);
     var allClinicalValues = Object.create(window.clinicalValues);
+    var allsummaryValues = Object.create(window.surveysummary);
     var config = {
         type: 'line',
         data: '',
@@ -90,7 +91,8 @@
         $('#remember-patient-dialog').modal('show');
     }
 
-    config.data = allDatesConfig;
+   // config.data = allDatesConfig;
+    config.data = allsummaryValues;
     new Chart(surveyContext, config);
 
     clinicalChartConfig.data = allClinicalValues;

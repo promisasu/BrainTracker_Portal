@@ -7,11 +7,11 @@ const moment = require('moment');
 const viewDateTimeFormat = "MM-DD-YYYY h:mm a";
 
 // fetch all of the finger-tapping of selected patient
-function getAllTapsForSurvey(patientPin){
-    var rawQuery =  "SELECT at.activityTitle,at.StartTime,at.EndTime,ft.CreatedAt,ft.ActivityInstanceIdFK,"+
-        "TIMESTAMPDIFF(HOUR,ft.CreatedAt,at.EndTime)/ TIMESTAMPDIFF(HOUR,at.StartTime,at.EndTime)*100 as Accuracy "+
-        "FROM finger_tapping AS ft, patients AS pt, activity_instance AS at, stage AS st, trial AS tr"+
-        "WHERE ft.PatientPinFK = pt.PatientPin AND ft.ActivityInstanceIdFK = at.ActivityInstanceId"+
+function getFingerTappingCompliance(patientPin){
+    var rawQuery =  "SELECT at.activityTitle,at.StartTime,at.EndTime,ft.CreatedAt,ft.ActivityInstanceIdFK, "+
+        "TIMESTAMPDIFF(HOUR,ft.CreatedAt,at.EndTime)/ TIMESTAMPDIFF(HOUR,at.StartTime,at.EndTime)*100 as Compliance "+
+        "FROM finger_tapping AS ft, patients AS pt, activity_instance AS at, stage AS st, trial AS tr "+
+        "WHERE ft.PatientPinFK = pt.PatientPin AND ft.ActivityInstanceIdFK = at.ActivityInstanceId "+
         "AND pt.PatientPin = :pin AND pt.StageIdFK = st.StageId AND st.TrialId = tr.TrialId"
 
     return database.sequelize.query(rawQuery, {
@@ -20,88 +20,149 @@ function getAllTapsForSurvey(patientPin){
     });
 }
 
-function getFormattedResults(queryResults) {
+function getPatternComparisonCompliance(patientPin){
 
-    queryResults.forEach(function (tap){
-        tap.CreatedAt = moment(tap.CreatedAt).format(viewDateTimeFormat);
-        tap.StartTime = moment(tap.StartTime).format(viewDateTimeFormat);
-        tap.EndTime = moment(tap.EndTime).format(viewDateTimeFormat);
-        tap.Accuracy = Math.round(tap.Accuracy);
+    var rawQuery =  "SELECT at.activityTitle,at.StartTime,at.EndTime,pc.CreatedAt,pc.ActivityInstanceIdFK,"+
+    " TIMESTAMPDIFF(HOUR,pc.CreatedAt,at.EndTime)/ TIMESTAMPDIFF(HOUR,at.StartTime,at.EndTime)*100 as Compliance "+
+    " FROM pattern_comparison AS pc, patients AS pt, activity_instance AS at, stage AS st, trial AS tr "+
+    " WHERE pc.PatientPinFK = pt.PatientPin AND pc.ActivityInstanceIdFK = at.ActivityInstanceId"+
+    " AND pt.PatientPin = :pin and pt.StageIdFK = st.StageId AND st.TrialId = tr.TrialId"
+
+    return database.sequelize.query(rawQuery, {
+        replacements: { pin: patientPin },
+        type: database.sequelize.QueryTypes.SELECT
+    });
+}
+
+
+function getFormattedResults(queryResults) {
+    queryResults.forEach(function (result){
+        result.CreatedAt = moment(result.CreatedAt).format(viewDateTimeFormat);
+        result.StartTime = moment(result.StartTime).format(viewDateTimeFormat);
+        result.EndTime = moment(result.EndTime).format(viewDateTimeFormat);
+        result.Compliance = Math.round(result.Compliance);
     });
     return queryResults;
 }
 
 
 
-function getChartParamsForFingerTapping(fingerTapping)
+function getChartParamsForActivity(activityResult)
 {
-    var fingerTappingDataPoints = [];
-    var fingerTappingActivityLabel =[];
-    var fingerTappingAxisLabels =[];
+    var DataPoints = [];
+    var ActivityLabel = "";
+    var AxisLabels =[];
+    var returnObj ={
+            Labels : [],
+            activitylabel :[],
+            datapoints:[]
+        };
 
-    if (fingerTapping.length > 0) {
-        fingerTapping.forEach(function(attempt){
-
-            if (!attempt.activityTitle in fingerTappingActivityLabel) {
-                fingerTappingActivityLabel.push(attempt.activityTitle);
-            }
-            if(attempt.Accuracy > 0 && attempt.Accuracy < 100 )
+    if (activityResult.length > 0) {
+        activityResult.forEach(function(attempt){
+              if(ActivityLabel === ""){
+                ActivityLabel = (attempt.activityTitle);}
+            if(attempt.Compliance > 0 && attempt.Compliance < 100 )
             {
-                fingerTappingAxisLabels.push(attempt.CreatedAt);
-                fingerTappingDataPoints.push(attempt.Accuracy);
+                AxisLabels.push(attempt.CreatedAt);
+                DataPoints.push(attempt.Compliance);
             }
-        }
-
-        );
-       var returnObj ={
-       Labels : fingerTappingAxisLabels,
-       activitylabel :fingerTappingActivityLabel,
-       dataponits:fingerTappingDataPoints
+        });
+        returnObj ={
+       Labels : AxisLabels,
+       activitylabel :ActivityLabel,
+       datapoints:DataPoints
        };
-       return returnObj;
     }
-
+    return returnObj;
 }
 
-function generateSurveySummaryChart(fingerTappingData)
+
+
+
+function generateSurveyDataSets(summarySurveyDataSets)
 {
+
+    var returnArray =[];
+       summarySurveyDataSets.forEach(function(dataset){
+           var dataArr =
+               {
+                   label: dataset.activitylabel,
+                   fill: false,
+                   lineTension: 0.1,
+                   backgroundColor: "rgba(231,76,60,0.4)",
+                   borderColor: "rgba(231,76,60,1)",
+                   borderCapStyle: 'butt',
+                   borderDash: [],
+                   borderDashOffset: 0.0,
+                   borderJoinStyle: 'miter',
+                   pointBorderColor: "rgba(231,76,60,1)",
+                   pointBackgroundColor: "#fff",
+                   pointBorderWidth: 1,
+                   pointHoverRadius: 5,
+                   pointHoverBackgroundColor: "rgba(231,76,60,1)",
+                   pointHoverBorderColor: "rgba(220,220,220,1)",
+                   pointHoverBorderWidth: 2,
+                   pointRadius: 1,
+                   pointHitRadius: 10,
+                   data: dataset.datapoints,
+                   spanGaps: false,
+                   dates:dataset.Labels
+               };
+           returnArray.push(dataArr);
+       });
+
+
+    return returnArray;
+}
+
+function generateSurveySummaryChart(dataArray)
+{
+
+    console.log("DEBUG:: inside :: Generating Graph");
+  let datasets = dataArray;
+  let labels = [];
+
+
+      console.log("DEBUG:: Length of  datasets ::",datasets.length);
+      console.log("DEBUG::TYPE OF::",typeof (datasets[0].data));
+
+      for (let i = 0; i < datasets.length; i++) {
+          let dataSet = datasets[i];
+          let y = dataSet.data;
+          let x = dataSet.dates;
+          console.log("DEBUG:: Y of  Data::",y);
+          console.log("DEBUG:: X of  dates ::",x);
+          datasets[i].data = [];
+          for (let j = 0; j < x.length; j++) {
+              datasets[i].data.push({
+                  'x': x[j],
+                  'y': y[j]
+              });
+          }
+          labels.push.apply(labels, dataSet.dates);
+      }
+
+
+    console.log("DEBUG:: inside :: Processed X and Y axis for Graph");
+      const numberOfDays = 1;
+      const endDateforChart = moment(labels[labels.length - 1]).add(numberOfDays, 'day');
+      labels.push(moment(endDateforChart).format(viewDateTimeFormat));
+
+
     var chartData = {
-        labels: [],
-        datasets: [
-            {
-                label: fingerTappingData.fingerTappingActivityLabel,
-                fill: false,
-                lineTension: 0.1,
-                backgroundColor: "rgba(231,76,60,0.4)",
-                borderColor: "rgba(231,76,60,1)",
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(231,76,60,1)",
-                pointBackgroundColor: "#fff",
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: "rgba(231,76,60,1)",
-                pointHoverBorderColor: "rgba(220,220,220,1)",
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                data: fingerTappingData.fingerTappingDataPoints,
-                spanGaps: false
-            }]
+        labels: labels,
+        datasets: datasets
     };
-
-    chartData.labels.push(fingerTappingData.Labels);
-
-
-
+    console.log("DEBUG:: inside :: Function Exiting");
     return JSON.stringify(chartData);
 
 }
 
 
-module.exports.fetchAllTapsForSurvey = getAllTapsForSurvey;
+module.exports.fetchFingerTappingCompliance = getFingerTappingCompliance;
+module.exports.fetchPatternComparisonCompliance = getPatternComparisonCompliance;
 module.exports.fetchFormattedResults = getFormattedResults;
-module.exports.fetchChartParamsForFingerTapping = getChartParamsForFingerTapping;
+module.exports.fetchChartParamsForActivity = getChartParamsForActivity;
 module.exports.fetchSurveySummaryChart = generateSurveySummaryChart;
+module.exports.fetchSurveyDataSets = generateSurveyDataSets;

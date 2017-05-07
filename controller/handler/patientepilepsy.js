@@ -10,6 +10,7 @@ const spatialSpanService = require('../../service/spatial-span-service');
 const fingerTappingService = require('../../service/finger-tapping-service');
 const flankerTestService = require('../../service/flanker-test-service');
 const patternComparisonService = require('../../service/pattern-comparison-service');
+const surveySummaryChartService = require('../../service/survey-service');
 const moment = require('moment');
 const sqlDateFormat = 'ddd MMM DD YYYY HH:mm:ss ZZ';
 const httpNotFound = 404;
@@ -164,10 +165,12 @@ var tapsReturn ={};
                         request.params.pin
                     ]
                 }
-            )
+            ),
+            surveySummaryChartService.fetchFingerTappingCompliance(request.params.pin),
+            surveySummaryChartService.fetchPatternComparisonCompliance(request.params.pin)
 
            ])
-        .then(([currentPatient, surveyInstances, currentTrial,fingerTappings,spatialSpan, flankerTests, patternComparisons,surveyResults,opioidResults,bodyPainResults]) => {
+        .then(([currentPatient, surveyInstances, currentTrial,fingerTappings,spatialSpan, flankerTests, patternComparisons,surveyResults,opioidResults,bodyPainResults,fingerTappingCompliance,patternComparisonCompliance]) => {
             // patient not found
             if (!currentPatient) {
                 throw new Error('patient does not exist');
@@ -175,39 +178,31 @@ var tapsReturn ={};
     let clinicalValuesChart = processSurveyInstances.processClinicanData(
         surveyInstances, surveyResults, bodyPainResults, opioidResults
     );
-    console.log("DEBUG:: POINT 5::");
+            var summarySurveyDataSets =[];
             var formattedSpatialSpanResult = spatialSpanService.fetchFormattedSpatialSpanActivities(spatialSpan);
             var formattedfingerTapping = fingerTappingService.fetchFormattedFingerTapping(fingerTappings);
             var formattedFlankerTests = flankerTestService.fetchFormattedFlankerTests(flankerTests);
             var formattedPatternComparisons = patternComparisonService.fetchFormattedPatternComparisons(patternComparisons);
+            var formattedFingerTappingCompliance = surveySummaryChartService.fetchFormattedResults(fingerTappingCompliance);
+            var fingerTappingChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedFingerTappingCompliance);
+            summarySurveyDataSets.push(fingerTappingChartParams);
+            var formattedPatternComparisonCompliance = surveySummaryChartService.fetchFormattedResults(patternComparisonCompliance);
+            var patternComparisonChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedPatternComparisonCompliance);
+            summarySurveyDataSets.push(patternComparisonChartParams);
+            var summaryChartData = surveySummaryChartService.fetchSurveyDataSets(summarySurveyDataSets);
 
-            console.log("FORMATTED PC::",formattedPatternComparisons);
 
             return reply.view('patientepilepsy', {
                 title: 'Epilepsy | Patient',
                 patient: currentPatient,
                 trial: currentTrial,
-                surveys: surveyInstances.map((surveyInstance) => {
-                    const surveyInstanceCopy = Object.assign({}, surveyInstance);
-
-                    surveyInstanceCopy.startTime = moment(surveyInstanceCopy.startTime, sqlDateFormat)
-                        .format('MM-DD-YYYY');
-                    surveyInstanceCopy.endTime = moment(surveyInstanceCopy.endTime, sqlDateFormat)
-                        .format('MM-DD-YYYY');
-                    if (surveyInstanceCopy.userSubmissionTime) {
-                        surveyInstanceCopy.userSubmissionTime
-                            = moment(surveyInstanceCopy.userSubmissionTime, sqlDateFormat)
-                                .format('MM-DD-YYYY h:mma');
-                    }
-
-                    return surveyInstanceCopy;
-                }),
                 datesJson: JSON.stringify(processSurveyInstances(surveyInstances)),
                 tapsJson : fingerTappingService.fetchFingerTappingChartData(formattedfingerTapping),
                 spatialJson : spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpanResult),
                 flankerTests: flankerTestService.fetchAggregateChartData(formattedFlankerTests),
                 patternComparisons: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons),
-                clinicalValues: JSON.stringify(clinicalValuesChart)
+                clinicalValues: JSON.stringify(clinicalValuesChart),
+                surveySummaryChart: surveySummaryChartService.fetchSurveySummaryChart(summaryChartData)
             });
 
         })
