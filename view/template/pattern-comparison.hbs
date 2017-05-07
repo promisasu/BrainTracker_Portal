@@ -31,14 +31,232 @@
                     <canvas id="patternComparisonGraph" width="400" height="100px"></canvas>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <!-- Activities Row -->
+    <div class="row">
+        <div class="col-md-12">
+
+            {{# if patternComparisonActivities}}
+                <div class="row">
+
+                    <!-- Activity List & Info Column -->
+                    <div class="col-sm-6">
+                        <div class="card card-info-outline">
+                            <div class="card-block white-background" style="min-height: 305px;">
+                                <!-- Select Activity Row -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        Select Activity:
+                                        <select id="selectedActivity" class="form-control" onchange="displayActivityInfoAndGraph();">
+                                            <option value="null" selected>Select An Activity</option>
+                                            {{# each patternComparisonActivityListData as |pcValue pcKey|}}
+                                                <option value="{{pcKey}}">Activity - {{pcValue.CreatedAt}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+
+                                <!-- Information Display Row -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div id="messageDiv" class="alert alert-info hide" role="alert">
+                                            <strong>Heads Up!</strong> Please select an Activity first!.
+                                        </div>
+
+                                        <div id="activityInfoDiv" class="card text-center hide">
+
+                                            <div id="activityHeaderDiv" class="card-header white-background"></div>
+
+                                            <div id="activityDetailDiv" class="card-block">
+                                                <ul id="activityInfoList" class="list-group list-group-flush ">
+                                                    <li class="list-group-item">
+                                                        <span class="card-list-item-bold">Patient Pin:</span>
+                                                        <span id="patientPinValue"></span>
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <span class="card-list-item-bold">Total Questions:</span>
+                                                        <span id="totalQuestionsValue"></span>
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <span class="card-list-item-bold">Correct Questions:</span>
+                                                        <span id="correctQuestionsValue"></span>
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <span class="card-list-item-bold">Accuracy (%):</span>
+                                                        <span id="accuracyValue"></span>
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <span class="card-list-item-bold">Total Time Taken to Complete (ms):</span>
+                                                        <span id="totalTimeValue"></span>
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <span class="card-list-item-bold">Date Taken:</span>
+                                                        <span id="createdAtValue"></span>
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Chart Column -->
+                    <div id="patternComparisonActivityGraphDiv" class="col-sm-6 hide">
+                        <div class="card card-info-outline">
+                            <div class="card-block white-background">
+                                <canvas id="patternComparisonActivityGraph" height="157px" width="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{else}}
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <div class="card card-warning-outline">
+                            <div class="card-block white-background">
+                                <div class="alert alert-info" role="alert">
+                                    <h4 class="alert-heading">Heads up!</h4>
+                                    <p>
+                                        It seems that there are no pattern-comparison activity taken by this patient. Please make sure that the
+                                        patients take their assigned task to have better result.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {{/if}}
         </div>
     </div>
 
 </div>
 
 <script type="text/javascript">
+    'use strict';
+
     window.patternComparisons = JSON.parse('{{{chartData}}}');
-    //console.log(window.patternComparisons);
+
+    var patternComparisonActivityGraph;
+    var patternComparisonActivities = '{{{patternComparisonActivities}}}';
+
+    if (patternComparisonActivities) {
+        patternComparisonActivities = JSON.parse(patternComparisonActivities);
+    }
+
+    function displayActivityInfoAndGraph(){
+        var selectedActivityKey = $('#selectedActivity').val();
+        if (selectedActivityKey !== "null") {
+            var selectedActivity = patternComparisonActivities[selectedActivityKey];
+
+            // show/hide the related divs
+            $('#messageDiv').addClass('hide');
+            $('#activityInfoDiv').removeClass('hide');
+            $('#patternComparisonActivityGraphDiv').removeClass('hide');
+
+            displayActivityGraph(selectedActivity);
+            setActivityPropertyValues(selectedActivity);
+        } else {
+            // display the message to display info alert
+            $('#messageDiv').removeClass('hide');
+            $('#activityInfoDiv').addClass('hide');
+            $('#patternComparisonActivityGraphDiv').addClass('hide');
+            clearActivityPropertyValues();
+        }
+    }
+
+    function setActivityPropertyValues(activityDetail){
+        // set activityHeader content
+        var activityHeaderContent = "<span>"+activityDetail.CreatedAt+"</span><span class='pull-right'> Accuracy: "+activityDetail.accuracy+"%</span>";
+        $('#activityHeaderDiv').html(activityHeaderContent);
+
+        $('#patientPinValue').html(activityDetail.PatientPinFK);
+        $('#totalQuestionsValue').html(activityDetail.answers.length);
+        $('#correctQuestionsValue').html(activityDetail.correctQuestions);
+        $('#accuracyValue').html(activityDetail.accuracy);
+        $('#totalTimeValue').html(activityDetail.TotalTimeTaken);
+        $('#createdAtValue').html(activityDetail.CreatedAt);
+
+    }
+
+    function clearActivityPropertyValues(){
+        $('#activityHeaderDiv').html("");
+        $('#patientPinValue').html("");
+        $('#totalQuestionsValue').html("");
+        $('#correctQuestionsValue').html("");
+        $('#accuracyValue').html("");
+        $('#totalTimeValue').html("");
+        $('#createdAtValue').html("");
+    }
+
+    function displayActivityGraph(selectedActivity){
+        var graphData = getGraphData(selectedActivity);
+
+        if (patternComparisonActivityGraph) {
+            // update the datasets and update the chart instance
+            patternComparisonActivityGraph.config.data.datasets = graphData;
+            patternComparisonActivityGraph.update();
+        } else {
+            var canvas = document.getElementById("patternComparisonActivityGraph").getContext('2d');
+            patternComparisonActivityGraph = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: [selectedActivity.CreatedAt],
+                    datasets: graphData
+                },
+                options:{
+                    scales: {
+                        xAxes: [
+                            {
+                                barPercentage: 0.5
+                            }
+                        ],
+                        yAxes: [
+                            {
+
+                                type: 'linear',
+                                position: 'left',
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Time(ms)',
+                                    fontStyle: "bold"
+                                }
+                            }
+
+                        ]
+                    }
+                }
+            });
+        }
+
+    }
+
+    function getGraphData(selectedActivity){
+        var graphData = [];
+        var barColors = ["#2C3E50", "#E74C3C"];
+        for(var i=0; i<selectedActivity.answers.length; i++){
+            graphData.push({
+                label: "Question - "+(i+1),
+                backgroundColor: selectedActivity.answers[i].result ? barColors[0] : barColors[1],
+                data: [selectedActivity.answers[i].timeTaken]
+            });
+        }
+
+        return graphData;
+    }
+
 </script>
 <script src="/static/script/patterncomparision.js" defer></script>

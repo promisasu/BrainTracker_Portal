@@ -106,8 +106,47 @@ function generateAggregateChartData(patternComparisons){
     return JSON.stringify(chartData);
 }
 
+function generatePatternComparisonActivities(patternComparisons){
+    var activitiesData = [];
+
+    if (patternComparisons.length !== 0) {
+        patternComparisons.forEach(function(instance){
+            instance.accuracy = calculatePatternComparisonAccuracy(instance.answers);
+            instance.correctQuestions = countCorrectQuestions(instance.answers);
+        });
+
+        activitiesData = JSON.stringify(patternComparisons);
+    }
+
+    return activitiesData;
+}
+
+function countCorrectQuestions(patternComparisonQuestions){
+    var count = 0;
+
+    patternComparisonQuestions.forEach(function(question){
+        if (question.result) {
+            count++;
+        }
+    });
+
+    return count;
+}
+
+function generatePatternComparisonActivitiesListData(patternComparisons){
+    var listData = [];
+
+    patternComparisons.forEach(function(instance){
+        listData.push({id: instance.id, CreatedAt: instance.CreatedAt});
+    });
+
+    return listData;
+}
+
 module.exports.fetchAllPatternComparisons = getAllPatternComparisons;
 module.exports.fetchRecentFivePatternComparisons = getRecentFivePatternComparisons;
 module.exports.fetchFormattedPatternComparisons = formatPatternComparisons;
 module.exports.fetchAverageAccuracy = generateAverageAccuracyOfPatternComparisons;
 module.exports.fetchAggregateChartData = generateAggregateChartData;
+module.exports.fetchPatternComparisonActivities = generatePatternComparisonActivities;
+module.exports.fetchPatternComparisonActivitiesListData = generatePatternComparisonActivitiesListData;

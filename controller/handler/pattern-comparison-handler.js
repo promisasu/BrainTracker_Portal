@@ -25,8 +25,10 @@ function patternComparisonView(request, reply, patientPin){
         return reply.view('pattern-comparison', {
             title: 'Epilepsy | Pattern Comparison',
             breadCrumbData: values[0][0],
+            patternComparisonActivityListData: patternComparisonService.fetchPatternComparisonActivitiesListData(formattedPatternComparisons),
+            chartData: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons),
             averageAccuracy: patternComparisonService.fetchAverageAccuracy(formattedPatternComparisons),
-            chartData: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons)
+            patternComparisonActivities: patternComparisonService.fetchPatternComparisonActivities(formattedPatternComparisons)
         });
 
     }).catch(function(err){

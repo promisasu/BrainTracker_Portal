@@ -11,6 +11,7 @@ function patientTaskHandler(request, reply){
     const patientTask = patientParams[2];
 
     // TODO -- validate the data-type of patientPin
+    // TODO -- validate if patient exists in db or not.
 
     switch (patientTask){
         case 'pattern-comparison':
