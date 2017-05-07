@@ -31,6 +31,79 @@
                     <canvas id="patternComparisonGraph" width="400" height="100px"></canvas>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Activities Row -->
+    <div class="row">
+        <div class="col-md-12">
+
+            {{# if patternComparisonActivities}}
+                <div class="row">
+
+                    <!-- Activity List & Info Column -->
+                    <div class="col-sm-6">
+                        <div class="card card-info-outline">
+                            <div class="card-block white-background" style="min-height: 305px;">
+                                <!-- Select Activity Row -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        Select Activity:
+                                        <select id="selectedActivity" class="form-control">
+                                            <option value="null" selected>Select An Activity</option>
+                                            {{# each patternComparisonActivities as |pcValue pcKey|}}
+                                                <option value="{{pcValue.id}}">Activity - {{pcValue.CreatedAt}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+
+                                <!-- Information Display Row -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div id="messageDiv" class="alert alert-info hide" role="alert">
+                                            <strong>Heads Up!</strong> Please select an Activity first!.
+                                        </div>
+
+                                        <div id="activityInfoDiv" class="card text-center hide">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Chart Column -->
+                    <div id="patternComparisonActivityGraphDiv" class="col-sm-6 hide">
+                        <div class="card card-info-outline">
+                            <div class="card-block white-background">
+                                <canvas id="patternComparisonActivityGraph" height="93px" width="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{else}}
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <div class="card card-warning-outline">
+                            <div class="card-block white-background">
+                                <div class="alert alert-info" role="alert">
+                                    <h4 class="alert-heading">Heads up!</h4>
+                                    <p>
+                                        It seems that there are no pattern-comparison activity taken by this patient. Please make sure that the
+                                        patients take their assigned task to have better result.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {{/if}}
+
 
         </div>
     </div>
