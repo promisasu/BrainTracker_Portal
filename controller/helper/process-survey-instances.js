@@ -83,6 +83,7 @@ function pickTimeLeft (surveys) {
     for (var i = 0; i < surveys.length; i++) {
       surveySet.add(surveys[i].activityTitle);
     }
+    console.log("DEBUG::2018::SURVEYSET::",surveySet);
     var surveyTypes = [] ;
     for (let activityTitle of surveySet) {
       surveyTypes.push(surveys.filter((survey) =>
