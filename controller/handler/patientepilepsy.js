@@ -167,10 +167,11 @@ var tapsReturn ={};
                 }
             ),
             surveySummaryChartService.fetchFingerTappingCompliance(request.params.pin),
-            surveySummaryChartService.fetchPatternComparisonCompliance(request.params.pin)
-
+            surveySummaryChartService.fetchPatternComparisonCompliance(request.params.pin),
+            surveySummaryChartService.fetchFlankerCompliance(request.params.pin),
+            surveySummaryChartService.fetchSpatialSpanCompliance(request.params.pin)
            ])
-        .then(([currentPatient, surveyInstances, currentTrial,fingerTappings,spatialSpan, flankerTests, patternComparisons,surveyResults,opioidResults,bodyPainResults,fingerTappingCompliance,patternComparisonCompliance]) => {
+        .then(([currentPatient, surveyInstances, currentTrial,fingerTappings,spatialSpan, flankerTests, patternComparisons,surveyResults,opioidResults,bodyPainResults,fingerTappingCompliance,patternComparisonCompliance,flankerCompliance,spatialspanCompliance]) => {
             // patient not found
             if (!currentPatient) {
                 throw new Error('patient does not exist');
@@ -179,6 +180,7 @@ var tapsReturn ={};
         surveyInstances, surveyResults, bodyPainResults, opioidResults
     );
             var summarySurveyDataSets =[];
+            var summaryChartData =[]
             var formattedSpatialSpanResult = spatialSpanService.fetchFormattedSpatialSpanActivities(spatialSpan);
             var formattedfingerTapping = fingerTappingService.fetchFormattedFingerTapping(fingerTappings);
             var formattedFlankerTests = flankerTestService.fetchFormattedFlankerTests(flankerTests);
@@ -189,8 +191,15 @@ var tapsReturn ={};
             var formattedPatternComparisonCompliance = surveySummaryChartService.fetchFormattedResults(patternComparisonCompliance);
             var patternComparisonChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedPatternComparisonCompliance);
             summarySurveyDataSets.push(patternComparisonChartParams);
-            var summaryChartData = surveySummaryChartService.fetchSurveyDataSets(summarySurveyDataSets);
-
+            var formattedFlankerCompliance = surveySummaryChartService.fetchFormattedResults(flankerCompliance);
+            var flankerChartParams =  surveySummaryChartService.fetchChartParamsForActivity(formattedFlankerCompliance);
+            summarySurveyDataSets.push(flankerChartParams);
+            var formattedSpatialSpanCompliance =  surveySummaryChartService.fetchFormattedResults(spatialspanCompliance);
+            var spatialSpanChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedSpatialSpanCompliance);
+            summarySurveyDataSets.push(spatialSpanChartParams);
+            var surveyChartParams = processSurveyInstances.fetchSurveySummary(surveyInstances);
+            summaryChartData = surveySummaryChartService.fetchSurveyDataSets(summarySurveyDataSets);
+            summaryChartData.push.apply(summaryChartData, surveyChartParams);
 
             return reply.view('patientepilepsy', {
                 title: 'Epilepsy | Patient',

@@ -39,8 +39,9 @@
                         },
                         display: true,
                         scaleLabel: {
-                            show: true,
-                            labelString: '% Time Left'
+                            display: true,
+                            labelString: '% Time left till this Activity expires',
+                            fontStyle: "bold"
                         }
                     },
                     {
@@ -53,8 +54,9 @@
                         },
                         display: true,
                         scaleLabel: {
-                            show: true,
-                            labelString: '% Time Left'
+                            display: true,
+                            labelString: '% Time left till this Activity expires',
+                            fontStyle: "bold"
                         }
                     }
                 ]

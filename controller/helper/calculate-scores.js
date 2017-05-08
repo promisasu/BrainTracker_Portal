@@ -441,7 +441,7 @@ function calculatePR_PainInt (surveyResults) {
  * @returns {Array<Object>} - array of results with opioid scores
  */
 function opioidResultsCalculation (opioidResults) {
-    console.log("DEBUG::1989");
+
     let returnArr = getOpioidActualValuesCalculated(opioidResults);
     let tempMax = 0;
     let i = 0;
@@ -463,7 +463,6 @@ function opioidResultsCalculation (opioidResults) {
     for (i = 0; i < returnArr.length; i++) {
         returnArr[i].y = returnArr[i].y * 100 / multiplier;
     }
-    console.log("DEBUG::1990");
     return returnArr;
 }
 
@@ -533,7 +532,7 @@ function getOpioidTHresholdActualValue (opioidResults) {
  * @returns {Array<Object>} - array of results with opioid scores
  */
 function getOpioidActualValuesCalculated (opioidResults) {
-    console.log("DEBUG::1988::");
+
     let singleSurveyBlock = {};
     let instanceId = '';
     let resultSet = [];
@@ -563,7 +562,7 @@ function getOpioidActualValuesCalculated (opioidResults) {
             }
         }
     });
-    console.log("DEBUG::1987");
+
 
     let returnDict = {};
     let returnArr = [];
@@ -589,11 +588,11 @@ function getOpioidActualValuesCalculated (opioidResults) {
                returnArr.push(result);
            }
        }
-       console.log("DEBUG::1986");
+
 
        return returnArr;
    }
-   catch(e){ (console.log("1987::"+e));}
+   catch(e){ (console.log("Exception::"+e));}
 }
 
 /**

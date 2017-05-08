@@ -21,9 +21,6 @@ function processSurveyInstances (surveys) {
     const filterSurveyByState = surveys.filter((survey) => {
         return survey.state === 'completed';
     });
-
-    //console.log("After filtering to only completed state records :"+(filterSurveyByState.log) );
-    // const filterSurveyByState = surveys;
     var datasets = pickTimeLeft(filterSurveyByState);
 
     var labels = [];
@@ -40,8 +37,6 @@ function processSurveyInstances (surveys) {
     const numberOfDays = 7;
     const endDateforChart = moment(labels[labels.length - 1]).add(numberOfDays, 'day');
     labels.push(moment(endDateforChart).format(viewDateFormat));
-    console.log("Labels of length "+labels.length+" is passing from process-survey-instance.js: ");
-    console.log("Dataset of length "+datasets.length+" is passing from process-survey-instance.js: ");
     return {
         labels: labels,
         datasets: datasets
@@ -68,7 +63,6 @@ function pickDates (surveys) {
         dates.push(moment(endDateforChart).format(viewDateFormat));
     }
 
-    console.log("Dates Object ::"+dates);
     return dates;
 }
 
@@ -78,12 +72,9 @@ function pickDates (surveys) {
  * @returns {Object} processed list of % time left data
  */
 function pickTimeLeft (surveys) {
-    console.log("Picking Time left:"+JSON.stringify(surveys)+"in pickTimeLeft")
     var surveySet = new Set();
-    for (var i = 0; i < surveys.length; i++) {
-      surveySet.add(surveys[i].activityTitle);
-    }
-    console.log("DEBUG::2018::SURVEYSET::",surveySet);
+    surveySet.add("Sickle Cell Weekly Survey");
+    surveySet.add("Sickle Cell Daily Survey");
     var surveyTypes = [] ;
     for (let activityTitle of surveySet) {
       surveyTypes.push(surveys.filter((survey) =>
@@ -104,31 +95,106 @@ function pickTimeLeft (surveys) {
             return moment(survey.StartTime).format(viewDateFormat);
         });
 
-        var dataArr = {
-            label: '% Time left until '+ samplePoint.activityTitle + ' expired',
-            backgroundColor: getRGBA(i),
-            borderColor: getRGBA(i),
-            pointBorderColor: getRGBA(i),
-            data: dataPoints,
-            dates: dates
-        }
+          var dataArr = {
+              label: '% Time left until '+ samplePoint.activityTitle + ' expired',
+              borderColor: getRGBA(i),
+              pointBorderColor: getRGBA(i),
+              fill: false,
+              lineTension: 0.1,
+              backgroundColor: getRGBA(i),
+              borderCapStyle: 'butt',
+              borderDash: [],
+              borderDashOffset: 0.0,
+              borderJoinStyle: 'miter',
+              pointBackgroundColor: "#fff",
+              pointBorderWidth: 1,
+              pointHoverRadius: 5,
+              pointHoverBorderColor: "rgba(220,220,220,1)",
+              pointHoverBorderWidth: 2,
+              pointRadius: 1,
+              pointHitRadius: 10,
+              data: dataPoints,
+              dates: dates
+          }
         returnArray.push(dataArr);
       }
     }
-    console.log("Data Set passing to render in Charts "+returnArray.toString());
+
     return returnArray;
 
 }
 
 
+/**
+ * Takes in a Survey Instances and get the % time left to be shown on complience chart
+ * @param {Array<Object>} surveys - list of survey instances
+ * @returns {Object} processed list of % time left data
+ */
+function processSurveySummary (surveys) {
+
+     surveys = surveys.filter((survey) => {
+            return survey.state === 'completed';
+});
+
+    var surveySet = new Set();
+    surveySet.add("Sickle Cell Weekly Survey");
+    surveySet.add("Sickle Cell Daily Survey");
+    var surveyTypes = [] ;
+    for (let activityTitle of surveySet) {
+        surveyTypes.push(surveys.filter((survey) =>
+            {return survey.activityTitle === activityTitle}));
+    }
+    var returnArray = [];
+    for (var i = 0; i < surveyTypes.length; i++) {
+        if (surveyTypes[i].length>0) {
+            var samplePoint = surveyTypes[i][0];
+            var dataPoints = surveyTypes[i].map((survey) => {
+                    return calculateTimeLeft(
+                        moment(survey.StartTime),
+                        moment(survey.EndTime),
+                        moment(survey.ActualSubmissionTime)
+                    )
+                });
+            var dates = surveyTypes[i].map((survey) => {
+                    return moment(survey.StartTime).format(viewDateFormat);
+        });
+
+            var dataArr = {
+                label: samplePoint.activityTitle ,
+                borderColor: getRGBA(i),
+                pointBorderColor: getRGBA(i),
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: getRGBA(i),
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: dataPoints,
+                dates: dates
+            }
+            returnArray.push(dataArr);
+        }
+    }
+
+    return returnArray;
+}
+
 
 function getRGBA(i){
   if(i ==0)
   {
-      return  'rgba(44, 62, 80,0.5)'
+      return  'rgba(44, 62, 80,1)'
   }
   else {
-      return  'rgba(231, 76, 60,0.5)'
+      return  'rgba(231, 76, 60,1)'
   }
 
 }
@@ -170,7 +236,6 @@ function calculateTimeLeft (openTime, endTime, completedTime) {
  */
 function processClinicanData (surveys, surveyDetails, bodyPainResults, opioidResults) {
 
-    console.log("DEBUG:: POINT 1::");
     let labels = surveys.map((survey) => {
             return moment(survey.StartTime).format(viewDateFormat);
 });
@@ -209,7 +274,6 @@ let violet = 'rgba(119,65,119, 1)';
 function pickClinicianDataset (surveys, surveyDetails, bodyPainResults, opioidResults, labels) {
     let dataPoints = [];
     let datasets = [];
-    console.log("DEBUG:: POINT 2::");
     dataPoints.push({
         label: 'PR Anxiety',
         data: getPRAnxietyScore(surveyDetails, labels),
@@ -275,7 +339,6 @@ function pickClinicianDataset (surveys, surveyDetails, bodyPainResults, opioidRe
         }
     }
 
-    console.log("DEBUG:: POINT 3::");
     return datasets;
 }
 
@@ -286,7 +349,7 @@ function pickClinicianDataset (surveys, surveyDetails, bodyPainResults, opioidRe
  * @returns {Array<Object>} data for the chart
  */
 function getOpoidEquivivalance (opioidResults, labels) {
-    console.log("DEBUG:: POINT 2.2012::");
+
 
     return createMultiLinePoints(calculateScores.opioidResultsCalculation(opioidResults), labels);
 }
@@ -298,9 +361,9 @@ function getOpoidEquivivalance (opioidResults, labels) {
  * @returns {Array<Object>} data for the chart
  */
 function getPromisScore (surveyDetails, labels) {
-    console.log("DEBUG:: POINT 2.1991::");
+
     let promisScores = calculateScores.calculatePromisScores(surveyDetails);
-    console.log("DEBUG:: POINT 2.1992::");
+
     return createMultiLinePoints(promisScores, labels);
 }
 
@@ -313,7 +376,7 @@ function getPromisScore (surveyDetails, labels) {
 function getPRPainIntensity (surveyDetails, labels) {
 
     let promisScores = calculateScores.calculatePR_PainInt(surveyDetails);
-    console.log("DEBUG:: POINT 2.2009::");
+
     return createMultiLinePoints(promisScores[0], labels, promisScores[1]);
 }
 
@@ -327,7 +390,6 @@ function getPRAnxietyScore (surveyDetails, labels) {
 
 
     let promisScores = calculateScores.calculatePR_Anxiety(surveyDetails);
-
     return createMultiLinePoints(promisScores[0], labels, promisScores[1]);
 }
 
@@ -338,9 +400,8 @@ function getPRAnxietyScore (surveyDetails, labels) {
  * @returns {Array<Object>} data for the chart
  */
 function getPRPhysicalFunc (surveyDetails, labels) {
-    console.log("DEBUG:: POINT 2.6::");
-    let promisScores = calculateScores.calculatePR_PhyFuncMob(surveyDetails);
 
+    let promisScores = calculateScores.calculatePR_PhyFuncMob(surveyDetails);
     return createMultiLinePoints(promisScores[0], labels, promisScores[1]);
 
 }
@@ -353,9 +414,8 @@ function getPRPhysicalFunc (surveyDetails, labels) {
  */
 function getPRFatigue (surveyDetails, labels) {
     let promisScores = calculateScores.calculatePR_Fatigue(surveyDetails);
-    console.log("DEBUG:: POINT 2.7::");
     return createMultiLinePoints(promisScores[0], labels, promisScores[1]);
-    console.log("DEBUG:: POINT 2.3::");
+
 }
 
 /**
@@ -364,9 +424,9 @@ function getPRFatigue (surveyDetails, labels) {
  * @returns {Array<Object>} data for the chart
  */
 function getOpioidThreshold (opioidResults) {
-    console.log("DEBUG:: POINT 2.8::");
+
     return calculateScores.opioidThresholdCalculation(opioidResults);
-    console.log("DEBUG:: POINT 2.4::");
+
 }
 
 /**
@@ -376,7 +436,7 @@ function getOpioidThreshold (opioidResults) {
  * @returns {Array<Object>} data for the chart
  */
 function getPainIntensity (bodyPainResults, labels) {
-    console.log("DEBUG:: POINT 2.9::");
+
     let singleBodyPainAnswer = {};
     let instanceId = '';
     let resultSet = [];
@@ -417,9 +477,8 @@ function getPainIntensity (bodyPainResults, labels) {
             resultSet.push(result);
         }
     }
-    console.log("DEBUG:: POINT 2.10::");
     return createMultiLinePoints(resultSet, labels);
-    console.log("DEBUG:: POINT 2.5::");
+
 }
 
 
@@ -495,3 +554,4 @@ module.exports.pickDates = pickDates;
 module.exports.pickTimeLeft = pickTimeLeft;
 module.exports.calculateTimeLeft = calculateTimeLeft;
 module.exports.processClinicanData = processClinicanData;
+module.exports.fetchSurveySummary = processSurveySummary;
