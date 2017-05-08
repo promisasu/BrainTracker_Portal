@@ -1,38 +1,58 @@
 'use strict';
 
+// import modules
 const patternComparisonPresenter = require('./pattern-comparison-handler');
 const fingerTappingPresenter = require('./finger-tapping-handler');
 const spatialSpanPresenter = require('./spatial-span-handler');
 const flankerTestPresenter = require('./flanker-test-handler');
+const utilityService = require('../../service/utility-service');
 
 function patientTaskHandler(request, reply){
     const patientParams = request.params.pin.split('/');
     const patientPin = patientParams[0];
     const patientTask = patientParams[2];
 
-    // TODO -- validate the data-type of patientPin
     // TODO -- validate if patient exists in db or not.
 
-    switch (patientTask){
-        case 'pattern-comparison':
-            patternComparisonPresenter(request, reply, patientPin);
-            break;
+    if (isNaN(parseInt(patientPin))) {
+        // invalid patient pin datatype
+        console.log('Invalid Patient Pin Data type');
+        reply.view('404').code(404);
+    } else {
 
-        case 'finger-tapping':
-            fingerTappingPresenter(request, reply, patientPin);
-            break;
+        Promise.all([
+            utilityService.fetchPatient(patientPin)
+        ]).then(function(values){
 
-        case 'spatial-span':
-            spatialSpanPresenter(request, reply, patientPin);
-            break;
+            var queryResults = values[0];
+            if (queryResults.length === 0) {
+                console.log('Np Patient found with pin: ', patientPin);
 
-        case 'flanker-test':
-            flankerTestPresenter(request, reply, patientPin);
-            break;
+                return reply.view('404').code(404);
+            } else {
+                switch (patientTask){
+                    case 'pattern-comparison':
+                        patternComparisonPresenter(request, reply, patientPin);
+                        break;
 
-        default:
-            reply.view('404');
+                    case 'finger-tapping':
+                        fingerTappingPresenter(request, reply, patientPin);
+                        break;
 
+                    case 'spatial-span':
+                        spatialSpanPresenter(request, reply, patientPin);
+                        break;
+
+                    case 'flanker-test':
+                        flankerTestPresenter(request, reply, patientPin);
+                        break;
+
+                    default:
+                        console.log('Invalid Activity Selected: ', patientTask);
+                        reply.view('404');
+                }
+            }
+        });
     }
 }
 

@@ -16,4 +16,16 @@ function getTrialAndPatientIds(patientPin){
     });
 }
 
+function getPatient(patientPin){
+    var rawQuery = "SELECT pt.PatientPin " +
+        "FROM patients as pt " +
+        "WHERE pt.PatientPin = :pin LIMIT 1"
+
+    return database.sequelize.query(rawQuery, {
+        replacements: {pin: patientPin},
+        type: database.sequelize.QueryTypes.SELECT
+    });
+}
+
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
+module.exports.fetchPatient = getPatient;
