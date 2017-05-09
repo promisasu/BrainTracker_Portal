@@ -50,7 +50,8 @@ var tapsReturn ={};
                 ON si.PatientPinFK = pa.PatientPin
                 JOIN stage AS st
                 ON st.StageId = pa.StageIdFK
-                WHERE pa.PatientPin = ?
+                WHERE si.activityTitle in ("Sickle Cell Weekly Survey","Sickle Cell Daily Survey") AND
+                pa.PatientPin = ?
                 ORDER BY si.StartTime
                 `,
                 {

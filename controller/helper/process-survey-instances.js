@@ -73,8 +73,11 @@ function pickDates (surveys) {
  */
 function pickTimeLeft (surveys) {
     var surveySet = new Set();
-    surveySet.add("Sickle Cell Weekly Survey");
-    surveySet.add("Sickle Cell Daily Survey");
+    //surveySet.add("Sickle Cell Weekly Survey");
+    //surveySet.add("Sickle Cell Daily Survey");
+    for (var i = 0; i < surveys.length; i++) {
+        surveySet.add(surveys[i].activityTitle);
+    }
     var surveyTypes = [] ;
     for (let activityTitle of surveySet) {
       surveyTypes.push(surveys.filter((survey) =>
@@ -137,8 +140,11 @@ function processSurveySummary (surveys) {
 });
 
     var surveySet = new Set();
-    surveySet.add("Sickle Cell Weekly Survey");
-    surveySet.add("Sickle Cell Daily Survey");
+    //surveySet.add("Sickle Cell Weekly Survey");
+    //surveySet.add("Sickle Cell Daily Survey");
+    for (var i = 0; i < surveys.length; i++) {
+        surveySet.add(surveys[i].activityTitle);
+    }
     var surveyTypes = [] ;
     for (let activityTitle of surveySet) {
         surveyTypes.push(surveys.filter((survey) =>
