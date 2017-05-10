@@ -24,96 +24,107 @@ const httpNotFound = 404;
  * @returns {View} Rendered page
  */
 function patientView (request, reply) {
-var tapsReturn ={};
-    Promise
-        .all([ utilityService.fetchPatientIds(request.params.pin),
-            surveySummaryChartService.fetchSurveyInstance(request.params.pin),
-            utilityService.fetchTrialsIds(request.params.pin),
-            fingerTappingService.fetchFiveFingerTapping(request.params.pin),
-            spatialSpanService.fetchRecentFiveActivities(request.params.pin),
-            flankerTestService.fetchRecentFiveActivities(request.params.pin),
-            patternComparisonService.fetchRecentFivePatternComparisons(request.params.pin),
-            scoreService.fetchSurveyResults(request.params.pin),
-            scoreService.fetchopioidResults(request.params.pin),
-            scoreService.fetchbodypainResults(request.params.pin),
-            surveySummaryChartService.fetchFingerTappingCompliance(request.params.pin),
-            surveySummaryChartService.fetchPatternComparisonCompliance(request.params.pin),
-            surveySummaryChartService.fetchFlankerCompliance(request.params.pin),
-            surveySummaryChartService.fetchSpatialSpanCompliance(request.params.pin)
-           ])
-        .then(([currentPatient, surveyInstances, currentTrial,fingerTappings,spatialSpan, flankerTests, patternComparisons,surveyResults,opioidResults,bodyPainResults,fingerTappingCompliance,patternComparisonCompliance,flankerCompliance,spatialspanCompliance]) => {
-            // patient not found
+
+    Promise.all([
+        utilityService.fetchPatientIds(request.params.pin),
+        surveySummaryChartService.fetchSurveyInstance(request.params.pin),
+        utilityService.fetchTrialsIds(request.params.pin),
+        fingerTappingService.fetchFiveFingerTapping(request.params.pin),
+        spatialSpanService.fetchRecentFiveActivities(request.params.pin),
+        flankerTestService.fetchRecentFiveActivities(request.params.pin),
+        patternComparisonService.fetchRecentFivePatternComparisons(request.params.pin),
+        scoreService.fetchSurveyResults(request.params.pin),
+        scoreService.fetchopioidResults(request.params.pin),
+        scoreService.fetchbodypainResults(request.params.pin),
+        surveySummaryChartService.fetchFingerTappingCompliance(request.params.pin),
+        surveySummaryChartService.fetchPatternComparisonCompliance(request.params.pin),
+        surveySummaryChartService.fetchFlankerCompliance(request.params.pin),
+        surveySummaryChartService.fetchSpatialSpanCompliance(request.params.pin)
+    ]).then(function(values){
+
+        var currentPatient = values[0];
+        var surveyInstance = values[1];
+        var currentTrial = values[2];
+        var fingerTappings = values[3];
+        var spatialSpans = values[4];
+        var flankerTests = values[5];
+        var patternComparisons = values[6];
+        var surveyResults = values[7];
+        var opioidResults = values[8];
+        var bodyPainResults = values[9];
+        var fingerTappingCompliance = values[10];
+        var patternComparisonCompliance = values[11];
+        var flankerCompliance = values[12];
+        var spatialSpanCompliance = values[13];
+
         if (!currentPatient) {
-                throw new Error('patient does not exist');
-            }
-    let clinicalValuesChart = processSurveyInstances.processClinicanData(
-        surveyInstances, surveyResults, bodyPainResults, opioidResults
-    );
-            var summarySurveyDataSets =[];
-            var summaryChartData =[];
+            throw new Error('patient does not exist');
+        }
 
-          /*
-           * Get Chart Parameters of recent five attempts of following activities .
-           */
+        let clinicalValuesChart = processSurveyInstances.processClinicanData(
+            surveyInstance, surveyResults, bodyPainResults, opioidResults
+        );
+        var summarySurveyDataSets =[];
+        var summaryChartData =[];
 
-            var formattedSpatialSpanResult = spatialSpanService.fetchFormattedSpatialSpanActivities(spatialSpan);
-            var formattedfingerTapping = fingerTappingService.fetchFormattedFingerTapping(fingerTappings);
-            var formattedFlankerTests = flankerTestService.fetchFormattedFlankerTests(flankerTests);
-            var formattedPatternComparisons = patternComparisonService.fetchFormattedPatternComparisons(patternComparisons);
-            /*
-            * Format DateTime and Compliance.
-            * Get the Parameters to Display on Chart
-            * Push to DataSets array where all the chart details are present
-            */
+        /*
+         * Get Chart Parameters of recent five attempts of following activities .
+         */
 
-            //finger tapping
-            var formattedFingerTappingCompliance = surveySummaryChartService.fetchFormattedResults(fingerTappingCompliance);
-            var fingerTappingChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedFingerTappingCompliance);
-            summarySurveyDataSets.push(fingerTappingChartParams);
+        var formattedSpatialSpanResult = spatialSpanService.fetchFormattedSpatialSpanActivities(spatialSpans);
+        var formattedfingerTapping = fingerTappingService.fetchFormattedFingerTapping(fingerTappings);
+        var formattedFlankerTests = flankerTestService.fetchFormattedFlankerTests(flankerTests);
+        var formattedPatternComparisons = patternComparisonService.fetchFormattedPatternComparisons(patternComparisons);
+        /*
+         * Format DateTime and Compliance.
+         * Get the Parameters to Display on Chart
+         * Push to DataSets array where all the chart details are present
+         */
 
-            //pattern compliance
-            var formattedPatternComparisonCompliance = surveySummaryChartService.fetchFormattedResults(patternComparisonCompliance);
-            var patternComparisonChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedPatternComparisonCompliance);
-            summarySurveyDataSets.push(patternComparisonChartParams);
+        //finger tapping
+        var formattedFingerTappingCompliance = surveySummaryChartService.fetchFormattedResults(fingerTappingCompliance);
+        var fingerTappingChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedFingerTappingCompliance);
+        summarySurveyDataSets.push(fingerTappingChartParams);
 
-            //flanker
-            var formattedFlankerCompliance = surveySummaryChartService.fetchFormattedResults(flankerCompliance);
-            var flankerChartParams =  surveySummaryChartService.fetchChartParamsForActivity(formattedFlankerCompliance);
-            summarySurveyDataSets.push(flankerChartParams);
+        //pattern compliance
+        var formattedPatternComparisonCompliance = surveySummaryChartService.fetchFormattedResults(patternComparisonCompliance);
+        var patternComparisonChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedPatternComparisonCompliance);
+        summarySurveyDataSets.push(patternComparisonChartParams);
 
-            //spatial span
-            var formattedSpatialSpanCompliance =  surveySummaryChartService.fetchFormattedResults(spatialspanCompliance);
-            var spatialSpanChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedSpatialSpanCompliance);
-            summarySurveyDataSets.push(spatialSpanChartParams);
+        //flanker
+        var formattedFlankerCompliance = surveySummaryChartService.fetchFormattedResults(flankerCompliance);
+        var flankerChartParams =  surveySummaryChartService.fetchChartParamsForActivity(formattedFlankerCompliance);
+        summarySurveyDataSets.push(flankerChartParams);
 
-            //Daily and Weekly Surveys
-            var surveyChartParams = processSurveyInstances.fetchSurveySummary(surveyInstances);
-            summaryChartData = surveySummaryChartService.fetchSurveyDataSets(summarySurveyDataSets);
-            summaryChartData.push.apply(summaryChartData, surveyChartParams);
+        //spatial span
+        var formattedSpatialSpanCompliance =  surveySummaryChartService.fetchFormattedResults(spatialSpanCompliance);
+        var spatialSpanChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedSpatialSpanCompliance);
+        summarySurveyDataSets.push(spatialSpanChartParams);
 
-            return reply.view('patientepilepsy', {
-                title: 'Epilepsy | Patient',
-                patient: currentPatient[0],
-                trial: currentTrial[0],
-                datesJson: JSON.stringify(processSurveyInstances(surveyInstances)),
-                tapsJson : fingerTappingService.fetchFingerTappingChartData(formattedfingerTapping),
-                spatialJson : spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpanResult),
-                flankerTests: flankerTestService.fetchAggregateChartData(formattedFlankerTests),
-                patternComparisons: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons),
-                clinicalValues: JSON.stringify(clinicalValuesChart),
-                surveySummaryChart: surveySummaryChartService.fetchSurveySummaryChart(summaryChartData)
-            });
+        //Daily and Weekly Surveys
+        var surveyChartParams = processSurveyInstances.fetchSurveySummary(surveyInstance);
+        summaryChartData = surveySummaryChartService.fetchSurveyDataSets(summarySurveyDataSets);
+        summaryChartData.push.apply(summaryChartData, surveyChartParams);
 
-        })
-        .catch((err) => {
-            request.log('error', err);
-
-            reply
-            .view('404', {
-                title: 'Not Found from Dashboard'
-            })
-            .code(httpNotFound);
+        return reply.view('patientepilepsy', {
+            title: 'Epilepsy | Patient',
+            patient: currentPatient[0],
+            trial: currentTrial[0],
+            datesJson: JSON.stringify(processSurveyInstances(surveyInstance)),
+            tapsJson : fingerTappingService.fetchFingerTappingChartData(formattedfingerTapping),
+            spatialJson : spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpanResult),
+            flankerTests: flankerTestService.fetchAggregateChartData(formattedFlankerTests),
+            patternComparisons: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons),
+            clinicalValues: JSON.stringify(clinicalValuesChart),
+            surveySummaryChart: surveySummaryChartService.fetchSurveySummaryChart(summaryChartData)
         });
+
+    })
+    .catch(function(err) {
+        console.log(err);
+        request.log('error', err);
+        reply.view('404', {title: 'Not Found from Dashboard'}).code(httpNotFound);
+    });
 }
 
 module.exports = patientView;
