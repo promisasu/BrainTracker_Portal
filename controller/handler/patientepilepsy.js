@@ -50,7 +50,7 @@ var tapsReturn ={};
                 ON si.PatientPinFK = pa.PatientPin
                 JOIN stage AS st
                 ON st.StageId = pa.StageIdFK
-                WHERE si.activityTitle in ("Sickle Cell Weekly Survey","Sickle Cell Daily Survey") AND
+                WHERE si.activityTitle in ("Epilepsy Weekly Survey","Epilepsy Daily Survey") AND
                 pa.PatientPin = ?
                 ORDER BY si.StartTime
                 `,
@@ -101,7 +101,7 @@ var tapsReturn ={};
                 ON ai.PatientPinFK = pi.PatientPin
                 WHERE act.ActivityInstanceIdFk
                 IN (SELECT ActivityInstanceId FROM activity_instance WHERE PatientPinFK = ?
-                and State='completed' and ai.activityTitle='Sickle Cell Weekly Survey');
+                and State='completed' and ai.activityTitle='Epilepsy Weekly Survey');
 
                 `, {
                     type: database.sequelize.QueryTypes.SELECT,
@@ -132,7 +132,7 @@ var tapsReturn ={};
                ON mi.PatientPINFK = ai.PatientPinFK and mi.MedicationName = ans.optionText
                WHERE act.ActivityInstanceIdFk
                IN (SELECT ActivityInstanceId FROM activity_instance WHERE PatientPinFK = ?
-               and State='completed' and ai.activityTitle='Sickle Cell Daily Survey');
+               and State='completed' and ai.activityTitle='Epilepsy Daily Survey');
                 `, {
                     type: database.sequelize.QueryTypes.SELECT,
                     replacements: [

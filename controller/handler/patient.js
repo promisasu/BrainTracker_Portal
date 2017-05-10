@@ -43,7 +43,8 @@ function patientView (request, reply) {
                 ON si.PatientPinFK = pa.PatientPin
                 JOIN stage AS st
                 ON st.StageId = pa.StageIdFK
-                WHERE pa.PatientPin = ?
+                WHERE si.activityTitle in ("Epilepsy Weekly Survey","Epilepsy Daily Survey") AND
+                pa.PatientPin = ?
                 ORDER BY si.StartTime
                 `,
                 {

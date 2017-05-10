@@ -62,22 +62,22 @@ function trialView (request, reply) {
             database.sequelize.query(
                 `
                 SELECT pa.PatientPin,
-                SUM(si.State = 'expired' and si.activityTitle = 'Sickle Cell Weekly Survey') AS expiredWeeklyCount,
-                SUM(si.State = 'completed' and si.activityTitle = 'Sickle Cell Weekly Survey') AS completedWeeklyCount,
-                SUM(si.State = 'expired' and si.activityTitle = 'Sickle Cell Daily Survey') AS expiredDailyCount,
-                SUM(si.State = 'completed' and si.activityTitle = 'Sickle Cell Daily Survey') AS completedDailyCount,
+                SUM(si.State = 'expired' and si.activityTitle = 'Epilepsy Weekly Survey') AS expiredWeeklyCount,
+                SUM(si.State = 'completed' and si.activityTitle = 'Epilepsy Weekly Survey') AS completedWeeklyCount,
+                SUM(si.State = 'expired' and si.activityTitle = 'Epilepsy Daily Survey') AS expiredDailyCount,
+                SUM(si.State = 'completed' and si.activityTitle = 'Epilepsy Daily Survey') AS completedDailyCount,
                 SUM(si.State = 'pending') AS pendingCount,
                 SUM(si.State = 'DEACTIVATED') AS deactivatedCount,
-                SUM(si.State = 'expired' and si.activityTitle = 'Sickle Cell Weekly Survey'
+                SUM(si.State = 'expired' and si.activityTitle = 'Epilepsy Weekly Survey'
                     and si.EndTime > DATE_SUB(now(), INTERVAL 8 DAY)
                     and si.EndTime < now()) AS expiredTrendingWeeklyCount,
-                SUM(si.State = 'completed' and si.activityTitle = 'Sickle Cell Weekly Survey'
+                SUM(si.State = 'completed' and si.activityTitle = 'Epilepsy Weekly Survey'
                     and si.EndTime > DATE_SUB(now(), INTERVAL 8 DAY)
                     and si.EndTime < now()) AS completedTrendingWeeklyCount,
-                SUM(si.State = 'expired' and si.activityTitle = 'Sickle Cell Daily Survey'
+                SUM(si.State = 'expired' and si.activityTitle = 'Epilepsy Daily Survey'
                     and si.EndTime > DATE_SUB(now(), INTERVAL 8 DAY)
                     and si.EndTime < now()) AS expiredTrendingDailyCount,
-                SUM(si.State = 'completed' and si.activityTitle = 'Sickle Cell Daily Survey'
+                SUM(si.State = 'completed' and si.activityTitle = 'Epilepsy Daily Survey'
                     and si.EndTime > DATE_SUB(now(), INTERVAL 8 DAY)
                     and si.EndTime < now()) AS completedTrendingDailyCount
                 FROM activity_instance AS si
@@ -100,7 +100,7 @@ function trialView (request, reply) {
                 `
               SELECT State, EndTime, PatientPinFK
               FROM activity_instance
-              WHERE activityTitle = 'Sickle Cell Weekly Survey'
+              WHERE activityTitle = 'Epilepsy Weekly Survey'
               AND EndTime > DATE_SUB(now(),INTERVAL 8 DAY)
               AND EndTime <= now()
               AND State != 'pending'
