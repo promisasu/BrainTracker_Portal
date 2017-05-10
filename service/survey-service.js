@@ -43,6 +43,29 @@ function getPatternComparisonCompliance(patientPin){
 }
 
 /**
+ * Takes in a patient PIN and get Survey Instance
+ * @param {Object} patientPin - list of survey instances
+ * @returns {Object} Results with computed compliance data
+ */
+function getSurveyInstance(patientPin){
+
+    var rawQuery =  "SELECT pa.DateCompleted, si.ActivityInstanceId, si.StartTime, si.EndTime, si.UserSubmissionTime, "+
+        "si.ActualSubmissionTime, si.activityTitle,si.State as state, st.Name AS stageName "+
+    " FROM patients AS pa  "+
+    " JOIN activity_instance AS si "+
+    " ON si.PatientPinFK = pa.PatientPin "+
+    " JOIN stage AS st "+
+    " ON st.StageId = pa.StageIdFK "+
+    " WHERE si.activityTitle in ('Epilepsy Weekly Survey','Epilepsy Daily Survey') AND "+
+    " pa.PatientPin = :pin ORDER BY si.StartTime "
+
+    return database.sequelize.query(rawQuery, {
+        replacements: { pin: patientPin },
+        type: database.sequelize.QueryTypes.SELECT
+    });
+}
+
+/**
  * Takes in a patient PIN and get the % time left to complete this  Activity
  * @param {Object} patientPin - list of survey instances
  * @returns {Object} Results with computed compliance data
@@ -234,3 +257,4 @@ module.exports.fetchSurveySummaryChart = generateSurveySummaryChart;
 module.exports.fetchSurveyDataSets = generateSurveyDataSets;
 module.exports.fetchFlankerCompliance = getFlankerCompliance;
 module.exports.fetchSpatialSpanCompliance= getSpatialSpanCompliance;
+module.exports.fetchSurveyInstance = getSurveyInstance
