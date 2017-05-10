@@ -11,8 +11,9 @@
                     {
 
                         scaleLabel: {
-                            show: true,
-                            labelString: ''
+                            display: true,
+                            labelString: 'Activity by Date',
+                            fontStyle: "bold"
                         }
                     }
                 ],
@@ -27,8 +28,9 @@
                         },
                         display: true,
                         scaleLabel: {
-                            show: true,
-                            labelString: '% Accuracy'
+                            display: true,
+                            labelString: '% Accuracy',
+                            fontStyle: "bold"
                         }
                     }
 

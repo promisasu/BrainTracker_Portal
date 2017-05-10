@@ -95,7 +95,7 @@
                     <div id="activityDetailGraphDiv" class="col-sm-6 hide">
                         <div class="card card-info-outline">
                             <div class="card-block white-background">
-                                <canvas id="spatialSpanChanceGraph" height="93px" width="200"></canvas>
+                                <canvas id="spatialSpanChanceGraph" height="105px" width="200"></canvas>
                             </div>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
 
     function setActivityPropertyValues(activityDetail){
         $('#patientPinValue').html(activityDetail.PatientPinFK);
-        $('#timeToCompleteValue').html(activityDetail.TimeToComplete);
+        $('#timeToCompleteValue').html(activityDetail.TotalTimeTaken);
         $('#accuracyValue').html(activityDetail.accuracy);
         $('#maxLevelValue').html(activityDetail.maxLevel);
         $('#createdAtValue').html(activityDetail.CreatedAt);

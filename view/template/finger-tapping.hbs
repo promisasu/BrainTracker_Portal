@@ -94,7 +94,7 @@
                     <div id="activityDetailGraphDiv" class="col-sm-6 hide">
                         <div class="card card-info-outline">
                             <div class="card-block white-background">
-                                <canvas id="fingerTappingActivityGraph" height="93px" width="200"></canvas>
+                                <canvas id="fingerTappingActivityGraph" height="104px" width="200"></canvas>
                             </div>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                                 <div class="alert alert-info" role="alert">
                                     <h4 class="alert-heading">Heads up!</h4>
                                     <p>
-                                        It seems that there are no finger-tapping task taken by this patient. Please make sure that the
+                                        It seems that there are no finger-tapping activity taken by this patient. Please make sure that the
                                         patients take their assigned task to have better result.
                                     </p>
                                 </div>
@@ -186,6 +186,15 @@
                 },
                 options:{
                     scales: {
+                        xAxes:[
+                            {
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Activity',
+                                    fontStyle: "bold"
+                                }
+                            }
+                        ],
                         yAxes: [
                             {
 

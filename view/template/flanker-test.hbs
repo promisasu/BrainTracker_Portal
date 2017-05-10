@@ -36,17 +36,333 @@
     </div>
 
     <!-- Activities Row -->
+    <div class="row">
+        <div class="col-md-12">
+
+            {{# if flankerTestActivitiesData}}
+                <div class="row">
+
+                    <!-- Activity List & Info Column -->
+                    <div class="col-sm-6">
+                        <div class="card card-info-outline">
+                            <div class="card-block white-background" style="min-height: 305px;">
+                                <!-- Select Activity Row -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        Select Activity:
+                                        <select id="selectedActivity" class="form-control" onchange="displayQuestionsAndGraph();">
+                                            <option value="null" selected>Select An Activity</option>
+                                            {{# each flankerTestListData as |flankerValue flankerKey|}}
+                                                <option value="{{flankerValue.id}}">Activity - {{flankerValue.CreatedAt}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+
+                                <!-- information display row -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+
+                                        <div id="messageDiv" class="alert alert-info hide" role="alert">
+                                            <strong>Heads Up!</strong> Please select an Activity first!.
+                                        </div>
+
+                                        <div id="activityInfoDiv" class="card text-center hide">
+
+                                            <div id="activityHeader" class="card-header white-background"></div>
+
+                                            <div id="activityQuestions" class="card-block"></div>
+
+                                            <div class="card-footer text-muted white-background">
+                                                <button id="previousButton" class="btn btn-sm btn-primary-outline" onclick="showPreviousQuestion();"> << Previous </button>
+                                                <button id="nextButton" class="btn btn-sm btn-success-outline pull-right" onclick="showNextQuestion();"> Next >> </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Chart Column -->
+                    <div id="flankerTestActivityGraphDiv" class="col-md-6 hide">
+                        <div class="card card-info-outline">
+                            <div class="card-block white-background">
+                                <canvas id="flankerTestActivityGraph" height="154px" width="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            {{else}}
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <div class="card card-warning-outline">
+                            <div class="card-block white-background">
+                                <div class="alert alert-info" role="alert">
+                                    <h4 class="alert-heading">Heads up!</h4>
+                                    <p>
+                                        It seems that there are no flanker-test activity taken by this patient. Please make sure that the
+                                        patients take their assigned task to have better result.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {{/if}}
+
+        </div>
+    </div>
 
 </div>
 
 <script type="text/javascript">
+    'use strict';
     window.flankerTests = JSON.parse('{{{chartData}}}');
 
-    var flankerTestActivityGraph;
+    // global variables
+    var currentActivityId = null;
+    var currentQuestionIndex = null;
+    var totalQuestions = 0;
+    var selectedActivity = null;
+    var flankerTestActivityGraph = null;
     var activitiesData = '{{{flankerTestActivitiesData}}}';
 
     if (activitiesData) {
         activitiesData = JSON.parse(activitiesData);
+    }
+
+    function displayQuestionsAndGraph(){
+        var selectedActivityId = $('#selectedActivity').val();
+
+        if (selectedActivityId !== "null") {
+            // display the activityDetails
+            displayActivityDetails(selectedActivityId);
+
+            // display the graph
+            displayFlankerTestActivityGraph();
+        } else {
+            // display the message to display info alert
+            $('#messageDiv').removeClass('hide');
+            $('#activityInfoDiv').addClass('hide');
+            $('#flankerTestActivityGraphDiv').addClass('hide');
+        }
+    }
+
+    function displayActivityDetails(selectedActivityId){
+        selectedActivity = getSelectedActivityData(selectedActivityId);
+        currentActivityId = selectedActivity.id;
+        totalQuestions = selectedActivity.answers.length;
+
+        // proceed to display questions
+        $('#messageDiv').addClass('hide');
+        $('#activityInfoDiv').removeClass('hide');
+
+        // set activityHeader content
+        var activityHeaderContent = "<span>"+selectedActivity.CreatedAt+"</span><span class='pull-right'> Accuracy: "+selectedActivity.accuracy+"%</span>";
+        $('#activityHeader').html(activityHeaderContent);
+
+        // remove previous content if any
+        $('#activityQuestions').empty();
+
+        // add questions encountered as lists
+        for(var i=0; i< selectedActivity.answers.length; i++){
+            $("#activityQuestions").append(getQuestionList(selectedActivity.answers[i], i));
+        }
+        toggleNextPreviousButtons();
+    }
+
+    function toggleNextPreviousButtons(){
+        togglePreviousButton();
+        toggleNextButton();
+    }
+
+    function togglePreviousButton(){
+        if (currentQuestionIndex === 1){
+            $('#previousButton').prop('disabled', true);
+        } else {
+            $('#previousButton').prop('disabled', false);
+        }
+    }
+
+    function toggleNextButton(){
+        if (currentQuestionIndex === totalQuestions) {
+            $('#nextButton').prop('disabled', true);
+        } else {
+            $('#nextButton').prop('disabled', false);
+        }
+    }
+
+    function getQuestionList(question, index){
+        // question object -- {"result":true,"timeTaken":1045,"questionIndex":2,"pattern":"00000"}
+        var ulElement;
+        // hide the remaining questions of selected activity by default
+        if (index === 0) {
+            ulElement = "<ul id='activity-"+ selectedActivity.id +"-question-"+ question.questionIndex +"' class='list-group list-group-flush'>";
+            currentQuestionIndex = question.questionIndex;
+        } else {
+            ulElement = "<ul id='activity-"+ selectedActivity.id +"-question-"+ question.questionIndex +"' class='list-group list-group-flush hide'>";
+        }
+
+        ulElement += addQuestionIndexListItem(question["questionIndex"]);
+        ulElement += addPatternListItem(question["pattern"]);
+        ulElement += addTimeTakenListItem(question["timeTaken"]);
+        ulElement += addResultListItem(question["result"]);
+        ulElement += "</ul>";
+
+        return ulElement;
+    }
+
+    function addQuestionIndexListItem(questionIndex){
+        return "<li class='list-group-item'>Question No: "+questionIndex+"</li>";
+    }
+
+    function addPatternListItem(questionPattern){
+        var patternListItem = "<li class='list-group-item'>" +
+                "<span><i class='fa fa-arrow-right fa-3x'></i><i class='fa fa-arrow-right fa-3x'></i>";
+
+        // convert the pattern property to array of strings to check third element value
+        var patternAsArray = Array.from(questionPattern);
+
+        // based on third element -> or <- is decided
+        if (patternAsArray[2] === "0") {
+            patternListItem += "<i class='fa fa-arrow-left fa-3x'></i>";
+        } else {
+            patternListItem += "<i class='fa fa-arrow-right fa-3x'></i>";
+        }
+
+        // close the list element
+        patternListItem += "<i class='fa fa-arrow-right fa-3x'></i><i class='fa fa-arrow-right fa-3x'></i></span></li>";
+
+        return patternListItem;
+    }
+
+    function addTimeTakenListItem(questionTimeTaken){
+        return "<li class='list-group-item'>Time Taken: "+questionTimeTaken+" (ms)</li>";
+    }
+
+    function addResultListItem(questionResult){
+        var resultDisplay = "<i class='fa fa-close fa-2x text-danger'></i>";
+
+        if (questionResult) {
+            resultDisplay = "<i class='fa fa-check-square-o fa-2x text-success'></i>";
+        }
+
+        return "<li class='list-group-item'>Result: "+resultDisplay+"</li>";
+    }
+
+    function showNextQuestion(){
+        var previousQuestionId = "activity-"+selectedActivity.id+"-question-"+currentQuestionIndex;
+        var nextQuestionId = "activity-"+selectedActivity.id+"-question-"+(currentQuestionIndex+1);
+
+        $('#'+nextQuestionId).removeClass('hide');
+        $('#'+previousQuestionId).addClass('hide');
+
+        // increment the questionIndex
+        currentQuestionIndex += 1;
+
+        // check for disabled status after every next/previous navigation
+        toggleNextPreviousButtons();
+    }
+
+    function showPreviousQuestion(){
+        var previousQuestionId = "activity-"+selectedActivity.id+"-question-"+(currentQuestionIndex-1);
+        var currentQuestionId = "activity-"+selectedActivity.id+"-question-"+currentQuestionIndex;
+
+        $('#'+currentQuestionId).addClass('hide');
+        $('#'+previousQuestionId).removeClass('hide');
+
+        // decrement the questionIndex
+        currentQuestionIndex -= 1;
+
+        // check for disabled status after every next/previous navigation
+        toggleNextPreviousButtons();
+    }
+
+    function getSelectedActivityData(selectedId){
+        var selectedActivity = null;
+
+        for (var i=0; i< activitiesData.length; i++) {
+            if (activitiesData[i].id === parseInt(selectedId)) {
+                selectedActivity = activitiesData[i];
+                break;
+            }
+        }
+
+        // sort activity.answers based on questionIndex property
+        if (selectedActivity !== null) {
+            selectedActivity.answers.sort(function(a, b){
+                return parseInt(a.questionIndex) - parseInt(b.questionIndex);
+            });
+        }
+
+        return selectedActivity;
+    }
+
+    function displayFlankerTestActivityGraph(){
+        // show the activity graph div
+        $('#flankerTestActivityGraphDiv').removeClass('hide');
+        var graphData = getGraphData();
+
+        if (flankerTestActivityGraph){
+            // update the datasets and update the chart instance
+            flankerTestActivityGraph.config.data.datasets = graphData;
+            flankerTestActivityGraph.update();
+        } else {
+            // instantiate the activity graph
+            var canvas = document.getElementById("flankerTestActivityGraph").getContext('2d');
+            flankerTestActivityGraph= new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: [selectedActivity.CreatedAt],
+                    datasets: graphData
+                },
+                options:{
+                    scales: {
+                        xAxes: [
+                            {
+                                barPercentage: 0.5
+                            }
+                        ],
+                        yAxes: [
+                            {
+
+                                type: 'linear',
+                                position: 'left',
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Time (ms)',
+                                    fontStyle: "bold"
+                                }
+                            }
+
+                        ]
+                    }
+                }
+            });
+        }
+    }
+
+    function getGraphData(){
+        var graphData = [];
+        var barColors = ["#2C3E50", "#E74C3C"];
+
+        for(var i=0; i<selectedActivity.answers.length; i++){
+            graphData.push({
+                label: "Question - "+(i+1),
+                backgroundColor: selectedActivity.answers[i].result ? barColors[0] : barColors[1],
+                data: [selectedActivity.answers[i].timeTaken]
+            });
+        }
+
+        return graphData;
     }
 </script>
 <script src="/static/script/flankertest.js" defer></script>
