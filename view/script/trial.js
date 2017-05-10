@@ -17,10 +17,12 @@
         }]
     };
     var ctx = document.getElementById('trialChart').getContext('2d');
+    var columnStart = 3;
+    var columnCompliancePercentage = 5;
+    var columnPin = 0;
     var patientsTable = $('#patients-table').DataTable({
-        order: [[1, 'asc'], [5, 'asc'], [3, 'desc']],
-
-        "paging": false
+        order: [[columnStart, 'desc'], [columnCompliancePercentage, 'desc'], [columnPin, 'desc']],
+        paging: false
     });
     patientsTable.draw();
 

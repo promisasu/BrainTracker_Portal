@@ -15,7 +15,22 @@ function getTrialAndPatientIds(patientPin){
         type: database.sequelize.QueryTypes.SELECT
     });
 }
+// fetch patient's IDs for Handler
+function getPatientIds(patientPin){
+    var rawQuery = " SELECT pa.PatientPin, st.Name AS stage "+
+    " FROM patients AS pa "+
+    " JOIN stage AS st "+
+    " ON st.StageId = pa.StageIdFK "+
+    " WHERE pa.PatientPin = :pin ";
+  
+    return database.sequelize.query(rawQuery, {
+        replacements: {pin: patientPin},
+        type: database.sequelize.QueryTypes.SELECT
+    });
+  
+}
 
+// function to get the patient 
 function getPatient(patientPin){
     var rawQuery = "SELECT pt.PatientPin " +
         "FROM patients as pt " +
@@ -27,5 +42,26 @@ function getPatient(patientPin){
     });
 }
 
+// fetch Trial IDs for Handler
+function getTrialIds(patientPin){
+    var rawQuery = " SELECT tr.Name, tr.TrialId "+
+    " FROM patients AS pa "+
+    " JOIN stage AS st "+
+    " ON st.StageId = pa.StageIdFK "+
+    " JOIN trial AS tr "+
+    " ON tr.TrialId = st.TrialId "
+    " WHERE pa.PatientPin = :pin ";
+
+    return database.sequelize.query(rawQuery, {
+        replacements: {pin: patientPin},
+        type: database.sequelize.QueryTypes.SELECT
+    });
+}
+
+
+
+module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
+module.exports.fetchPatientIds = getPatientIds;
+module.exports.fetchTrialsIds = getTrialIds;
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
 module.exports.fetchPatient = getPatient;

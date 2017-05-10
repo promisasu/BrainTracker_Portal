@@ -6,7 +6,8 @@
 
     // Makes a copy of window.dates
     var allDatesConfig = Object.create(window.dates);
-
+    var allClinicalValues = Object.create(window.clinicalValues);
+    var allsummaryValues = Object.create(window.surveysummary);
     var config = {
         type: 'line',
         data: '',
@@ -38,8 +39,9 @@
                         },
                         display: true,
                         scaleLabel: {
-                            show: true,
-                            labelString: '% Time Left'
+                            display: true,
+                            labelString: '% Time left till this Activity expires',
+                            fontStyle: "bold"
                         }
                     },
                     {
@@ -52,8 +54,9 @@
                         },
                         display: true,
                         scaleLabel: {
-                            show: true,
-                            labelString: '% Time Left'
+                            display: true,
+                            labelString: '% Time left till this Activity expires',
+                            fontStyle: "bold"
                         }
                     }
                 ]
@@ -61,8 +64,21 @@
         }
     };
 
-    var ctx = document.getElementById('complianceChartSummary').getContext('2d');
+   // var ctx = document.getElementById('complianceChartSummary').getContext('2d');
+    var surveyContext = document.getElementById('surveyComplianceChart').getContext('2d');
+    var scoresContext = document.getElementById('scoresComplianceChart').getContext('2d');
 
+    var clinicalChartConfig = {
+        type: 'line',
+        options: {
+            scales: {
+                yAxes: [{
+                    stacked: false,
+                    display: false
+                }]
+            }
+        }
+    };
     function redirect () {
         window.location = '/';
     }
@@ -77,6 +93,10 @@
         $('#remember-patient-dialog').modal('show');
     }
 
-    config.data = allDatesConfig;
-    new Chart(ctx, config);
+   // config.data = allDatesConfig;
+    config.data = allsummaryValues;
+    new Chart(surveyContext, config);
+
+    clinicalChartConfig.data = allClinicalValues;
+    new Chart(scoresContext, clinicalChartConfig);
 })();

@@ -10,6 +10,9 @@ const spatialSpanService = require('../../service/spatial-span-service');
 const fingerTappingService = require('../../service/finger-tapping-service');
 const flankerTestService = require('../../service/flanker-test-service');
 const patternComparisonService = require('../../service/pattern-comparison-service');
+const surveySummaryChartService = require('../../service/survey-service');
+const utilityService = require('../../service/utility-service');
+const scoreService = require('../../service/score-service');
 const moment = require('moment');
 const sqlDateFormat = 'ddd MMM DD YYYY HH:mm:ss ZZ';
 const httpNotFound = 404;
@@ -21,115 +24,107 @@ const httpNotFound = 404;
  * @returns {View} Rendered page
  */
 function patientView (request, reply) {
-var tapsReturn ={};
-    Promise
-        .all([
-            database.sequelize.query(
-                `
-                SELECT pa.PatientPin, st.Name AS stage
-                FROM patients AS pa
-                JOIN stage AS st
-                ON st.StageId = pa.StageIdFK
-                WHERE pa.PatientPin = ?
-                `,
-                {
-                    type: database.sequelize.QueryTypes.SELECT,
-                    replacements: [
-                        request.params.pin
-                    ],
-                    plain: true
-                }
-            ),
-            database.sequelize.query(
-                `
-                SELECT pa.DateCompleted, si.ActivityInstanceId, si.StartTime, si.EndTime, si.UserSubmissionTime,
-                si.ActualSubmissionTime, si.activityTitle,si.State as state, st.Name AS stageName
-                FROM patients AS pa
-                JOIN activity_instance AS si
-                ON si.PatientPinFK = pa.PatientPin
-                JOIN stage AS st
-                ON st.StageId = pa.StageIdFK
-                WHERE pa.PatientPin = ?
-                ORDER BY si.StartTime
-                `,
-                {
-                    type: database.sequelize.QueryTypes.SELECT,
-                    replacements: [
-                        request.params.pin
-                    ]
-                }
-            ),
-            database.sequelize.query(
-                `
-                SELECT tr.Name, tr.TrialId
-                FROM patients AS pa
-                JOIN stage AS st
-                ON st.StageId = pa.StageIdFK
-                JOIN trial AS tr
-                ON tr.TrialId = st.TrialId
-                WHERE pa.PatientPin = ?
-                `,
-                {
-                    type: database.sequelize.QueryTypes.SELECT,
-                    replacements: [
-                        request.params.pin
-                    ],
-                    plain: true
-                }
-            ),
-            fingerTappingService.fetchFiveFingerTapping(request.params.pin),
-            spatialSpanService.fetchRecentFiveActivities(request.params.pin),
-            flankerTestService.fetchRecentFiveActivities(request.params.pin),
-            patternComparisonService.fetchRecentFivePatternComparisons(request.params.pin)
-           ])
-        .then(([currentPatient, surveyInstances, currentTrial,fingerTappings,spatialSpan, flankerTests, patternComparisons]) => {
-            // patient not found
-            if (!currentPatient) {
-                throw new Error('patient does not exist');
-            }
-            var formattedSpatialSpanResult = spatialSpanService.fetchFormattedSpatialSpanActivities(spatialSpan);
-            var formattedfingerTapping = fingerTappingService.fetchFormattedFingerTapping(fingerTappings);
-            var formattedFlankerTests = flankerTestService.fetchFormattedFlankerTests(flankerTests);
-            var formattedPatternComparisons = patternComparisonService.fetchFormattedPatternComparisons(patternComparisons);
 
-            console.log(formattedPatternComparisons);
+    Promise.all([
+        utilityService.fetchPatientIds(request.params.pin),
+        surveySummaryChartService.fetchSurveyInstance(request.params.pin),
+        utilityService.fetchTrialsIds(request.params.pin),
+        fingerTappingService.fetchFiveFingerTapping(request.params.pin),
+        spatialSpanService.fetchRecentFiveActivities(request.params.pin),
+        flankerTestService.fetchRecentFiveActivities(request.params.pin),
+        patternComparisonService.fetchRecentFivePatternComparisons(request.params.pin),
+        scoreService.fetchSurveyResults(request.params.pin),
+        scoreService.fetchopioidResults(request.params.pin),
+        scoreService.fetchbodypainResults(request.params.pin),
+        surveySummaryChartService.fetchFingerTappingCompliance(request.params.pin),
+        surveySummaryChartService.fetchPatternComparisonCompliance(request.params.pin),
+        surveySummaryChartService.fetchFlankerCompliance(request.params.pin),
+        surveySummaryChartService.fetchSpatialSpanCompliance(request.params.pin)
+    ]).then(function(values){
 
-            return reply.view('patientepilepsy', {
-                title: 'Epilepsy | Patient',
-                patient: currentPatient,
-                trial: currentTrial,
-                surveys: surveyInstances.map((surveyInstance) => {
-                    const surveyInstanceCopy = Object.assign({}, surveyInstance);
+        var currentPatient = values[0];
+        var surveyInstance = values[1];
+        var currentTrial = values[2];
+        var fingerTappings = values[3];
+        var spatialSpans = values[4];
+        var flankerTests = values[5];
+        var patternComparisons = values[6];
+        var surveyResults = values[7];
+        var opioidResults = values[8];
+        var bodyPainResults = values[9];
+        var fingerTappingCompliance = values[10];
+        var patternComparisonCompliance = values[11];
+        var flankerCompliance = values[12];
+        var spatialSpanCompliance = values[13];
 
-                    surveyInstanceCopy.startTime = moment(surveyInstanceCopy.startTime, sqlDateFormat)
-                        .format('MM-DD-YYYY');
-                    surveyInstanceCopy.endTime = moment(surveyInstanceCopy.endTime, sqlDateFormat)
-                        .format('MM-DD-YYYY');
-                    if (surveyInstanceCopy.userSubmissionTime) {
-                        surveyInstanceCopy.userSubmissionTime
-                            = moment(surveyInstanceCopy.userSubmissionTime, sqlDateFormat)
-                                .format('MM-DD-YYYY h:mma');
-                    }
+        if (!currentPatient) {
+            throw new Error('patient does not exist');
+        }
 
-                    return surveyInstanceCopy;
-                }),
-                datesJson: JSON.stringify(processSurveyInstances(surveyInstances)),
-                tapsJson : fingerTappingService.fetchFingerTappingChartData(formattedfingerTapping),
-                spatialJson : spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpanResult),
-                flankerTests: flankerTestService.fetchAggregateChartData(formattedFlankerTests),
-                patternComparisons: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons)
-            });
+        let clinicalValuesChart = processSurveyInstances.processClinicanData(
+            surveyInstance, surveyResults, bodyPainResults, opioidResults
+        );
+        var summarySurveyDataSets =[];
+        var summaryChartData =[];
 
-        })
-        .catch((err) => {
-            request.log('error', err);
+        /*
+         * Get Chart Parameters of recent five attempts of following activities .
+         */
 
-            reply
-            .view('404', {
-                title: 'Not Found from Dashboard'
-            })
-            .code(httpNotFound);
+        var formattedSpatialSpanResult = spatialSpanService.fetchFormattedSpatialSpanActivities(spatialSpans);
+        var formattedfingerTapping = fingerTappingService.fetchFormattedFingerTapping(fingerTappings);
+        var formattedFlankerTests = flankerTestService.fetchFormattedFlankerTests(flankerTests);
+        var formattedPatternComparisons = patternComparisonService.fetchFormattedPatternComparisons(patternComparisons);
+        /*
+         * Format DateTime and Compliance.
+         * Get the Parameters to Display on Chart
+         * Push to DataSets array where all the chart details are present
+         */
+
+        //finger tapping
+        var formattedFingerTappingCompliance = surveySummaryChartService.fetchFormattedResults(fingerTappingCompliance);
+        var fingerTappingChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedFingerTappingCompliance);
+        summarySurveyDataSets.push(fingerTappingChartParams);
+
+        //pattern compliance
+        var formattedPatternComparisonCompliance = surveySummaryChartService.fetchFormattedResults(patternComparisonCompliance);
+        var patternComparisonChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedPatternComparisonCompliance);
+        summarySurveyDataSets.push(patternComparisonChartParams);
+
+        //flanker
+        var formattedFlankerCompliance = surveySummaryChartService.fetchFormattedResults(flankerCompliance);
+        var flankerChartParams =  surveySummaryChartService.fetchChartParamsForActivity(formattedFlankerCompliance);
+        summarySurveyDataSets.push(flankerChartParams);
+
+        //spatial span
+        var formattedSpatialSpanCompliance =  surveySummaryChartService.fetchFormattedResults(spatialSpanCompliance);
+        var spatialSpanChartParams = surveySummaryChartService.fetchChartParamsForActivity(formattedSpatialSpanCompliance);
+        summarySurveyDataSets.push(spatialSpanChartParams);
+
+        //Daily and Weekly Surveys
+        var surveyChartParams = processSurveyInstances.fetchSurveySummary(surveyInstance);
+        summaryChartData = surveySummaryChartService.fetchSurveyDataSets(summarySurveyDataSets);
+        summaryChartData.push.apply(summaryChartData, surveyChartParams);
+
+        return reply.view('patientepilepsy', {
+            title: 'Epilepsy | Patient',
+            patient: currentPatient[0],
+            trial: currentTrial[0],
+            datesJson: JSON.stringify(processSurveyInstances(surveyInstance)),
+            tapsJson : fingerTappingService.fetchFingerTappingChartData(formattedfingerTapping),
+            spatialJson : spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpanResult),
+            flankerTests: flankerTestService.fetchAggregateChartData(formattedFlankerTests),
+            patternComparisons: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons),
+            clinicalValues: JSON.stringify(clinicalValuesChart),
+            surveySummaryChart: surveySummaryChartService.fetchSurveySummaryChart(summaryChartData)
         });
+
+    })
+    .catch(function(err) {
+        console.log(err);
+        request.log('error', err);
+        reply.view('404', {title: 'Not Found from Dashboard'}).code(httpNotFound);
+    });
 }
 
 module.exports = patientView;

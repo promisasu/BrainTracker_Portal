@@ -29,7 +29,10 @@ function trialView (request, reply) {
             trial.findById(request.params.id),
             database.sequelize.query(
                 `
-                SELECT StageId, Name, CreatedAt, UpdatedAt, DeletedAt, TrialId FROM stage AS stage WHERE stage.DeletedAt IS NULL AND stage.TrialId = ?
+                SELECT StageId, Name, CreatedAt, UpdatedAt, DeletedAt, TrialId
+                FROM stage AS stage
+                WHERE stage.DeletedAt IS NULL
+                AND stage.TrialId = ?
                 `,
                 {
                     type: database.sequelize.QueryTypes.SELECT,
@@ -59,15 +62,30 @@ function trialView (request, reply) {
             database.sequelize.query(
                 `
                 SELECT pa.PatientPin,
-                SUM(si.State = 'expired') AS expiredCount,
-                SUM(si.State = 'completed') AS completedCount
+                SUM(si.State = 'expired' and si.activityTitle = 'Epilepsy Weekly Survey') AS expiredWeeklyCount,
+                SUM(si.State = 'completed' and si.activityTitle = 'Epilepsy Weekly Survey') AS completedWeeklyCount,
+                SUM(si.State = 'expired' and si.activityTitle = 'Epilepsy Daily Survey') AS expiredDailyCount,
+                SUM(si.State = 'completed' and si.activityTitle = 'Epilepsy Daily Survey') AS completedDailyCount,
+                SUM(si.State = 'pending') AS pendingCount,
+                SUM(si.State = 'DEACTIVATED') AS deactivatedCount,
+                SUM(si.State = 'expired' and si.activityTitle = 'Epilepsy Weekly Survey'
+                    and si.EndTime > DATE_SUB(now(), INTERVAL 8 DAY)
+                    and si.EndTime < now()) AS expiredTrendingWeeklyCount,
+                SUM(si.State = 'completed' and si.activityTitle = 'Epilepsy Weekly Survey'
+                    and si.EndTime > DATE_SUB(now(), INTERVAL 8 DAY)
+                    and si.EndTime < now()) AS completedTrendingWeeklyCount,
+                SUM(si.State = 'expired' and si.activityTitle = 'Epilepsy Daily Survey'
+                    and si.EndTime > DATE_SUB(now(), INTERVAL 8 DAY)
+                    and si.EndTime < now()) AS expiredTrendingDailyCount,
+                SUM(si.State = 'completed' and si.activityTitle = 'Epilepsy Daily Survey'
+                    and si.EndTime > DATE_SUB(now(), INTERVAL 8 DAY)
+                    and si.EndTime < now()) AS completedTrendingDailyCount
                 FROM activity_instance AS si
                 JOIN patients AS pa
                 ON pa.PatientPin = si.PatientPinFK
                 JOIN stage AS st
                 ON st.StageId = pa.StageIdFK
                 WHERE st.TrialId = ?
-                AND si.EndTime > ?
                 GROUP BY pa.PatientPin
                 `,
                 {
@@ -77,27 +95,24 @@ function trialView (request, reply) {
                         startDate.toISOString()
                     ]
                 }
+            ),
+            database.sequelize.query(
+                `
+              SELECT State, EndTime, PatientPinFK
+              FROM activity_instance
+              WHERE activityTitle = 'Epilepsy Weekly Survey'
+              AND EndTime > DATE_SUB(now(),INTERVAL 8 DAY)
+              AND EndTime <= now()
+              AND State != 'pending'
+              ORDER BY EndTime
+              DESC
+              `,
+                {
+                    type: database.sequelize.QueryTypes.SELECT
+                }
             )
-            //,
-            // database.sequelize.query(
-            //     `
-            //     SELECT jcns.rule
-            //     FROM trial AS tr
-            //     JOIN stage AS st
-            //     ON tr.TrialId = st.trialId
-            //     JOIN join_current_and_next_stages AS jcns
-            //     ON st.id = jcns.stageId
-            //     WHERE tr.TrialId = ?
-            //     `,
-            //     {
-            //         type: database.sequelize.QueryTypes.SELECT,
-            //         replacements: [
-            //             request.params.id
-            //         ]
-            //     }
-            // )
         ])
-        .then(([currentTrial, stages, patients, compliance]) => {
+        .then(([currentTrial, stages, patients, compliance, missedLastWeek]) => {
         const rules = [];
     console.log("Epilepsy test log:"+JSON.stringify(currentTrial));
 
@@ -112,19 +127,42 @@ function trialView (request, reply) {
     const patientStatuses = compliance.map(processPatientStatus);
 
     const patientArray = patients.map((patient) => {
-            // check for patient's status
-
             const patientStatus = patientStatuses.find((status) => {
-
                     return status.PatientPin === patient.PatientPin;
 });
+
+    let missedWeekly = missedLastWeek.find((missed) => {
+            return missed.PatientPinFK === patient.PatientPin;
+});
+
+    if (missedWeekly) {
+        if (typeof patient.lastWeekly === 'undefined') {
+            if (missedWeekly.State === 'expired') {
+                patient.lastWeekly = 'Missed';
+            } else if (missedWeekly.State === 'completed') {
+                patient.lastWeekly = 'Taken';
+            }
+        }
+    } else {
+        patient.lastWeekly = ' ---- ';
+    }
+
     // collect the compliance status as well as expiredCount
     if (patientStatus) {
+        patient.trialStatus = patientStatus.trialStatus;
         patient.status = patientStatus.status;
-        patient.totalMissed = patientStatus.expiredCount;
+        if (isNaN(patientStatus.compliancePercentage)) {
+            patient.compliancePercentage = ' ---- ';
+        } else {
+            patient.compliancePercentage = patientStatus.compliancePercentage;
+        }
+        if (isNaN(patientStatus.trendingCompliance)) {
+            patient.trendingCompliance = ' ---- ';
+        } else {
+            patient.trendingCompliance = patientStatus.trendingCompliance;
+        }
     } else {
         patient.status = 'Pending';
-        patient.totalMissed = 0;
     }
     patient.DateStarted = moment(patient.DateStarted)
         .format('MM-DD-YYYY');
@@ -133,6 +171,7 @@ function trialView (request, reply) {
 
     return patient;
 });
+
 
     const endDate = processRules(ruleValues, Date.now());
     console.log("This is Trial Name :"+currentTrial.Name);
