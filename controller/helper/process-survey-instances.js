@@ -12,17 +12,17 @@ const viewDateFormat = 'MM-DD-YYYY HH:mm';
 
 
 /**
- * Takes in a Survey Instances and processes it to get Complience chart details
+ * Takes in a Survey Instances and processes it to get Compliance chart details
  * @param {Array<Object>} surveys - list of survey instances
  * @returns {Object} Complience chart data
  */
 function processSurveyInstances (surveys) {
 
     const filterSurveyByState = surveys.filter((survey) => {
-        return survey.state === 'completed';
-    });
-    var datasets = pickTimeLeft(filterSurveyByState);
-
+    return survey.state === 'completed';
+     });
+    //var datasets = pickTimeLeft(filterSurveyByState);
+      var datasets  = processSurveySummary (filterSurveyByState);
     var labels = [];
     for (var i = 0; i < datasets.length; i++) {
       var dataSet = datasets[i];
