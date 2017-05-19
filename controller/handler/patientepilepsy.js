@@ -61,9 +61,9 @@ function patientView (request, reply) {
             throw new Error('patient does not exist');
         }
 
-        let clinicalValuesChart = processSurveyInstances.processClinicanData(
+        /*let clinicalValuesChart = processSurveyInstances.processClinicanData(
             surveyInstance, surveyResults, bodyPainResults, opioidResults
-        );
+        );*/
         var summarySurveyDataSets =[];
         var summaryChartData =[];
 
@@ -115,7 +115,8 @@ function patientView (request, reply) {
             spatialJson : spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpanResult),
             flankerTests: flankerTestService.fetchAggregateChartData(formattedFlankerTests),
             patternComparisons: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons),
-            clinicalValues: JSON.stringify(clinicalValuesChart),
+            //clinicalValues: JSON.stringify(clinicalValuesChart),
+            clinicalValues: JSON.stringify([]),
             surveySummaryChart: surveySummaryChartService.fetchSurveySummaryChart(summaryChartData)
         });
 
