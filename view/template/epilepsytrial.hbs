@@ -69,64 +69,41 @@
         </div>
         <div class="col-sm-12 col-md-7 col-lg-6 col-xl-6">
             <div class="card">
-                <canvas id="trialChart" height="200%"></canvas>
+                <canvas id="trialChart" height="107px" width="200"></canvas>
             </div>
         </div>
-        <div class="col-xs-12">
+    </div>
+
+    <!-- Patients Listing Row -->
+    <div class="row">
+        <div class="col-md-12">
+
             <div class="card">
-                <div class="card-block">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h4 class="card-title">
-                                Patients
-                            </h4>
-                        </div>
-                        <div class="col-xl-1 col-xl-1 col-xl-offset-5 col-md-offset-1">
-                          <button type="button" class="btn btn-primary text-uppercase" data-toggle="modal" data-target="#addPatient" hidden>
-                              Enroll New Patient
-                          </button>
-                        </div>
-                        <div class="col-md-3 col-xl-1 col-xl-offset-1">
-                          <a href="/trial/{{ trial.id }}.csv" class="btn btn-default text-uppercase" hidden>
-                              Export Trial Data
-                          </a>
-                        </div>
-                    </div>
+                <div class="card-header white-background">
+                    <h5>
+                        Patients
+
+                        <span class="pull-right">
+                            <button class="btn btn-sm btn-primary" disabled>Enroll New Patient</button>
+                        </span>
+
+                    </h5>
                 </div>
-                <div class="table-responsive">
+                <div class="card-block">
                     <table id="patients-table" class="table table-hover">
                         <thead>
-                        <tr>
-                            <th>
-                                Patient Pin
-                            </th>
-                            <th>
-                                Trial Status
-                            </th>
-                            <th>
-                                Compliance Status
-                            </th>
-                            <th>
-                                Start
-                            </th>
-                            <th>
-                                End
-                            </th>
-                            <th>
-                                Compliance %
-                            </th>
-                            <th>
-                                Compliance % Last Week
-                            </th>
-                            <th>
-                                Last Weekly
-                            </th>
-                        </tr>
+                            <tr>
+                                <th>Patient Pin</th>
+                                <th>Trial Status</th>
+                                <th>Compliance Status</th>
+                                <th>Start</th>
+                                <th>End</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {{#unless patients.length}}
                                 <tr>
-                                    <td colspan="8">
+                                    <td colspan="5">
                                         <div class="card card-inverse card-info text-center card-block">
                                             <div class="card-title">
                                                 No Patients
@@ -146,35 +123,20 @@
                                             <i class="fa fa-search"></i>
                                         </a>
                                     </td>
-                                    <td>
-                                        {{ trialStatus }}
-                                    </td>
-                                    <td>
-                                        {{ status }}
-                                    </td>
-                                    <td>
-                                        {{ DateStarted }}
-                                    </td>
-                                    <td>
-                                        {{ DateCompleted }}
-                                    </td>
-                                    <td>
-                                        {{ compliancePercentage }}
-                                    </td>
-                                    <td>
-                                        {{ trendingCompliance }}
-                                    </td>
-                                    <td>
-                                        {{ lastWeekly }}
-                                    </td>
+                                    <td>{{ trialStatus }}</td>
+                                    <td>{{ status }}</td>
+                                    <td>{{ DateStarted }}</td>
+                                    <td>{{ DateCompleted }}</td>
                                 </tr>
                             {{/each}}
                         </tbody>
                     </table>
                 </div>
             </div>
+
         </div>
     </div>
+
 </div>
 
 {{> add-patient}}

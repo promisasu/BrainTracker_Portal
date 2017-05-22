@@ -169,54 +169,31 @@ function trialView (request, reply) {
     patient.DateCompleted = moment(patient.DateCompleted)
         .format('MM-DD-YYYY');
 
-    return patient;
-});
+        return patient;
+    });
 
 
     const endDate = processRules(ruleValues, Date.now());
     console.log("This is Trial Name :"+currentTrial.Name);
-    if(currentTrial.Name == "Epilepsy")
-    {
 
-        return reply.view('epilepsytrial', {
-            title: 'Epilepsy | Trial',
-            trial: processTrial(currentTrial),
-            stages,
-            endDate,
-            patients: patientArray,
-            complianceCount,
-            patientCount,
-            graphData: JSON.stringify({
-                datasets: complianceCount,
-                labels: [
-                    'Compliant',
-                    'Semicompliant',
-                    'Noncompliant'
-                ]
-            })
-        });
-    }
-    else
-    {
 
-        return reply.view('trial', {
-            title: 'Epilepsy | Trial',
-            trial: processTrial(currentTrial),
-            stages,
-            endDate,
-            patients: patientArray,
-            complianceCount,
-            patientCount,
-            graphData: JSON.stringify({
-                datasets: complianceCount,
-                labels: [
-                    'Compliant',
-                    'Semicompliant',
-                    'Noncompliant'
-                ]
-            })
-        });
-    }
+    return reply.view('epilepsytrial', {
+        title: 'Epilepsy | Trial',
+        trial: processTrial(currentTrial),
+        stages,
+        endDate,
+        patients: patientArray,
+        complianceCount,
+        patientCount,
+        graphData: JSON.stringify({
+            datasets: complianceCount,
+            labels: [
+                'Compliant',
+                'Semicompliant',
+                'Noncompliant'
+            ]
+        })
+    });
 
 })
 .catch((err) => {
