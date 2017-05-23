@@ -35,7 +35,7 @@ function getFiveFingerTapping(patientPin){
 function generateFormattedFingerTapping(queryResults){
     queryResults.forEach(function (tap){
         tap.result = JSON.parse(tap.result);
-        tap.CreatedAt = moment(tap.CreatedAt).format(viewDateTimeFormat);
+        tap.CreatedAt = moment.utc(tap.CreatedAt).format(viewDateTimeFormat);
     });
 
     return queryResults;

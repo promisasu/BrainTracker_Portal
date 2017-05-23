@@ -34,7 +34,7 @@ function formatPatternComparisons(queryResults){
 
     queryResults.forEach(function(instance){
         instance.answers = JSON.parse(instance.answers);
-        instance.CreatedAt = moment(instance.CreatedAt).format(viewDateTimeFormat);
+        instance.CreatedAt = moment.utc(instance.CreatedAt).format(viewDateTimeFormat);
     });
 
     return queryResults;
