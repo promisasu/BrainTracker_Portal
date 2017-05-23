@@ -12,8 +12,6 @@ function patientTaskHandler(request, reply){
     const patientPin = patientParams[0];
     const patientTask = patientParams[2];
 
-    // TODO -- validate if patient exists in db or not.
-
     if (isNaN(parseInt(patientPin))) {
         // invalid patient pin datatype
         console.log('Invalid Patient Pin Data type');
@@ -26,7 +24,7 @@ function patientTaskHandler(request, reply){
 
             var queryResults = values[0];
             if (queryResults.length === 0) {
-                console.log('Np Patient found with pin: ', patientPin);
+                console.log('No Patient found with pin: ', patientPin);
 
                 return reply.view('404').code(404);
             } else {
@@ -49,7 +47,7 @@ function patientTaskHandler(request, reply){
 
                     default:
                         console.log('Invalid Activity Selected: ', patientTask);
-                        reply.view('404');
+                        return reply.view('404');
                 }
             }
         });
