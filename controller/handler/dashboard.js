@@ -7,6 +7,7 @@
 const processTrial = require('../helper/process-trial');
 const database = require('../../model');
 const httpNotFound = 404;
+const utilityService = require('../../service/utility-service');
 
 /**
  * A dashboard view with overview of all trials and patients.
@@ -15,44 +16,24 @@ const httpNotFound = 404;
  * @returns {View} Rendered page
  */
 function dashboardView (request, reply) {
-    const currentDate = new Date();
 
-    database.sequelize.query(
-        `
-        SELECT t.*, s.StageId, count(1) as recruitedCount from trial t, stage s INNER JOIN patients pa ON s.StageId = pa.StageIdFK  WHERE t.TrialId = s.trialId GROUP BY s.StageId;
 
-        `,
-        {
-            type: database.sequelize.QueryTypes.SELECT,
-            replacements: [
-                currentDate.toISOString(),
-                currentDate.toISOString()
-            ]
-        }
-        )
-        .then((trials) => {
-            console.log("Testing");
-            console.log(trials);
-            // Process data into format expected in view
-            const trialData = trials.map(processTrial);
-            console.log("Trial data is below");
-            console.log(trialData);
-            // Display view
-            return reply.view('dashboard', {
-                title: 'Epilepsy | Dashboard',
-                user: request.auth.credentials,
-                trials: trialData
-            });
-        })
-        .catch((err) => {
-            request.log('error', err);
+    Promise.all([
+        utilityService.fetchTrialsForDashboard()
+    ]).then(function(values){
+        var trialData = values[0].map(processTrial);
 
-            reply
-            .view('404', {
-                title: 'Not Found'
-            })
-            .code(httpNotFound);
+        // Display view
+        return reply.view('dashboard', {
+            title: 'Epilepsy | Dashboard',
+            user: request.auth.credentials,
+            trials: trialData
         });
+
+    }).catch(function(err){
+        console.log(err);
+        return reply({code: 500, message: 'Something went Wrong!'}).code(500);
+    });
 }
 
 module.exports = dashboardView;

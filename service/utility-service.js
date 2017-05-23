@@ -58,10 +58,24 @@ function getTrialIds(patientPin){
     });
 }
 
+function getTrialListForDashboard(){
+    var currentDate = new Date();
 
+    var rawQuery = "SELECT t.*, s.StageId, count(1) as recruitedCount from trial t, stage s INNER JOIN " +
+        "patients pa ON s.StageId = pa.StageIdFK  WHERE t.TrialId = s.trialId GROUP BY s.StageId";
+
+    return database.sequelize.query(rawQuery, {
+        type: database.sequelize.QueryTypes.SELECT,
+        replacements: [
+            currentDate.toISOString(),
+            currentDate.toISOString()
+        ]
+    });
+}
 
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
 module.exports.fetchPatientIds = getPatientIds;
 module.exports.fetchTrialsIds = getTrialIds;
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
 module.exports.fetchPatient = getPatient;
+module.exports.fetchTrialsForDashboard = getTrialListForDashboard;

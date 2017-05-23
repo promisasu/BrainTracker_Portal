@@ -13,8 +13,7 @@ const moment = require('moment');
  */
 function processTrial (trial) {
     const allPercent = processPercent(trial);
-    console.log("logging all percent");
-    console.log(allPercent);
+
     return Object.assign(trial, {
         name:trial.Name,
         start: moment(trial.IRBStart).format('YYYY-MM-DD'),
@@ -36,6 +35,7 @@ function processPercent (trial) {
     const zeroPercent = 0;
     console.log("Trail from process percent");
     console.log(trial);
+
     if (trial.recruitedCount > zeroPercent) {
         return {
             recruitedPercent: Math.round(trial.recruitedCount / trial.TargetCount * percent),
