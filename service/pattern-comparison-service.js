@@ -74,7 +74,9 @@ function generateAggregateChartData(patternComparisons){
         datasets: [
             {
                 label: "Pattern-Comparison Accuracy",
-                fill: false,
+                fillColor: "rgba(255, 52, 21, 0.2)",
+                pointColor: "#da3e2f",
+                strokeColor: "#da3e2f",
                 lineTension: 0.1,
                 backgroundColor: "rgba(231,76,60,0.4)",
                 borderColor: "rgba(231,76,60,1)",
@@ -98,10 +100,18 @@ function generateAggregateChartData(patternComparisons){
         ]
     };
 
-    patternComparisons.forEach(function(instance){
-        chartData.labels.push(instance.CreatedAt);
-        chartData.datasets[0].data.push(calculatePatternComparisonAccuracy(instance.answers));
-    });
+    // add dummy non-rendering points to left and right by using empty string labels and null value when
+    // only one data-point is available
+
+    if (patternComparisons.length === 1) {
+        chartData.labels = ["", patternComparisons[0].CreatedAt, ""];
+        chartData.datasets[0].data = [null, calculatePatternComparisonAccuracy(patternComparisons[0].answers), null];
+    } else {
+        patternComparisons.forEach(function(instance){
+            chartData.labels.push(instance.CreatedAt);
+            chartData.datasets[0].data.push(calculatePatternComparisonAccuracy(instance.answers));
+        });
+    }
 
     return JSON.stringify(chartData);
 }

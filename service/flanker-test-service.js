@@ -77,10 +77,18 @@ function generateAggregateChartData(flankerTests){
         ]
     };
 
-    flankerTests.forEach(function(instance){
-        chartData.labels.push(instance.CreatedAt);
-        chartData.datasets[0].data.push(calculateFlankerTestAccuracy(instance.answers));
-    });
+    // add dummy non-rendering points to left and right by using empty string labels and null value when
+    // only one data-point is available
+
+    if (flankerTests.length === 1){
+        chartData.labels = ["", flankerTests[0].CreatedAt, ""];
+        chartData.datasets[0].data = [null, calculateFlankerTestAccuracy(flankerTests[0].answers), null];
+    } else {
+        flankerTests.forEach(function(instance){
+            chartData.labels.push(instance.CreatedAt);
+            chartData.datasets[0].data.push(calculateFlankerTestAccuracy(instance.answers));
+        });
+    }
 
     return JSON.stringify(chartData);
 }
