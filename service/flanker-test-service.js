@@ -4,7 +4,7 @@
 // import modules
 const database = require('../model');
 const moment = require('moment');
-const viewDateTimeFormat = "MM-DD-YYYY h:mm a";
+const viewDateTimeFormat = "MM-DD-YYYY hh:mm a";
 
 function getAllFlankerTestActivities(patientPin){
     var rawQuery = "SELECT ft.* " +
@@ -32,7 +32,7 @@ function getRecentFiveFlankerTestActivities(patientPin){
 function formatFlankerTests(queryResults){
     queryResults.forEach(function(instance){
         instance.answers = JSON.parse(instance.answers);
-        instance.CreatedAt = moment(instance.CreatedAt).format(viewDateTimeFormat);
+        instance.CreatedAt = moment.utc(instance.CreatedAt).format(viewDateTimeFormat);
     });
 
     return queryResults;
