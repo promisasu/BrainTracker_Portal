@@ -22,30 +22,20 @@
         <div class="col-sm-12 ">
              <div class="card card-info-outline white-background">
                 <div class="card-header white-background">
-                    <div style="text-align:center" class ="white-background">
-                        <a href="#" id="survey-chart" class="active" onclick="return showChart('survey');">Survey Chart</a>
-                        <span> | </span>
-                        <a href="#" onclick="return showChart('scores');" id="scores-chart" class="">Scores Chart</a>
-
+                    <h4 class ="card-title white-background">
+                        Surveys
                         <span class="pull-right">
                             <a href ="/patient/survey-detail/{{ patient.PatientPin }}"  class="btn btn-primary btn-sm" >
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
                         </span>
-                    </div>
+                    </h4>
                 </div>
                  <div class="row">
                      <div class="col-sm-12">
                          <div id="surveyChartCanvasDiv" class="card">
                              <canvas id="surveyComplianceChart" width="400" height="100px"></canvas>
-                         </div>
-                     </div>
-                 </div>
-                 <div class="row">
-                     <div class="col-sm-12">
-                         <div id="scoresChartCanvasDiv" class="card" style="display:none">
-                             <canvas id="scoresComplianceChart" width="400" height="100px"></canvas>
                          </div>
                      </div>
                  </div>
@@ -161,24 +151,8 @@
     window.spatialSpans = JSON.parse('{{{spatialJson}}}');
     window.flankerTests = JSON.parse('{{{flankerTests}}}');
     window.patternComparisons = JSON.parse('{{{patternComparisons}}}');
-    window.clinicalValues = JSON.parse('{{{ clinicalValues }}}');
     window.surveysummary = JSON.parse('{{{ surveySummaryChart }}}');
 
-    function showChart (type) {
-        if (type === 'scores') {
-            document.getElementById('scoresChartCanvasDiv').style.display = 'block';
-            document.getElementById('surveyChartCanvasDiv').style.display = 'none';
-            document.getElementById('scores-chart').classList.add('active');
-            document.getElementById('survey-chart').classList.remove('active');
-        } else {
-            document.getElementById('surveyChartCanvasDiv').style.display = 'block';
-            document.getElementById('scoresChartCanvasDiv').style.display = 'none';
-            document.getElementById('survey-chart').classList.add('active');
-            document.getElementById('scores-chart').classList.remove('active');
-        }
-
-        return false;
-    }
 </script>
 
 <script src="/static/script/epilepsypatient.js" defer></script>

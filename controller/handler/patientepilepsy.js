@@ -12,7 +12,6 @@ const flankerTestService = require('../../service/flanker-test-service');
 const patternComparisonService = require('../../service/pattern-comparison-service');
 const surveySummaryChartService = require('../../service/survey-service');
 const utilityService = require('../../service/utility-service');
-const scoreService = require('../../service/score-service');
 const moment = require('moment');
 const sqlDateFormat = 'ddd MMM DD YYYY HH:mm:ss ZZ';
 const httpNotFound = 404;
@@ -33,9 +32,6 @@ function patientView (request, reply) {
         spatialSpanService.fetchRecentFiveActivities(request.params.pin),
         flankerTestService.fetchRecentFiveActivities(request.params.pin),
         patternComparisonService.fetchRecentFivePatternComparisons(request.params.pin),
-        scoreService.fetchSurveyResults(request.params.pin),
-        scoreService.fetchopioidResults(request.params.pin),
-        scoreService.fetchbodypainResults(request.params.pin),
         surveySummaryChartService.fetchFingerTappingCompliance(request.params.pin),
         surveySummaryChartService.fetchPatternComparisonCompliance(request.params.pin),
         surveySummaryChartService.fetchFlankerCompliance(request.params.pin),
@@ -49,13 +45,10 @@ function patientView (request, reply) {
         var spatialSpans = values[4];
         var flankerTests = values[5];
         var patternComparisons = values[6];
-        var surveyResults = values[7];
-        var opioidResults = values[8];
-        var bodyPainResults = values[9];
-        var fingerTappingCompliance = values[10];
-        var patternComparisonCompliance = values[11];
-        var flankerCompliance = values[12];
-        var spatialSpanCompliance = values[13];
+        var fingerTappingCompliance = values[7];
+        var patternComparisonCompliance = values[8];
+        var flankerCompliance = values[9];
+        var spatialSpanCompliance = values[10];
 
         if (!currentPatient) {
             throw new Error('patient does not exist');
@@ -115,8 +108,6 @@ function patientView (request, reply) {
             spatialJson : spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpanResult),
             flankerTests: flankerTestService.fetchAggregateChartData(formattedFlankerTests),
             patternComparisons: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons),
-            //clinicalValues: JSON.stringify(clinicalValuesChart),
-            clinicalValues: JSON.stringify([]),
             surveySummaryChart: surveySummaryChartService.fetchSurveySummaryChart(summaryChartData)
         });
 
