@@ -40,7 +40,15 @@
         <div class="col-md-12">
             <div class="card card-info-outline">
                 <div class="card-header white-background">
-                    <h5>Activities</h5>
+                    <h5>
+                        Activities
+
+                        <span class="pull-right">
+                            <a href="/patient/{{ breadCrumbData.PatientPin }}.csv" class="btn btn-primary btn-sm">
+                                Export Patient Data
+                            </a>
+                        </span>
+                    </h5>
                 </div>
                 <div class="card-block white-background">
                     <table class="table table-hover" id="complianceActivitiesTable">
@@ -57,7 +65,13 @@
                         <tbody>
                             {{#each complianceActivities}}
                                 <tr class="table-{{status}}">
-                                    <td>{{ActivityInstanceId}}</td>
+                                    <td>
+                                        {{breadCrumbData.PatientPin}}
+                                        <a href="/survey/{{ ../breadCrumbData.PatientPin }}/{{ ActivityInstanceId }}">
+                                            {{ ActivityInstanceId }}
+                                            <i class="fa fa-search"></i>
+                                        </a>
+                                    </td>
                                     <td>{{activityTitle}}</td>
                                     <td>{{State}}</td>
                                     <td>{{StartTime}}</td>
