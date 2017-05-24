@@ -17,10 +17,10 @@
             <div class="card card-info-outline">
                 <div class="card-header white-background">
                     <h5>
-                        Compliance
+                        Activity Compliance
 
                         <span class="pull-right">
-                            <a href ="/patient/survey-detail/{{ patient.PatientPin }}"  class="btn btn-primary btn-sm" >
+                            <a href ="/patient/{{breadCrumbData.PatientPin}}/task/survey-compliance-detail"  class="btn btn-primary btn-sm" >
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -45,7 +45,7 @@
                         Pattern Comparison
 
                         <span class="pull-right">
-                            <a href="/patient/{{patient.PatientPin}}/task/pattern-comparison" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{breadCrumbData.PatientPin}}/task/pattern-comparison" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -67,7 +67,7 @@
                         Finger Tapping
 
                         <span class="pull-right">
-                            <a href="/patient/{{patient.PatientPin}}/task/finger-tapping" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{breadCrumbData.PatientPin}}/task/finger-tapping" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -93,7 +93,7 @@
                         Spatial Span
 
                         <span class="pull-right">
-                            <a href="/patient/{{patient.PatientPin}}/task/spatial-span" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{breadCrumbData.PatientPin}}/task/spatial-span" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -115,7 +115,7 @@
                         Flanker Test
 
                         <span class="pull-right">
-                            <a href="/patient/{{patient.PatientPin}}/task/flanker-test" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{breadCrumbData.PatientPin}}/task/flanker-test" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>

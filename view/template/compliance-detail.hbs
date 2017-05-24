@@ -1,0 +1,80 @@
+<div class="container-fluid content-div">
+
+    <!-- Breadcrumb Row -->
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/trial/{{breadCrumbData.TrialId}}/dashboard">Trial: {{breadCrumbData.Name}}</a></li>
+                <li><a href="/patient/tasks/{{breadCrumbData.PatientPin}}">Patient: {{breadCrumbData.PatientPin}}</a></li>
+                <li class="active">Survey Compliance</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Chart Display row -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>
+                        Compliance
+
+                        <span class="pull-right">
+                            <label class="label label-success card-info-label">Completed: {{activitiesStats.completed}} </label>
+                            <label class="label label-warning card-info-label">In Progress: {{activitiesStats.inProgress}}</label>
+                            <label class="label label-danger card-info-label">Pending: {{activitiesStats.pending}}</label>
+                        </span>
+                    </h5>
+                </div>
+                <div class="card-block white-background">
+                    <canvas id="complianceGraph" width="400" height="100px"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Compliance Activities display row -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-info-outline">
+                <div class="card-header white-background">
+                    <h5>Activities</h5>
+                </div>
+                <div class="card-block white-background">
+                    <table class="table table-hover" id="complianceActivitiesTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Activity</th>
+                                <th>State</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>User Submission Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each complianceActivities}}
+                                <tr class="table-{{status}}">
+                                    <td>{{ActivityInstanceId}}</td>
+                                    <td>{{activityTitle}}</td>
+                                    <td>{{State}}</td>
+                                    <td>{{StartTime}}</td>
+                                    <td>{{EndTime}}</td>
+                                    <td>{{UserSubmissionTime}}</td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    window.complianceChartData = JSON.parse('{{{ complianceChartData }}}');
+</script>
+<script src="/static/script/epilepsypatient.js" defer></script>

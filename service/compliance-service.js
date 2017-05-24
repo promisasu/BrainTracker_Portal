@@ -4,7 +4,7 @@
 // import modules
 const database = require('../model');
 const moment = require('moment');
-const viewDateTimeFormat = "MM/DD/YYYY hh:mm";
+const viewDateTimeFormat = "MM/DD/YYYY hh:mm a";
 const utilityService = require('./utility-service');
 
 // captions
@@ -147,5 +147,72 @@ function getUniqueElements(arr){
     return arr;
 }
 
+function generateComplianceActivities(queryResults){
+    queryResults.forEach(function(instance){
+        instance.StartTime = moment.utc(instance.StartTime).format(viewDateTimeFormat);
+        instance.EndTime = moment.utc(instance.EndTime).format(viewDateTimeFormat);
+        instance.status = getStatus(instance.State);
+        instance.State = capitalize(instance.State);
+
+        if (instance.UserSubmissionTime !== null) {
+            instance.UserSubmissionTime = moment.utc(instance.UserSubmissionTime).format(viewDateTimeFormat);
+        } else {
+            instance.UserSubmissionTime = 'N/A';
+        }
+    });
+
+    return queryResults;
+
+}
+
+function getStatus(state){
+    // success | warning | danger
+    var status = "danger";
+
+    switch (state){
+        case COMPLETED:
+            status = "success";
+            break;
+        case IN_PROGRESS:
+            status = "warning";
+            break;
+        case PENDING:
+            status = "danger";
+    }
+
+    return status;
+}
+
+function capitalize(str) {
+    return str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
+function generateActivitiesStats(queryResults){
+    var stats = {completed: 0, inProgress: 0, pending:0};
+
+
+    queryResults.forEach(function(instance){
+        switch(instance.State){
+            case COMPLETED:
+                stats.completed++;
+                break;
+            case IN_PROGRESS:
+                stats.inProgress++;
+                break;
+            case PENDING:
+                stats.pending++;
+                break;
+            default:
+                // do nothing
+        }
+    });
+
+    return stats;
+}
+
 module.exports.fetchPatientComplianceData = getPatientComplianceData;
 module.exports.fetchComplianceChartData = generateComplianceChartData;
+module.exports.fetchComplianceActivities = generateComplianceActivities;
+module.exports.fetchActivitiesStats = generateActivitiesStats;

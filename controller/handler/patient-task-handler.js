@@ -1,6 +1,7 @@
 'use strict';
 
 // import modules
+const complianceDetailPresenter = require('./compliance-detail-handler');
 const patternComparisonPresenter = require('./pattern-comparison-handler');
 const fingerTappingPresenter = require('./finger-tapping-handler');
 const spatialSpanPresenter = require('./spatial-span-handler');
@@ -29,6 +30,11 @@ function patientTaskHandler(request, reply){
                 return reply.view('404').code(404);
             } else {
                 switch (patientTask){
+
+                    case 'survey-compliance-detail':
+                        complianceDetailPresenter(request, reply, patientPin);
+                        break;
+
                     case 'pattern-comparison':
                         patternComparisonPresenter(request, reply, patientPin);
                         break;
