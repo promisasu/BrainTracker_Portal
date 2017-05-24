@@ -1,55 +1,37 @@
-<div class="container-fluid">
-    <br>
-    <ol class="breadcrumb">
-        <li>
-            <a href="/">
-                Dashboard
-            </a>
-        </li>
+<div class="container-fluid content-div">
 
-        <li>
-            <a href="/trial/{{ trial.TrialId }}">
-                Trial: {{ trial.Name }}
-            </a>
-        </li>
-        <li class="active">
-            Patient: {{ patient.PatientPin }}
-        </li>
-    </ol>
+    <!-- Breadcrumb Row -->
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/trial/{{breadCrumbData.TrialId}}/dashboard">Trial: {{breadCrumbData.Name}}</a></li>
+                <li class="active">Patient: {{breadCrumbData.PatientPin}}</li>
+            </ol>
+        </div>
+    </div>
 
     <!-- Survey Graph Row -->
     <div class="row">
-        <div class="col-sm-12 ">
-             <div class="card card-info-outline white-background">
+        <div class="col-md-12">
+            <div class="card card-info-outline">
                 <div class="card-header white-background">
-                    <div style="text-align:center" class ="white-background">
-                        <a href="#" id="survey-chart" class="active" onclick="return showChart('survey');">Survey Chart</a>
-                        <span> | </span>
-                        <a href="#" onclick="return showChart('scores');" id="scores-chart" class="">Scores Chart</a>
+                    <h5>
+                        Activity Compliance
 
                         <span class="pull-right">
-                            <a href ="/patient/survey-detail/{{ patient.PatientPin }}"  class="btn btn-primary btn-sm" >
+                            <a href ="/patient/{{breadCrumbData.PatientPin}}/task/survey-compliance-detail"  class="btn btn-primary btn-sm" >
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
                         </span>
-                    </div>
+                    </h5>
                 </div>
-                 <div class="row">
-                     <div class="col-sm-12">
-                         <div id="surveyChartCanvasDiv" class="card">
-                             <canvas id="surveyComplianceChart" width="400" height="100px"></canvas>
-                         </div>
-                     </div>
-                 </div>
-                 <div class="row">
-                     <div class="col-sm-12">
-                         <div id="scoresChartCanvasDiv" class="card" style="display:none">
-                             <canvas id="scoresComplianceChart" width="400" height="100px"></canvas>
-                         </div>
-                     </div>
-                 </div>
+                <div class="card-block white-background">
+                    <canvas id="complianceGraph" width="400" height="100px"></canvas>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -63,7 +45,7 @@
                         Pattern Comparison
 
                         <span class="pull-right">
-                            <a href="/patient/{{patient.PatientPin}}/task/pattern-comparison" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{breadCrumbData.PatientPin}}/task/pattern-comparison" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -85,7 +67,7 @@
                         Finger Tapping
 
                         <span class="pull-right">
-                            <a href="/patient/{{patient.PatientPin}}/task/finger-tapping" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{breadCrumbData.PatientPin}}/task/finger-tapping" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -111,7 +93,7 @@
                         Spatial Span
 
                         <span class="pull-right">
-                            <a href="/patient/{{patient.PatientPin}}/task/spatial-span" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{breadCrumbData.PatientPin}}/task/spatial-span" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -133,7 +115,7 @@
                         Flanker Test
 
                         <span class="pull-right">
-                            <a href="/patient/{{patient.PatientPin}}/task/flanker-test" class="btn btn-sm btn-primary">
+                            <a href="/patient/{{breadCrumbData.PatientPin}}/task/flanker-test" class="btn btn-sm btn-primary">
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
@@ -149,41 +131,17 @@
     </div>
     <br />
 
-
-
 </div>
 
-{{> remember-patient-pin}}
-
-<script>
-    window.dates = JSON.parse('{{{ datesJson }}}');
-    window.taps = JSON.parse('{{{ tapsJson }}}');
-    window.spatialSpans = JSON.parse('{{{spatialJson}}}');
-    window.flankerTests = JSON.parse('{{{flankerTests}}}');
-    window.patternComparisons = JSON.parse('{{{patternComparisons}}}');
-    window.clinicalValues = JSON.parse('{{{ clinicalValues }}}');
-    window.surveysummary = JSON.parse('{{{ surveySummaryChart }}}');
-
-    function showChart (type) {
-        if (type === 'scores') {
-            document.getElementById('scoresChartCanvasDiv').style.display = 'block';
-            document.getElementById('surveyChartCanvasDiv').style.display = 'none';
-            document.getElementById('scores-chart').classList.add('active');
-            document.getElementById('survey-chart').classList.remove('active');
-        } else {
-            document.getElementById('surveyChartCanvasDiv').style.display = 'block';
-            document.getElementById('scoresChartCanvasDiv').style.display = 'none';
-            document.getElementById('survey-chart').classList.add('active');
-            document.getElementById('scores-chart').classList.remove('active');
-        }
-
-        return false;
-    }
+<script type="text/javascript">
+    window.complianceChartData = JSON.parse('{{{ complianceChartData }}}');
+    window.patternComparisons = JSON.parse('{{{ patternComparisonChartData }}}');
+    window.taps = JSON.parse('{{{fingerTappingChartData}}}');
+    window.spatialSpans = JSON.parse('{{{spatialSpanChartData}}}');
+    window.flankerTests = JSON.parse('{{{flankerTestChartData}}}');
 </script>
-
 <script src="/static/script/epilepsypatient.js" defer></script>
+<script src="/static/script/patterncomparision.js" defer></script>
 <script src="/static/script/fingertapping.js" defer></script>
 <script src="/static/script/spatialspan.js" defer></script>
 <script src="/static/script/flankertest.js" defer></script>
-<script src="/static/script/patterncomparision.js" defer></script>
-

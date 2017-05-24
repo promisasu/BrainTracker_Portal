@@ -17,7 +17,7 @@ function getAllFlankerTestActivities(patientPin){
     });
 }
 
-function getRecentFiveFlankerTestActivities(patientPin){
+function getRecentFiveFlankerTests(patientPin){
     var rawQuery = "SELECT ft.* " +
         "FROM flanker as ft, patients as pt " +
         "WHERE ft.PatientPinFK = pt.PatientPin AND pt.PatientPin = :pin " +
@@ -142,4 +142,4 @@ module.exports.fetchFlankerTestActivitiesSelectData = generateSelectListData;
 module.exports.fetchAggregateChartData = generateAggregateChartData;
 module.exports.fetchAverageAccuracy = generateAverageAccuracyOfFlankerTests;
 module.exports.fetchFlankerTestActivitiesData = generateFlankerTestActivitiesData;
-module.exports.fetchRecentFiveActivities = getRecentFiveFlankerTestActivities;
+module.exports.fetchRecentFiveFlankerTests = getRecentFiveFlankerTests;

@@ -64,21 +64,6 @@ module.exports = [
     },
     {
         method: 'GET',
-        path: '/patient/tasks/{pin}',
-        handler: epilepsyPresenter,
-        config: {
-            validate: {
-                params: {
-                    pin: Joi
-                        .number()
-                        .integer()
-                        .positive()
-                }
-            }
-        }
-    },
-    {
-        method: 'GET',
         path: '/static/image/{param*}',
         handler: {
             directory: {
@@ -128,21 +113,6 @@ module.exports = [
         }
     },
     {
-        method: 'GET',
-        path: '/trial/{id}',
-        handler: trialPresenter,
-        config: {
-            validate: {
-                params: {
-                    id: Joi
-                        .number()
-                        .integer()
-                        .positive()
-                }
-            }
-        }
-    },
-    {
         method: 'POST',
         path: '/patient',
         handler: createPatient,
@@ -165,6 +135,36 @@ module.exports = [
                         .date()
                         .format('YYYY-MM-DD')
                         .min(Joi.ref('startDate'))
+                }
+            }
+        }
+    },
+    {
+        method: 'GET',
+        path: '/trial/{id}/dashboard',
+        handler: trialPresenter,
+        config: {
+            validate: {
+                params: {
+                    id: Joi
+                        .number()
+                        .integer()
+                        .positive()
+                }
+            }
+        }
+    },
+    {
+        method: 'GET',
+        path: '/patient/tasks/{pin}',
+        handler: epilepsyPresenter,
+        config: {
+            validate: {
+                params: {
+                    pin: Joi
+                        .number()
+                        .integer()
+                        .positive()
                 }
             }
         }

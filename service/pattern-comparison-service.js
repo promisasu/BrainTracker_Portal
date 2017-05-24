@@ -74,10 +74,9 @@ function generateAggregateChartData(patternComparisons){
         datasets: [
             {
                 label: "Pattern-Comparison Accuracy",
-                fillColor: "rgba(255, 52, 21, 0.2)",
+                fill: false,
                 pointColor: "#da3e2f",
                 strokeColor: "#da3e2f",
-                lineTension: 0.1,
                 backgroundColor: "rgba(231,76,60,0.4)",
                 borderColor: "rgba(231,76,60,1)",
                 borderCapStyle: 'butt',

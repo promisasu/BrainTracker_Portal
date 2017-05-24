@@ -1,37 +1,38 @@
 (function patient () {
     'use strict';
 
-    var isNewPatient = window.location.search;
-    var isNewPatientRegex = /newPatient=true/;
-
-    // Makes a copy of window.dates
-    var allDatesConfig = Object.create(window.dates);
-    var allClinicalValues = Object.create(window.clinicalValues);
-    var allsummaryValues = Object.create(window.surveysummary);
+    var compliances = Object.create(window.complianceChartData);
     var config = {
-        type: 'line',
-        data: '',
+        type: 'bar',
+        data: {},
         options: {
-            scales: {
+            animation: {
+                duration: 10
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data){
+                        return data.datasets[tooltipItem.datasetIndex].label + ": " + tooltipItem.yLabel + "%";
+                    }
+                }
+            },
+            scales:{
                 xAxes: [
                     {
-                        type: 'time',
-                        display: true,
-                        time: {
-                            format: 'MMDDYYYY HHmm',
-                            unit: 'week',
-                            round: 'day'
-                        },
+
+                        stacked: true,
+                        gridLines: { display: false },
                         scaleLabel: {
-                            show: true,
-                            labelString: ''
+                            display: true,
+                            labelString: 'Activities By Week',
+                            fontStyle: 'bold'
                         }
                     }
                 ],
                 yAxes: [
                     {
-                        id: 'y-axis-0',
-                        type: 'linear',
+                        stacked: true,
                         position: 'left',
                         ticks: {
                             max: 100,
@@ -40,63 +41,25 @@
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: '% Time left till this Activity expires',
-                            fontStyle: "bold"
-                        }
-                    },
-                    {
-                        id: 'y-axis-1',
-                        type: 'linear',
-                        position: 'right',
-                        ticks: {
-                            max: 100,
-                            min: 0
-                        },
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: '% Time left till this Activity expires',
+                            labelString: '% Complied',
                             fontStyle: "bold"
                         }
                     }
                 ]
-            }
+            },
+            legend: {display:true}
         }
     };
 
-   // var ctx = document.getElementById('complianceChartSummary').getContext('2d');
-    var surveyContext = document.getElementById('surveyComplianceChart').getContext('2d');
-    var scoresContext = document.getElementById('scoresComplianceChart').getContext('2d');
+    var complianceChartCanvas = document.getElementById('complianceGraph').getContext('2d');
 
-    var clinicalChartConfig = {
-        type: 'line',
-        options: {
-            scales: {
-                yAxes: [{
-                    stacked: false,
-                    display: false
-                }]
-            }
-        }
-    };
-    function redirect () {
-        window.location = '/';
-    }
+    config.data = compliances;
+    new Chart(complianceChartCanvas, config);
 
-    function warningMessage () {
-        alert('patient could not be deactivated');
-    }
+    // enable data-table
+    var complianceActivitiesTable = $('#complianceActivitiesTable').DataTable({
+        paging: true
+    });
+    complianceActivitiesTable.draw();
 
-
-
-    if (isNewPatientRegex.test(isNewPatient)) {
-        $('#remember-patient-dialog').modal('show');
-    }
-
-   // config.data = allDatesConfig;
-    config.data = allsummaryValues;
-    new Chart(surveyContext, config);
-
-    clinicalChartConfig.data = allClinicalValues;
-    new Chart(scoresContext, clinicalChartConfig);
 })();
