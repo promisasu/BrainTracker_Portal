@@ -56,5 +56,10 @@
     config.data = compliances;
     new Chart(complianceChartCanvas, config);
 
+    // enable data-table
+    var complianceActivitiesTable = $('#complianceActivitiesTable').DataTable({
+        paging: true
+    });
+    complianceActivitiesTable.draw();
 
 })();
