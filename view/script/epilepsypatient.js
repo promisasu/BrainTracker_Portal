@@ -1,36 +1,38 @@
 (function patient () {
     'use strict';
 
-    var isNewPatient = window.location.search;
-    var isNewPatientRegex = /newPatient=true/;
-
-    // Makes a copy of window.dates
-    var allDatesConfig = Object.create(window.dates);
-    var allsummaryValues = Object.create(window.surveysummary);
+    var compliances = Object.create(window.complianceChartData);
     var config = {
-        type: 'line',
-        data: '',
+        type: 'bar',
+        data: {},
         options: {
-            scales: {
+            animation: {
+                duration: 10
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data){
+                        return data.datasets[tooltipItem.datasetIndex].label + ": " + tooltipItem.yLabel + "%";
+                    }
+                }
+            },
+            scales:{
                 xAxes: [
                     {
-                        type: 'time',
-                        display: true,
-                        time: {
-                            format: 'MMDDYYYY HHmm',
-                            unit: 'week',
-                            round: 'day'
-                        },
+
+                        stacked: true,
+                        gridLines: { display: false },
                         scaleLabel: {
-                            show: true,
-                            labelString: ''
+                            display: true,
+                            labelString: 'Activities By Week',
+                            fontStyle: 'bold'
                         }
                     }
                 ],
                 yAxes: [
                     {
-                        id: 'y-axis-0',
-                        type: 'linear',
+                        stacked: true,
                         position: 'left',
                         ticks: {
                             max: 100,
@@ -39,49 +41,20 @@
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: '% Time left till this Activity expires',
-                            fontStyle: "bold"
-                        }
-                    },
-                    {
-                        id: 'y-axis-1',
-                        type: 'linear',
-                        position: 'right',
-                        ticks: {
-                            max: 100,
-                            min: 0
-                        },
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: '% Time left till this Activity expires',
+                            labelString: '% Complied',
                             fontStyle: "bold"
                         }
                     }
                 ]
-            }
+            },
+            legend: {display:true}
         }
     };
 
-   // var ctx = document.getElementById('complianceChartSummary').getContext('2d');
-    var surveyContext = document.getElementById('surveyComplianceChart').getContext('2d');
+    var complianceChartCanvas = document.getElementById('complianceGraph').getContext('2d');
 
-    function redirect () {
-        window.location = '/';
-    }
-
-    function warningMessage () {
-        alert('patient could not be deactivated');
-    }
-
-
-
-    if (isNewPatientRegex.test(isNewPatient)) {
-        $('#remember-patient-dialog').modal('show');
-    }
-
-    config.data = allsummaryValues;
-    new Chart(surveyContext, config);
+    config.data = compliances;
+    new Chart(complianceChartCanvas, config);
 
 
 })();

@@ -76,9 +76,6 @@ function generateSpatialSpanChartData(spatialSpanActivities){
         chartData.datasets[1].data.push(calculateMaxLevel(instance.answers));
     });
 
-    console.log(chartData);
-    console.log(JSON.stringify(chartData));
-
     return JSON.stringify(chartData);
 }
 
@@ -138,7 +135,7 @@ function generateActivitiesData(spatialSpanActivities){
     return activitiesData;
 }
 
-function getRecentFiveActivities(patientPin){
+function getRecentFiveSpatialSpans(patientPin){
 
     var rawQuery = "SELECT ss.* " +
         "FROM spatial_span as ss, patients as pt " +
@@ -158,4 +155,4 @@ module.exports.fetchSelectListData = generateSelectListData;
 module.exports.fetchSpatialSpanChartData = generateSpatialSpanChartData;
 module.exports.fetchAverageAccuracy = generateAverageAccuracy;
 module.exports.fetchActivitiesData = generateActivitiesData;
-module.exports.fetchRecentFiveActivities = getRecentFiveActivities;
+module.exports.fetchRecentFiveSpatialSpans = getRecentFiveSpatialSpans;

@@ -1,45 +1,37 @@
-<div class="container-fluid">
-    <br>
-    <ol class="breadcrumb">
-        <li>
-            <a href="/">
-                Dashboard
-            </a>
-        </li>
+<div class="container-fluid content-div">
 
-        <li>
-            <a href="/trial/{{ trial.TrialId }}">
-                Trial: {{ trial.Name }}
-            </a>
-        </li>
-        <li class="active">
-            Patient: {{ patient.PatientPin }}
-        </li>
-    </ol>
+    <!-- Breadcrumb Row -->
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/trial/{{breadCrumbData.TrialId}}/dashboard">Trial: {{breadCrumbData.Name}}</a></li>
+                <li class="active">Patient: {{breadCrumbData.PatientPin}}</li>
+            </ol>
+        </div>
+    </div>
 
     <!-- Survey Graph Row -->
     <div class="row">
-        <div class="col-sm-12 ">
-             <div class="card card-info-outline white-background">
+        <div class="col-md-12">
+            <div class="card card-info-outline">
                 <div class="card-header white-background">
-                    <h4 class ="card-title white-background">
-                        Surveys
+                    <h5>
+                        Compliance
+
                         <span class="pull-right">
                             <a href ="/patient/survey-detail/{{ patient.PatientPin }}"  class="btn btn-primary btn-sm" >
                                 <i class="fa fa-list-alt"></i>
                                 View Detail
                             </a>
                         </span>
-                    </h4>
+                    </h5>
                 </div>
-                 <div class="row">
-                     <div class="col-sm-12">
-                         <div id="surveyChartCanvasDiv" class="card">
-                             <canvas id="surveyComplianceChart" width="400" height="100px"></canvas>
-                         </div>
-                     </div>
-                 </div>
+                <div class="card-block white-background">
+                    <canvas id="complianceGraph" width="400" height="100px"></canvas>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -139,25 +131,17 @@
     </div>
     <br />
 
-
-
 </div>
 
-{{> remember-patient-pin}}
-
-<script>
-    window.dates = JSON.parse('{{{ datesJson }}}');
-    window.taps = JSON.parse('{{{ tapsJson }}}');
-    window.spatialSpans = JSON.parse('{{{spatialJson}}}');
-    window.flankerTests = JSON.parse('{{{flankerTests}}}');
-    window.patternComparisons = JSON.parse('{{{patternComparisons}}}');
-    window.surveysummary = JSON.parse('{{{ surveySummaryChart }}}');
-
+<script type="text/javascript">
+    window.complianceChartData = JSON.parse('{{{ complianceChartData }}}');
+    window.patternComparisons = JSON.parse('{{{ patternComparisonChartData }}}');
+    window.taps = JSON.parse('{{{fingerTappingChartData}}}');
+    window.spatialSpans = JSON.parse('{{{spatialSpanChartData}}}');
+    window.flankerTests = JSON.parse('{{{flankerTestChartData}}}');
 </script>
-
 <script src="/static/script/epilepsypatient.js" defer></script>
+<script src="/static/script/patterncomparision.js" defer></script>
 <script src="/static/script/fingertapping.js" defer></script>
 <script src="/static/script/spatialspan.js" defer></script>
 <script src="/static/script/flankertest.js" defer></script>
-<script src="/static/script/patterncomparision.js" defer></script>
-
