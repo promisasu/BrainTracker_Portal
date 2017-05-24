@@ -5,7 +5,7 @@
 const database = require('../model');
 const moment = require('moment');
 const viewDateTimeFormat = "MM/DD/YYYY hh:mm a";
-const utilityService = require('./utility-service');
+const chartDateFormat = "MM/DD/YYYY";
 
 // captions
 const PATTERN_COMPARISON = 'Pattern-Comparison';
@@ -23,7 +23,7 @@ function getPatientComplianceData(patientPin){
     var rawQuery = "SELECT ai.* " +
         " FROM activity_instance as ai, patients as pa " +
         " WHERE ai.PatientPinFk = pa.PatientPin AND pa.PatientPin = :pin " +
-        "   AND ai.ActivityTitle in ('Pattern-Comparison', 'Finger-Tapping', 'Spatial-Span', 'Flanker-Test', 'Epilepsy Weekly Survey') ";
+        "   AND ai.ActivityTitle in ('Pattern-Comparison', 'Finger-Tapping', 'Spatial-Span', 'Flanker-Test', 'Epilepsy Weekly Survey') ORDER BY ai.StartTime";
 
     return database.sequelize.query(rawQuery, {
         replacements: {pin: patientPin},
@@ -80,59 +80,113 @@ function generateLabelsAndDataPropertyOfChart(queryResults){
 
     queryResults.forEach(function(row){
         // format the date-time relative to date
-        row.StartTime = moment.utc(row.StartTime).format(viewDateTimeFormat);
-        row.EndTime = moment.utc(row.EndTime).format(viewDateTimeFormat);
+        row.StartTime = moment.utc(row.StartTime).format(chartDateFormat);
+        row.EndTime = moment.utc(row.EndTime).format(chartDateFormat);
 
         // for labels
         weeks.push(row.StartTime+' - '+row.EndTime);
         complianceData = getIndividualActivityCompliance(row, complianceData);
     });
 
-    return {labels: getUniqueElements(weeks), complianceData: complianceData};
+    var chartLabels = getUniqueElements(weeks);
+    complianceData = addDummyData(complianceData, chartLabels.length);
+
+    return {labels: chartLabels, complianceData: complianceData};
 }
 
 function getIndividualActivityCompliance(instance, complianceData){
     var totalActivities = 5;
 
     if (instance.State === COMPLETED) {
-        switch (instance.activityTitle){
-            case PATTERN_COMPARISON:
+        switch (instance.activityTitle.toLowerCase()){
+            case PATTERN_COMPARISON.toLowerCase():
                 complianceData.patternComparison.push(100/totalActivities);
                 break;
-            case FINGER_TAPPING:
+            case FINGER_TAPPING.toLowerCase():
                 complianceData.fingerTapping.push(100/totalActivities);
                 break;
-            case SPATIAL_SPAN:
+            case SPATIAL_SPAN.toLowerCase():
                 complianceData.spatialSpan.push(100/totalActivities);
                 break;
-            case FLANKER_TEST:
+            case FLANKER_TEST.toLowerCase():
                 complianceData.flankerTest.push(100/totalActivities);
                 break;
-            case WEEKLY_SURVEY:
+            case WEEKLY_SURVEY.toLowerCase():
                 complianceData.weeklySurvey.push(100/totalActivities);
                 break;
             default:
             // do nothing
         }
     } else {
-        switch (instance.activityTitle){
-            case PATTERN_COMPARISON:
+        switch (instance.activityTitle.toLowerCase()){
+            case PATTERN_COMPARISON.toUpperCase():
                 complianceData.patternComparison.push(0);
                 break;
-            case FINGER_TAPPING:
+            case FINGER_TAPPING.toLowerCase():
                 complianceData.fingerTapping.push(0);
                 break;
-            case SPATIAL_SPAN:
+            case SPATIAL_SPAN.toLowerCase():
                 complianceData.spatialSpan.push(0);
                 break;
-            case FLANKER_TEST:
+            case FLANKER_TEST.toLowerCase():
                 complianceData.flankerTest.push(0);
                 break;
-            case WEEKLY_SURVEY:
+            case WEEKLY_SURVEY.toLowerCase():
                 complianceData.weeklySurvey.push(0);
                 break;
             default:
             // do nothing
+        }
+    }
+
+    return complianceData;
+}
+
+function addDummyData(complianceData, totalLabels){
+    var loopCounter = 0;
+
+    // pattern-comparison
+    if (complianceData.patternComparison.length < totalLabels){
+        loopCounter = totalLabels-complianceData.patternComparison.length;
+
+        for (var i = 0; i< loopCounter; i++){
+            complianceData.patternComparison.push(0);
+        }
+    }
+
+    // finger-tapping
+    if (complianceData.fingerTapping.length < totalLabels){
+        loopCounter = totalLabels-complianceData.fingerTapping.length;
+
+        for (var i = 0; i< loopCounter; i++){
+            complianceData.fingerTapping.push(0);
+        }
+    }
+
+    // spatial-span
+    if (complianceData.spatialSpan.length < totalLabels){
+        loopCounter = totalLabels-complianceData.spatialSpan.length;
+
+        for (var i = 0; i< loopCounter; i++){
+            complianceData.spatialSpan.push(0);
+        }
+    }
+
+    // flanker-test
+    if (complianceData.flankerTest.length < totalLabels){
+        loopCounter = totalLabels-complianceData.flankerTest.length;
+
+        for (var i = 0; i< loopCounter; i++){
+            complianceData.flankerTest.push(0);
+        }
+    }
+
+    // weekly-survey
+    if (complianceData.weeklySurvey.length < totalLabels){
+        loopCounter = totalLabels-complianceData.weeklySurvey.length;
+
+        for (var i = 0; i< loopCounter; i++){
+            complianceData.weeklySurvey.push(0);
         }
     }
 
