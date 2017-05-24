@@ -69,12 +69,21 @@ function generateSpatialSpanChartData(spatialSpanActivities){
             }
         ]
     };
+  
+    // add dummy non-rendering points to left and right by using empty string labels and null value when
+    // only one data-point is available
 
-    spatialSpanActivities.forEach(function(instance){
-        chartData.labels.push(instance.CreatedAt);
-        chartData.datasets[0].data.push(calculateAccuracy(instance.answers));
-        chartData.datasets[1].data.push(calculateMaxLevel(instance.answers));
-    });
+    if (spatialSpanActivities.length === 1) {
+        chartData.labels = ["", spatialSpanActivities[0].CreatedAt, ""];
+        chartData.datasets[0].data = [null, calculateAccuracy(spatialSpanActivities[0].answers), null];
+        chartData.datasets[1].data = [null, calculateMaxLevel(spatialSpanActivities[0].answers), null];
+    } else {
+        spatialSpanActivities.forEach(function(instance){
+            chartData.labels.push(instance.CreatedAt);
+            chartData.datasets[0].data.push(calculateAccuracy(instance.answers));
+            chartData.datasets[1].data.push(calculateMaxLevel(instance.answers));
+        });
+    }
 
     return JSON.stringify(chartData);
 }

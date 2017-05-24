@@ -125,14 +125,24 @@ function generateFingerTappingChartData(fingerTapping){
         ]
     };
 
-    fingerTapping.forEach(function(tap){
-        // populate the labels array
-        chartData.labels.push(tap.CreatedAt);
+    // add dummy non-rendering points to left and right by using empty string labels and null value when
+    // only one data-point is available
 
-        // populate the datasets
-        chartData.datasets[0].data.push(tap.result.right);
-        chartData.datasets[1].data.push(tap.result.left);
-    });
+    if (fingerTapping.length === 1) {
+        chartData.labels = ["", fingerTapping[0].CreatedAt, ""];
+        chartData.datasets[0].data = [null, fingerTapping[0].result.right, null];
+        chartData.datasets[1].data = [null, fingerTapping[0].result.left, null];
+
+    } else {
+        fingerTapping.forEach(function(tap){
+            // populate the labels array
+            chartData.labels.push(tap.CreatedAt);
+
+            // populate the datasets
+            chartData.datasets[0].data.push(tap.result.right);
+            chartData.datasets[1].data.push(tap.result.left);
+        });
+    }
 
     return JSON.stringify(chartData);
 }
