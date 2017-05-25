@@ -111,7 +111,9 @@ function setup (configuration) {
     // establish relationships between tables
 
     /* ===== ONE TO MANY ===== */
-    trial.hasMany(stage);
+    trial.hasMany(stage, {foreignKey: 'TrialId'});
+
+    // TODO -- survey-instance is activity_instance table
     patient.hasMany(surveyInstance);
     patient.hasMany(fingerTapping);
     patient.hasMany(spatialSpan);
