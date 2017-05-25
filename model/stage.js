@@ -5,7 +5,7 @@
  */
 
 const Sequelize = require('sequelize');
-const database = require('./trial');
+const Trial = require('./trial');
 
 /**
  * Registers model with Sequelize
@@ -18,8 +18,6 @@ function register (sequelize) {
      * @typedef {Object} Stage
      * @property {String} name - name of the Stage
      */
-
-    const Trial = database;
 
     sequelize.define(
         'stage',

@@ -113,14 +113,15 @@ function setup (configuration) {
     /* ===== ONE TO MANY ===== */
     trial.hasMany(stage, {foreignKey: 'TrialId'});
 
-    // TODO -- survey-instance is activity_instance table
+    // NOTE -- survey-instance is activity_instance table
     patient.hasMany(surveyInstance);
+
     patient.hasMany(fingerTapping);
     patient.hasMany(spatialSpan);
     patient.hasMany(flankerTest);
     patient.hasMany(patternComparison);
 
-    stage.hasMany(patient);
+    stage.hasMany(patient, {foreignKey: 'StageIdFK'});
     surveyTemplate.hasMany(surveyInstance);
     surveyInstance.hasMany(questionResult);
     questionTemplate.hasMany(questionOption);
