@@ -4,10 +4,9 @@
  * @module controller/handler/create-patient
  */
 
-const boom = require('boom');
+// import modules
 const database = require('../../model');
-const trialOffset = 1000;
-const createSurvey = require('../helper/create-survey-instance');
+const utilityService = require('../../service/utility-service');
 
 /**
  * Creates a new Patient
@@ -16,90 +15,62 @@ const createSurvey = require('../helper/create-survey-instance');
  * @returns {Null} Redirect
  */
 function createPatient (request, reply) {
-    const patient = database.sequelize.model('patient');
-    const trial = database.sequelize.model('trial');
-    const stage = database.sequelize.model('stage');
-    const joinStageSurveys = database.sequelize.model('join_stages_and_surveys');
-    let transaction = null;
-    let newPatient = null;
-    let pin = null;
+    // TODO -- Work in Progress
 
-    database
-    .sequelize
-    .transaction()
-    .then((newTransaction) => {
-        transaction = newTransaction;
+    console.log(request.payload);
+    console.log('==========');
 
-        // Get Trial the patient will be added to
-        return trial.findById(request.payload.trialId, {transaction});
-    })
-    // Get next availible Patient Pin
-    .then((currentTrial) => {
-        pin = currentTrial.id * trialOffset + currentTrial.patientPinCounter;
+    const patientPin = request.payload.patientPin;
+    const trialId = request.payload.trialId;
+    const startDate = request.payload.startDate;
 
-        return currentTrial.increment({patientPinCounter: 1}, {transaction});
-    })
-    // Create the new Patient
-    .then(() => {
-        const dateStarted = request.payload.startDate;
-        const dateCompleted = request.payload.endDate;
+    Promise.all([
+        utilityService.fetchPatient(patientPin),
+        utilityService.fetchTrialDetails(trialId),
+        utilityService.fetchStagesOfTrial(trialId)
+    ]).then(function(values){
 
-        return patient.create({pin, dateStarted, dateCompleted}, {transaction});
-    })
-    // Get stage that patient belongs to
-    .then((tempPatient) => {
-        newPatient = tempPatient;
+        var patientQueryResult = values[0]; // should be empty
+        var trialQueryResult = values[1];   // should not be empty
+        var stagesQueryResult = values[2];  // should not be empty
 
-        return stage.findById(request.payload.stageId, {transaction});
-    })
-    // Add patient to stage
-    .then((currentStage) => {
-        return currentStage.addPatient(newPatient, {transaction});
-    })
-    // Collect the surveyTemplateId for the stage associated to the patient
-    .then(() => {
-        return joinStageSurveys.findOne(
-            {
-                where: {
-                    stageId: request.payload.stageId,
-                    stagePriority: 0
-                },
-                transaction
+        console.log(patientQueryResult);
+        console.log(trialQueryResult);
+        console.log(stagesQueryResult);
+
+        var responseObject = {status: "error", "message": '', data: null};
+        var responseCode = 500;
+
+        if (patientQueryResult.length === 0) {
+
+            if (trialQueryResult.length === 1) {
+
+                if (stagesQueryResult.length === 1) {
+
+                    const patient = database.sequelize.model('patient');
+                    const stage = database.sequelize.model('stage');
+                    //const activityInstance = database.sequelize.model('activity_instance');
+
+                    var stageId = stagesQueryResult[0].StageId;
+                    console.log(stageId);
+
+                    // TODO - create patient first, then create activityInstances, calculate EndDate
+
+                } else {
+                    responseObject.message = "No Trial Stage exist for this trial!";
+                }
+            } else {
+                responseObject.message = "No Such Trial exists!";
             }
-        );
-    })
-    // Create first survey instance as per the surveyTemplateId for the patient
-    .then((data) => {
-        const startDate = request.payload.startDate;
-        const openUnit = 'day';
-        let openFor = null;
-
-        if (data.rule === 'daily') {
-            openFor = 1;
         } else {
-            openFor = 2;
+            responseObject.message = "Patient already exists!";
         }
 
-        return createSurvey(
-            pin,
-            data.surveyTemplateId,
-            startDate,
-            openFor,
-            openUnit,
-            transaction
-        );
-    })
-    // Commit the transaction
-    .then(() => {
-        return transaction.commit();
-    })
-    .then(() => {
-        return reply.redirect(`/patient/${newPatient.pin}?newPatient=true`);
-    })
-    .catch((err) => {
-        transaction.rollback();
-        request.log('error', err);
-        reply(boom.badRequest('Patient could not be created'));
+        return reply(responseObject).code(responseCode);
+
+    }).catch(function(err){
+        console.log(err);
+        return reply({code: 500, message: 'Something went Wrong!'}).code(500);
     });
 }
 

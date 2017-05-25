@@ -15,6 +15,7 @@ const epilepsyPresenter = require('./handler/patientepilepsy');
 const surveyPresenter = require('./handler/survey');
 
 const patientTaskHandler = require('./handler/patient-task-handler');
+const enrollPatientPresenter = require('./handler/enroll-patient-handler');
 
 const minimumNameLength = 3;
 const minimumIrbLength = 4;
@@ -113,33 +114,6 @@ module.exports = [
         }
     },
     {
-        method: 'POST',
-        path: '/patient',
-        handler: createPatient,
-        config: {
-            validate: {
-                payload: {
-                    stageId: Joi
-                        .number()
-                        .integer()
-                        .positive(),
-                    trialId: Joi
-                        .number()
-                        .integer()
-                        .positive(),
-                    startDate: Joi
-                        .date()
-                        .format('YYYY-MM-DD')
-                        .min(moment().startOf('day').toDate()),
-                    endDate: Joi
-                        .date()
-                        .format('YYYY-MM-DD')
-                        .min(Joi.ref('startDate'))
-                }
-            }
-        }
-    },
-    {
         method: 'GET',
         path: '/trial/{id}/dashboard',
         handler: trialPresenter,
@@ -153,6 +127,16 @@ module.exports = [
                 }
             }
         }
+    },
+    {
+        method: 'GET',
+        path: '/trial/{id}/enroll-patient',
+        handler: enrollPatientPresenter
+    },
+    {
+        method: 'POST',
+        path: '/patient/enroll',
+        handler: createPatient
     },
     {
         method: 'GET',

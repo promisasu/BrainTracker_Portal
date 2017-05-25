@@ -1,0 +1,54 @@
+<div class="container-fluid content-div">
+
+    <!-- Breadcrumb Row -->
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/trial/{{trial.TrialId}}/dashboard">Trial: {{trial.Name}}</a></li>
+                <li class="active">Enroll Patient</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Enroll Patient Form ROw -->
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+
+            <div class="card card-primary-outline">
+                <div class="card-header white-background">
+                    <h5>Enroll New Patient</h5>
+                </div>
+                <div class="card-block white-background">
+
+                    <div id="error-message-div" class="alert alert-danger hide" role="alert">
+                        <span id="error-message"></span>
+                    </div>
+
+                    <form id="enrollPatientForm" method="post" action="/patient/enroll">
+                        <div class="form-group row">
+                            <label for="patientPin" class="col-sm-2"><strong class="middle-vertical-align">Patient Pin</strong></label>
+                            <div class="col-sm-10">
+                                <input id="patientPin" name="patientPin" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="startDate" class="col-sm-2"><strong class="middle-vertical-align">Start Date</strong></label>
+                            <div class="col-sm-10">
+                                <input id="startDate" name="startDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+                        <input type="hidden" name="trialId" value="{{trial.TrialId}}" />
+
+                        <input type="submit" class="btn btn-sm btn-success col-sm-offset-2" value="Enroll" />
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="/static/script/enroll-patient.js" defer></script>
