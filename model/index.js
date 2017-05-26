@@ -12,6 +12,7 @@ const addTrialModel = require('./trial');
 const addPatientModel = require('./patient');
 const addStage = require('./stage');
 const addSurveyTemplateModel = require('./survey-template');
+const addActivityInstanceModel = require('./activity-instance');
 const addSurveyInstanceModel = require('./survey-instance');
 const addQuestionTemplateModel = require('./question-template');
 const addQuestionResultModel = require('./question-result');
@@ -67,6 +68,7 @@ function setup (configuration) {
     addPatientModel(sequelize);
     addStage(sequelize);
     addSurveyTemplateModel(sequelize);
+    addActivityInstanceModel(sequelize);
     addSurveyInstanceModel(sequelize);
     addQuestionTemplateModel(sequelize);
     addQuestionResultModel(sequelize);
@@ -95,6 +97,7 @@ function setup (configuration) {
     const questionResult = sequelize.model('question_result');
     const questionOption = sequelize.model('question_option');
     const questionTemplate = sequelize.model('question_template');
+    const activityInstance = sequelize.model('activity-instance');
     const surveyInstance = sequelize.model('survey_instance');
     const surveyTemplate = sequelize.model('survey_template');
     const fingerTapping = sequelize.model('finger-tapping');
@@ -112,9 +115,8 @@ function setup (configuration) {
 
     /* ===== ONE TO MANY ===== */
     trial.hasMany(stage, {foreignKey: 'TrialId'});
-
-    // NOTE -- survey-instance is activity_instance table
     patient.hasMany(surveyInstance);
+    patient.hasMany(activityInstance, {foreignKey: 'PatientPinFK'});
 
     patient.hasMany(fingerTapping);
     patient.hasMany(spatialSpan);
