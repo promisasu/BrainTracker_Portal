@@ -55,8 +55,7 @@ function register (sequelize) {
 
             },
             ParentPinFK:{
-                type: Sequelize.INTEGER,
-                allowNull: false
+                type: Sequelize.INTEGER
             },
             type:{
                 type: Sequelize.ENUM,

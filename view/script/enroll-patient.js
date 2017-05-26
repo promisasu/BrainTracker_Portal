@@ -1,7 +1,6 @@
 (function enrollPatient () {
     'use strict';
 
-    // TODO -- change the implementation of form submission for ajax
     $("#enrollPatientForm").submit(function (event) {
         // stop from submitting normally
         event.preventDefault();
@@ -15,34 +14,48 @@
 
         if (patientPin !== '') {
             if (moment(startDate).isValid()) {
-                if (!moment.utc(startDate).isBefore(moment.utc(), 'day')) {
+
+                // adding time to startDate
+                startDate += " 00:00:00";
+
+                var currentDate = moment();
+                var startDateObject = moment(new Date(startDate));
+                var startDateCheck = startDateObject.isBefore(currentDate, 'day');
+
+                if (!startDateCheck) {
 
                     // ajax post request
-                    var posting = $.post(url, $( "#enrollPatientForm" ).serialize());
+                    var posting = $.post(url, {patientPin: patientPin, startDate: new Date(startDate), trialId: trialId});
 
                     posting.done(function(data){
                         console.log(data);
                         console.log('done');
+
+                        hideErrorMessage();
+                        showSuccessMessage(data.message);
                     });
 
                     posting.fail(function(err){
+                        hideSuccessMessage();
                         showErrorMessage(err.responseJSON.message);
                     });
 
-
                 } else {
+                    hideSuccessMessage();
                     showErrorMessage('Start Date must be a minimum of today!');
                 }
             } else {
+                hideSuccessMessage();
                 showErrorMessage('Invalid Start Date!');
             }
         } else {
+            hideSuccessMessage();
             showErrorMessage('Invalid Patient Pin!');
         }
     });
 
     setTimeout(function() {
-        console.log('in timeout call');
+        hideSuccessMessage();
         hideErrorMessage();
     }, 5000);
 
@@ -56,6 +69,17 @@
         $('#error-message-div').removeClass('show');
         $('#error-message-div').addClass('hide');
     };
+
+    function showSuccessMessage(message){
+        $('#success-message-div').removeClass('hide');
+        $('#success-message-div').addClass('show');
+        $('#success-message').html(message);
+    }
+
+    function hideSuccessMessage(){
+        $('#success-message-div').removeClass('show');
+        $('#success-message-div').addClass('hide');
+    }
 }());
 
 

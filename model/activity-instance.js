@@ -48,7 +48,7 @@ function register (sequelize) {
 
             },
             PatientPinFK:{
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING,
                 references: {
                     model: Patient,
                     key: 'PatientPin'
