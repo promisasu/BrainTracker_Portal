@@ -45,30 +45,28 @@ function createPatient (request, reply) {
                 if (stageInstance !== null) {
                     var weeklyDates = getWeeklyDates(request.payload.startDate);
 
-                    // TODO -- patient and activityInstance creation should be in a transaction
+                    // create patient and activityInstances in a transaction
+                    database.sequelize.transaction(function(t){
+                        return Patient.create({
+                            PatientPin: request.payload.patientPin,
+                            DeviceType: 'android',
+                            DateStarted: weeklyDates.week1.startDate,
+                            DateCompleted: weeklyDates.week4.endDate,
+                            StageIdFK:stageInstance[0].dataValues.StageId,
+                            type: 'child'
+                        }, {transaction: t}).then(function(currentPatient){
+                            var instances = generateActivityInstances(weeklyDates, currentPatient.dataValues.PatientPin);
 
-                    // create patient
-                    Patient.create({
-                        PatientPin: request.payload.patientPin, DeviceType: 'android', DateStarted: weeklyDates.week1.startDate,
-                        DateCompleted: weeklyDates.week4.endDate, StageIdFK:stageInstance[0].dataValues.StageId, type: 'child'})
-                    .then(function(currentPatient){
+                            return ActivityInstance.bulkCreate(instances, {transaction: t});
+                        })
+                    }).then(function(result){
 
-                        var instances = generateActivityInstances(weeklyDates, currentPatient.dataValues.PatientPin);
+                        responseObject.status = "success";
+                        responseObject.message = "Patient Enrolled Successfully!";
+                        responseCode = 200;
 
-                        //bulkCreate activity_instance for trial period
-                        ActivityInstance.bulkCreate(instances).then(function(){
+                        return reply(responseObject).code(responseCode);
 
-                            responseObject.status = "success";
-                            responseObject.message = "Patient Enrolled Successfully!";
-                            responseCode = 200;
-
-                            return reply(responseObject).code(responseCode);
-                        }).catch(function(err){
-                            console.log(err);
-                            responseObject.message = err.message;
-
-                            return reply(responseObject).code(responseCode);
-                        });
                     }).catch(function(err){
                         console.log(err);
                         responseObject.message = err.message;
