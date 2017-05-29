@@ -49,7 +49,7 @@ function getTrialIds(patientPin){
     " JOIN stage AS st "+
     " ON st.StageId = pa.StageIdFK "+
     " JOIN trial AS tr "+
-    " ON tr.TrialId = st.TrialId "
+    " ON tr.TrialId = st.TrialId "+
     " WHERE pa.PatientPin = :pin ";
 
     return database.sequelize.query(rawQuery, {
@@ -73,9 +73,33 @@ function getTrialListForDashboard(){
     });
 }
 
+function getTrialDetails(trialId){
+    var rawQuery = "SELECT tr.* " +
+        "FROM trial as tr " +
+        "WHERE tr.TrialId = :trialId";
+
+    return database.sequelize.query(rawQuery, {
+        type: database.sequelize.QueryTypes.SELECT,
+        replacements: {trialId: trialId}
+    })
+}
+
+function getStagesOfTrial(trialId){
+    var rawQuery = " SELECT st.* " +
+        " FROM stage as st, trial as tr " +
+        " WHERE st.TrialId = tr.TrialId and tr.TrialId = :trialId ";
+
+    return database.sequelize.query(rawQuery, {
+        type: database.sequelize.QueryTypes.SELECT,
+        replacements: {trialId: trialId}
+    })
+}
+
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
 module.exports.fetchPatientIds = getPatientIds;
 module.exports.fetchTrialsIds = getTrialIds;
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
 module.exports.fetchPatient = getPatient;
 module.exports.fetchTrialsForDashboard = getTrialListForDashboard;
+module.exports.fetchTrialDetails = getTrialDetails;
+module.exports.fetchStagesOfTrial = getStagesOfTrial;

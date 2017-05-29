@@ -69,7 +69,7 @@ function generateSpatialSpanChartData(spatialSpanActivities){
             }
         ]
     };
-
+  
     // add dummy non-rendering points to left and right by using empty string labels and null value when
     // only one data-point is available
 
@@ -144,7 +144,7 @@ function generateActivitiesData(spatialSpanActivities){
     return activitiesData;
 }
 
-function getRecentFiveActivities(patientPin){
+function getRecentFiveSpatialSpans(patientPin){
 
     var rawQuery = "SELECT ss.* " +
         "FROM spatial_span as ss, patients as pt " +
@@ -164,4 +164,4 @@ module.exports.fetchSelectListData = generateSelectListData;
 module.exports.fetchSpatialSpanChartData = generateSpatialSpanChartData;
 module.exports.fetchAverageAccuracy = generateAverageAccuracy;
 module.exports.fetchActivitiesData = generateActivitiesData;
-module.exports.fetchRecentFiveActivities = getRecentFiveActivities;
+module.exports.fetchRecentFiveSpatialSpans = getRecentFiveSpatialSpans;

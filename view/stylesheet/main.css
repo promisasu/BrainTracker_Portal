@@ -70,7 +70,7 @@ input[type='date'] {
 }
 
 .content-div{
-    min-height: 580px;
+    min-height: 680px;
     display: block;
 }
 
@@ -97,4 +97,8 @@ input[type='date'] {
 
 .card-list-item-bold{
     font-weight: bold;
+}
+
+.middle-vertical-align{
+    vertical-align: middle !important;
 }

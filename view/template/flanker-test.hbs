@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <ol class="breadcrumb">
                 <li><a href="/">Dashboard</a></li>
-                <li><a href="/trial/{{breadCrumbData.TrialId}}">Trial: {{breadCrumbData.Name}}</a></li>
+                <li><a href="/trial/{{breadCrumbData.TrialId}}/dashboard">Trial: {{breadCrumbData.Name}}</a></li>
                 <li><a href="/patient/tasks/{{breadCrumbData.PatientPin}}">Patient: {{breadCrumbData.PatientPin}}</a></li>
                 <li class="active">Flanker Test</li>
             </ol>
@@ -90,7 +90,7 @@
                     <div id="flankerTestActivityGraphDiv" class="col-md-6 hide">
                         <div class="card card-info-outline">
                             <div class="card-block white-background">
-                                <canvas id="flankerTestActivityGraph" height="154px" width="200"></canvas>
+                                <canvas id="flankerTestActivityGraph" height="140px" width="200"></canvas>
                             </div>
                         </div>
                     </div>

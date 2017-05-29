@@ -5,6 +5,7 @@
  */
 
 const Sequelize = require('sequelize');
+const Trial = require('./trial');
 
 /**
  * Registers model with Sequelize
@@ -17,20 +18,36 @@ function register (sequelize) {
      * @typedef {Object} Stage
      * @property {String} name - name of the Stage
      */
+
     sequelize.define(
         'stage',
         {
-            name: {
+            StageId:{
+                type: Sequelize.STRING,
+                primaryKey: true
+            },
+            Name: {
                 type: Sequelize.STRING,
                 allowNull: false,
                 validate: {
                     notEmpty: true
                 }
+            },
+            TrialId:{
+                type: Sequelize.INTEGER,
+                references:{
+                    // This is a reference to another model
+                    model: Trial,
+
+                    // column name of the referenced Table
+                    key: 'TrialId'
+                }
             }
         },
         {
             freezeTableName: true,
-            paranoid: true
+            paranoid: true,
+            tableName: "stage"
         }
     );
 }

@@ -5,6 +5,7 @@
  */
 
 const Sequelize = require('sequelize');
+const Stage = require('./stage');
 
 /**
  * Registers model with Sequelize
@@ -25,31 +26,53 @@ function register (sequelize) {
     sequelize.define(
         'patient',
         {
-            pin: {
+            PatientPin: {
                 type: Sequelize.INTEGER,
-                unique: true,
-                allowNull: false
+                primaryKey: true
             },
-            deviceType: {
+            DeviceType: {
                 type: Sequelize.ENUM,
                 values: ['android', 'ios', 'windows']
             },
-            deviceVersion: {
+            DeviceVersion: {
                 type: Sequelize.STRING,
                 validate: {
                     is: /^[a-z0-9. ]+$/
                 }
             },
-            dateStarted: {
+            DateStarted: {
                 type: Sequelize.DATE
             },
-            dateCompleted: {
+            DateCompleted: {
                 type: Sequelize.DATE
+            },
+            StageIdFK:{
+                type: Sequelize.INTEGER,
+                references: {
+                    model: Stage,
+                    key: 'StageIdFK'
+                }
+
+            },
+            ParentPinFK:{
+                type: Sequelize.INTEGER
+            },
+            type:{
+                type: Sequelize.ENUM,
+                values: ['child', 'adult', 'parent']
+            },
+            HydroxyureaPrescribed:{
+                type: Sequelize.STRING
+            },
+            EnhancedContent:{
+                type: Sequelize.BOOLEAN
             }
         },
         {
             freezeTableName: true,
-            paranoid: true
+            paranoid: true,
+            tableName: 'patients',
+            timestamps: false
         }
     );
 }

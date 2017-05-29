@@ -1,6 +1,7 @@
 'use strict';
 
 // import modules
+const complianceDetailPresenter = require('./compliance-detail-handler');
 const patternComparisonPresenter = require('./pattern-comparison-handler');
 const fingerTappingPresenter = require('./finger-tapping-handler');
 const spatialSpanPresenter = require('./spatial-span-handler');
@@ -11,8 +12,6 @@ function patientTaskHandler(request, reply){
     const patientParams = request.params.pin.split('/');
     const patientPin = patientParams[0];
     const patientTask = patientParams[2];
-
-    // TODO -- validate if patient exists in db or not.
 
     if (isNaN(parseInt(patientPin))) {
         // invalid patient pin datatype
@@ -26,11 +25,16 @@ function patientTaskHandler(request, reply){
 
             var queryResults = values[0];
             if (queryResults.length === 0) {
-                console.log('Np Patient found with pin: ', patientPin);
+                console.log('No Patient found with pin: ', patientPin);
 
                 return reply.view('404').code(404);
             } else {
                 switch (patientTask){
+
+                    case 'survey-compliance-detail':
+                        complianceDetailPresenter(request, reply, patientPin);
+                        break;
+
                     case 'pattern-comparison':
                         patternComparisonPresenter(request, reply, patientPin);
                         break;
@@ -49,7 +53,7 @@ function patientTaskHandler(request, reply){
 
                     default:
                         console.log('Invalid Activity Selected: ', patientTask);
-                        reply.view('404');
+                        return reply.view('404');
                 }
             }
         });

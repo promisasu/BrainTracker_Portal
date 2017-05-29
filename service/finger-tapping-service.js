@@ -19,7 +19,7 @@ function getAllFingerTapping(patientPin){
         type: database.sequelize.QueryTypes.SELECT
     });
 }
-function getFiveFingerTapping(patientPin){
+function getRecentFiveFingerTappings(patientPin){
     var rawQuery = "SELECT ft.* " +
         "FROM finger_tapping AS ft, patients AS pt, activity_instance AS at, stage AS st, trial AS tr " +
         "WHERE ft.PatientPinFK = pt.PatientPin AND ft.ActivityInstanceIdFK = at.ActivityInstanceId AND " +
@@ -148,7 +148,7 @@ function generateFingerTappingChartData(fingerTapping){
 }
 
 module.exports.fetchAllFingerTapping = getAllFingerTapping;
-module.exports.fetchFiveFingerTapping = getFiveFingerTapping;
+module.exports.fetchRecentFiveFingerTappings = getRecentFiveFingerTappings;
 module.exports.fetchFormattedFingerTapping = generateFormattedFingerTapping;
 module.exports.fetchAverageTaps = generateAverageTaps;
 module.exports.fetchActivitiesData = generateFingerTappingActivitiesData;

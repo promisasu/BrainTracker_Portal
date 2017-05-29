@@ -69,11 +69,15 @@ function register (sequelize) {
                 type: Sequelize.INTEGER,
                 defaultValue: 0,
                 allowNull: false
+            },
+            Duration:{
+                type: Sequelize.INTEGER
             }
         },
         {
             freezeTableName: true,
-            paranoid: true
+            paranoid: true,
+            tableName: 'trial'
         }
     );
 }
