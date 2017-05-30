@@ -18,6 +18,7 @@ const WEEKLY_SURVEY = 'Epilepsy Weekly Survey';
 const PENDING = "pending";
 const IN_PROGRESS = "in progress";
 const COMPLETED = "completed";
+const EXPIRED = "expired";
 
 function getPatientComplianceData(patientPin){
     var rawQuery = "SELECT ai.* " +
@@ -203,13 +204,16 @@ function getUniqueElements(arr){
 
 function generateComplianceActivities(queryResults){
     queryResults.forEach(function(instance){
-        instance.StartTime = moment.utc(instance.StartTime).format(viewDateTimeFormat);
-        instance.EndTime = moment.utc(instance.EndTime).format(viewDateTimeFormat);
+        instance.StartTime = moment(new Date(instance.StartTime)).format(viewDateTimeFormat);
+        instance.EndTime = moment(new Date(instance.EndTime)).format(viewDateTimeFormat);
+
+        // modify/update the state of the instance
+        instance = getActivityInstanceState(instance);
+
         instance.status = getStatus(instance.State);
-        instance.State = capitalize(instance.State);
 
         if (instance.UserSubmissionTime !== null) {
-            instance.UserSubmissionTime = moment.utc(instance.UserSubmissionTime).format(viewDateTimeFormat);
+            instance.UserSubmissionTime = moment(new Date(instance.UserSubmissionTime)).format(viewDateTimeFormat);
         } else {
             instance.UserSubmissionTime = 'N/A';
         }
@@ -220,10 +224,10 @@ function generateComplianceActivities(queryResults){
 }
 
 function getStatus(state){
-    // success | warning | danger
+    // success | warning | info | danger
     var status = "danger";
 
-    switch (state){
+    switch (state.toLowerCase()){
         case COMPLETED:
             status = "success";
             break;
@@ -231,10 +235,27 @@ function getStatus(state){
             status = "warning";
             break;
         case PENDING:
+            status = "info";
+            break;
+        case EXPIRED:
             status = "danger";
+            break;
+        default:
+            // do nothing
     }
 
     return status;
+}
+
+function getActivityInstanceState(activityInstance){
+    // check if the state is pending and whether the endDate is passed, if yes set the state as 'Expired'
+    if (activityInstance.State === PENDING && moment().isAfter(new Date(activityInstance.EndTime))){
+        activityInstance.State = capitalize('expired');
+    } else {
+        activityInstance.State = capitalize(activityInstance.State);
+    }
+
+    return activityInstance;
 }
 
 function capitalize(str) {
@@ -244,11 +265,11 @@ function capitalize(str) {
 }
 
 function generateActivitiesStats(queryResults){
-    var stats = {completed: 0, inProgress: 0, pending:0};
-
+    var stats = {completed: 0, inProgress: 0, expired: 0, pending:0};
 
     queryResults.forEach(function(instance){
-        switch(instance.State){
+
+        switch(instance.State.toLowerCase()){
             case COMPLETED:
                 stats.completed++;
                 break;
@@ -257,6 +278,9 @@ function generateActivitiesStats(queryResults){
                 break;
             case PENDING:
                 stats.pending++;
+                break;
+            case EXPIRED:
+                stats.expired++;
                 break;
             default:
                 // do nothing
