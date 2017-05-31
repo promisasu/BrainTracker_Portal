@@ -18,14 +18,14 @@ As well as allowing clinicians to monitor patient responses to look for possible
 2. install [Node JS](https://nodejs.org/en/download/)
 3. install [MySql](https://www.mysql.com/)
 4. optionally install [Node Gyp](https://github.com/nodejs/node-gyp#installation) dependencies (strongly recommended)
-5. clone git repository `git clone https://github.com/promisasu/Portal`
+5. clone git repository `https://github.com/promisasu/BrainTracker_Portal.git`
 6. open the folder `cd Portal`
 7. run `npm install`
 
 ## Setup Instructions
 
 1. if you do not already have a database user, create one
-2. create a new empty database `CREATE SCHEMA prp_development;`
+2. create a new empty database `CREATE SCHEMA epilepsy_development;`
 3. run `npm run init`
 4. run `npm run seed`
 
