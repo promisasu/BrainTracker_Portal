@@ -6,11 +6,9 @@ const complianceService = require('../../service/compliance-service');
 const utilityService = require('../../service/utility-service');
 
 function surveyComplianceView(request, reply, patientPin){
-    // TODO
-
     Promise.all([
         utilityService.fetchTrialAndPatientIds(patientPin),
-        complianceService.fetchPatientComplianceData(patientPin),
+        complianceService.fetchPatientComplianceData(patientPin)
     ]).then(function(values){
         var complianceQueryResults = values[1];
 
@@ -18,8 +16,8 @@ function surveyComplianceView(request, reply, patientPin){
             title: 'Epilepsy | Compliance',
             breadCrumbData: values[0][0],
             complianceChartData: JSON.stringify(complianceService.fetchComplianceChartData(complianceQueryResults)),
-            activitiesStats: complianceService.fetchActivitiesStats(complianceQueryResults),
-            complianceActivities: complianceService.fetchComplianceActivities(complianceQueryResults)
+            complianceActivities: complianceService.fetchComplianceActivities(complianceQueryResults),
+            activitiesStats: complianceService.fetchActivitiesStats(complianceQueryResults)
         });
 
     }).catch(function(err){
