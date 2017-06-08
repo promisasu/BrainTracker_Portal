@@ -6,6 +6,7 @@
 
 const Sequelize = require('sequelize');
 const Stage = require('./stage');
+const Patient = require('./patient');
 
 /**
  * Registers model with Sequelize
@@ -27,18 +28,22 @@ function register (sequelize) {
         'patient',
         {
             PatientPin: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING,
                 primaryKey: true
             },
             DeviceType: {
                 type: Sequelize.ENUM,
-                values: ['android', 'ios', 'windows']
+                values: ['android', 'ios', 'windows'],
+                allowNull: true,
+                defaultValue: null
             },
             DeviceVersion: {
                 type: Sequelize.STRING,
                 validate: {
                     is: /^[a-z0-9. ]+$/
-                }
+                },
+                allowNull: true,
+                defaultValue: null
             },
             DateStarted: {
                 type: Sequelize.DATE
@@ -47,7 +52,7 @@ function register (sequelize) {
                 type: Sequelize.DATE
             },
             StageIdFK:{
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING,
                 references: {
                     model: Stage,
                     key: 'StageIdFK'
@@ -55,17 +60,27 @@ function register (sequelize) {
 
             },
             ParentPinFK:{
-                type: Sequelize.INTEGER
+                type: Sequelize.STRING,
+                references: {
+                    model:Patient,
+                    key: 'ParentPinFK',
+                    allowNull: true,
+                    defaultValue: null
+                }
             },
             type:{
                 type: Sequelize.ENUM,
-                values: ['child', 'adult', 'parent']
+                values: ['child','adult','parent_proxy']
             },
             HydroxyureaPrescribed:{
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                allowNull: true,
+                defaultValue: null
             },
             EnhancedContent:{
-                type: Sequelize.BOOLEAN
+                type: Sequelize.BOOLEAN,
+                allowNull: true,
+                defaultValue: false
             }
         },
         {

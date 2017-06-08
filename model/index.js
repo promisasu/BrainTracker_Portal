@@ -115,6 +115,7 @@ function setup (configuration) {
 
     /* ===== ONE TO MANY ===== */
     trial.hasMany(stage, {foreignKey: 'TrialId'});
+    patient.hasMany(patient, {as: 'Child', foreignKey: 'ParentPinFK'});
     patient.hasMany(surveyInstance);
     patient.hasMany(activityInstance, {foreignKey: 'PatientPinFK'});
 

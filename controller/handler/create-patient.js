@@ -45,34 +45,66 @@ function createPatient (request, reply) {
                 if (stageInstance !== null) {
                     var weeklyDates = getWeeklyDates(request.payload.startDate);
 
-                    // create patient and activityInstances in a transaction
-                    database.sequelize.transaction(function(t){
-                        return Patient.create({
-                            PatientPin: request.payload.patientPin,
-                            DeviceType: 'android',
-                            DateStarted: weeklyDates.week1.startDate,
-                            DateCompleted: weeklyDates.week4.endDate,
-                            StageIdFK:stageInstance[0].dataValues.StageId,
-                            type: 'child'
-                        }, {transaction: t}).then(function(currentPatient){
-                            var instances = generateActivityInstances(weeklyDates, currentPatient.dataValues.PatientPin);
+                    /* create parent-proxy patient, childPatient and activityInstances for
+                     * both parentProxyPatient and childPatient
+                     */
+                    var parentProxyPin = parseInt(request.payload.patientPin);
+                    if (!isNaN(parentProxyPin)) {
+                        parentProxyPin += 1000;
 
-                            return ActivityInstance.bulkCreate(instances, {transaction: t});
-                        })
-                    }).then(function(result){
+                        database.sequelize.transaction(function(t){
+                            // create parentProxyPatient
 
-                        responseObject.status = "success";
-                        responseObject.message = "Patient Enrolled Successfully!";
-                        responseCode = 200;
+                            return Patient.create({
+                                PatientPin: parentProxyPin.toString(),  // converting integer to string
+                                DeviceType: 'android',
+                                DateStarted: weeklyDates.week1.startDate,
+                                DateCompleted: weeklyDates.week4.endDate,
+                                StageIdFK:stageInstance[0].dataValues.StageId,
+                                type: 'parent_proxy'
+                            }, {function: t}).then(function(parentProxyPatient){
+                                // create childPatient
 
+                                return Patient.create({
+                                    PatientPin: request.payload.patientPin,
+                                    DeviceType: 'android',
+                                    DateStarted: weeklyDates.week1.startDate,
+                                    DateCompleted: weeklyDates.week4.endDate,
+                                    StageIdFK:stageInstance[0].dataValues.StageId,
+                                    ParentPinFK: parentProxyPatient.PatientPin,
+                                    type: 'child'
+                                }, {function: t}).then(function(childPatient){
+                                    // create activityInstances for both Parent & Child Patients
+
+                                    var activityInstances = generateActivityInstances(
+                                        weeklyDates,
+                                        childPatient.dataValues.PatientPin,
+                                        childPatient.dataValues.ParentPinFK
+                                    );
+
+                                    return ActivityInstance.bulkCreate(activityInstances, {transaction: t});
+                                });
+                            });
+                        }).then(function(result){
+
+                            responseObject.status = "success";
+                            responseObject.message = "Patient Enrolled Successfully!";
+                            responseCode = 200;
+
+                            return reply(responseObject).code(responseCode);
+                        }).catch(function(err){
+                            console.log(err);
+                            responseObject.message = err.message;
+
+                            return reply(responseObject).code(responseCode);
+                        });
+
+
+                    } else {
+
+                        responseObject.message = "Pin must be numeric!";
                         return reply(responseObject).code(responseCode);
-
-                    }).catch(function(err){
-                        console.log(err);
-                        responseObject.message = err.message;
-
-                        return reply(responseObject).code(responseCode);
-                    });
+                    }
                 } else {
                     responseObject.message = "No Trial Stage exist for this trial!";
 
@@ -121,7 +153,8 @@ function getWeekStartAndEndDate(UTCDate, initialFlag){
     return {startDate: startDate, endDate: endDate};
 }
 
-function generateActivityInstances(weeklyDates, patientPin){
+// activities for patient-proxy and child
+function generateActivityInstances(weeklyDates, childPin, parentPin){
     var activityInstances = [];
 
     var activitiesSequence = [
@@ -129,7 +162,8 @@ function generateActivityInstances(weeklyDates, patientPin){
         {"sequence":["FINGERTAPPING"],"parentactivity":"FINGERTAPPING"},
         {"sequence":["SPATIALSPAN"],"parentactivity":"SPATIALSPAN"},
         {"sequence":["FLANKER"],"parentactivity":"FLANKER"},
-        {"sequence":["PI_WEEKLY","PR_Fatigue","PR_PhysFuncMob","PR_PainInt","PR_Anxiety","CAT"],"parentactivity":"CA2"}
+        {"sequence":["PR_DEPRESSIVE","PR_COGNITIVE","PR_Anxiety","PR_PEER_RELATIONSHIP"],"parentactivity":"PR_4SQ"},
+        {"sequence":["PR_DEPRESSIVE","PR_COGNITIVE","PR_Anxiety","PR_PEER_RELATIONSHIP"],"parentactivity":"PR_4SQ"}
     ];
 
     for(var property in weeklyDates){
@@ -138,37 +172,45 @@ function generateActivityInstances(weeklyDates, patientPin){
             // pattern-comparison activity
             activityInstances.push({
                 StartTime: weeklyDates[property].startDate, EndTime: weeklyDates[property].endDate,
-                State: 'pending', PatientPinFK: patientPin, Sequence: JSON.stringify(activitiesSequence[0]),
+                State: 'pending', PatientPinFK: childPin, Sequence: JSON.stringify(activitiesSequence[0]),
                 activityTitle: 'Pattern-Comparison', description: 'Weekly Activity for Epilepsy Patients'
             });
 
             // finger-tapping activity
             activityInstances.push({
                 StartTime: weeklyDates[property].startDate, EndTime: weeklyDates[property].endDate,
-                State: 'pending', PatientPinFK: patientPin, Sequence: JSON.stringify(activitiesSequence[1]),
+                State: 'pending', PatientPinFK: childPin, Sequence: JSON.stringify(activitiesSequence[1]),
                 activityTitle: 'Finger-Tapping', description: 'Weekly Activity for Epilepsy Patients'
             });
 
             // spatial-span activity
             activityInstances.push({
                 StartTime: weeklyDates[property].startDate, EndTime: weeklyDates[property].endDate,
-                State: 'pending', PatientPinFK: patientPin, Sequence: JSON.stringify(activitiesSequence[2]),
+                State: 'pending', PatientPinFK: childPin, Sequence: JSON.stringify(activitiesSequence[2]),
                 activityTitle: 'Spatial-Span', description: 'Weekly Activity for Epilepsy Patients'
             });
 
             // flanker-test activity
             activityInstances.push({
                 StartTime: weeklyDates[property].startDate, EndTime: weeklyDates[property].endDate,
-                State: 'pending', PatientPinFK: patientPin, Sequence: JSON.stringify(activitiesSequence[3]),
+                State: 'pending', PatientPinFK: childPin, Sequence: JSON.stringify(activitiesSequence[3]),
                 activityTitle: 'Flanker-Test', description: 'Weekly Activity for Epilepsy Patients'
             });
 
             // weekly-survey activity
             activityInstances.push({
                 StartTime: weeklyDates[property].startDate, EndTime: weeklyDates[property].endDate,
-                State: 'pending', PatientPinFK: patientPin, Sequence: JSON.stringify(activitiesSequence[4]),
+                State: 'pending', PatientPinFK: childPin, Sequence: JSON.stringify(activitiesSequence[4]),
                 activityTitle: 'Epilepsy Weekly Survey', description: 'Weekly Activity for Epilepsy Patients'
             });
+
+            // parent-proxy weekly survey
+            activityInstances.push({
+                StartTime: weeklyDates[property].startDate, EndTime: weeklyDates[property].endDate,
+                State: 'pending', PatientPinFK: parentPin, Sequence: JSON.stringify(activitiesSequence[5]),
+                activityTitle: 'Parent-Proxy Weekly Survey',
+                description: 'Weekly Activity for Epilepsy Patient\'s Parent'
+            })
 
         }
     }
