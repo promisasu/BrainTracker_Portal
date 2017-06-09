@@ -109,22 +109,22 @@ function getIndividualActivityCompliance(instance, complianceData){
     if (instance.State === COMPLETED) {
         switch (instance.activityTitle.toLowerCase()){
             case PATTERN_COMPARISON.toLowerCase():
-                complianceData.patternComparison.push(100/totalActivities);
+                complianceData.patternComparison.push((100/totalActivities).toFixed(2));
                 break;
             case FINGER_TAPPING.toLowerCase():
-                complianceData.fingerTapping.push(100/totalActivities);
+                complianceData.fingerTapping.push((100/totalActivities).toFixed(2));
                 break;
             case SPATIAL_SPAN.toLowerCase():
-                complianceData.spatialSpan.push(100/totalActivities);
+                complianceData.spatialSpan.push((100/totalActivities).toFixed(2));
                 break;
             case FLANKER_TEST.toLowerCase():
-                complianceData.flankerTest.push(100/totalActivities);
+                complianceData.flankerTest.push((100/totalActivities).toFixed(2));
                 break;
             case WEEKLY_SURVEY.toLowerCase():
-                complianceData.weeklySurvey.push(100/totalActivities);
+                complianceData.weeklySurvey.push((100/totalActivities).toFixed(2));
                 break;
             case PARENT_PROXY.toLowerCase():
-                complianceData.parentProxy.push(100/totalActivities);
+                complianceData.parentProxy.push((100/totalActivities).toFixed());
                 break;
             default:
             // do nothing
