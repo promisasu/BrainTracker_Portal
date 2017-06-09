@@ -106,48 +106,25 @@ function generateLabelsAndDataPropertyOfChart(queryResults){
 function getIndividualActivityCompliance(instance, complianceData){
     var totalActivities = 6;
 
-    if (instance.State === COMPLETED) {
+    if (instance.State.toLowerCase() === COMPLETED) {
         switch (instance.activityTitle.toLowerCase()){
             case PATTERN_COMPARISON.toLowerCase():
-                complianceData.patternComparison.push((100/totalActivities).toFixed(2));
+                complianceData.patternComparison.push(((100/totalActivities).toFixed(2))/1);
                 break;
             case FINGER_TAPPING.toLowerCase():
-                complianceData.fingerTapping.push((100/totalActivities).toFixed(2));
+                complianceData.fingerTapping.push(((100/totalActivities).toFixed(2))/1);
                 break;
             case SPATIAL_SPAN.toLowerCase():
-                complianceData.spatialSpan.push((100/totalActivities).toFixed(2));
+                complianceData.spatialSpan.push(((100/totalActivities).toFixed(2))/1);
                 break;
             case FLANKER_TEST.toLowerCase():
-                complianceData.flankerTest.push((100/totalActivities).toFixed(2));
+                complianceData.flankerTest.push(((100/totalActivities).toFixed(2))/1);
                 break;
             case WEEKLY_SURVEY.toLowerCase():
-                complianceData.weeklySurvey.push((100/totalActivities).toFixed(2));
+                complianceData.weeklySurvey.push(((100/totalActivities).toFixed(2))/1);
                 break;
             case PARENT_PROXY.toLowerCase():
-                complianceData.parentProxy.push((100/totalActivities).toFixed());
-                break;
-            default:
-            // do nothing
-        }
-    } else {
-        switch (instance.activityTitle.toLowerCase()){
-            case PATTERN_COMPARISON.toUpperCase():
-                complianceData.patternComparison.push(0);
-                break;
-            case FINGER_TAPPING.toLowerCase():
-                complianceData.fingerTapping.push(0);
-                break;
-            case SPATIAL_SPAN.toLowerCase():
-                complianceData.spatialSpan.push(0);
-                break;
-            case FLANKER_TEST.toLowerCase():
-                complianceData.flankerTest.push(0);
-                break;
-            case WEEKLY_SURVEY.toLowerCase():
-                complianceData.weeklySurvey.push(0);
-                break;
-            case PARENT_PROXY.toLowerCase():
-                complianceData.parentProxy.push(0);
+                complianceData.parentProxy.push(((100/totalActivities).toFixed(2))/1);
                 break;
             default:
             // do nothing
@@ -202,6 +179,15 @@ function addDummyData(complianceData, totalLabels){
 
         for (var i = 0; i< loopCounter; i++){
             complianceData.weeklySurvey.push(0);
+        }
+    }
+
+    // parent-proxy weekly-survey
+    if (complianceData.parentProxy.length < totalLabels) {
+        loopCounter = totalLabels - complianceData.parentProxy.length;
+
+        for (var i=0; i < loopCounter; i++){
+            complianceData.parentProxy.push(0);
         }
     }
 
