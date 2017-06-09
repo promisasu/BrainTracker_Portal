@@ -204,6 +204,7 @@ function getUniqueElements(arr){
 
 function generateComplianceActivities(queryResults){
     queryResults.forEach(function(instance){
+
         instance.StartTime = moment(new Date(instance.StartTime)).format(viewDateTimeFormat);
         instance.EndTime = moment(new Date(instance.EndTime)).format(viewDateTimeFormat);
 
@@ -213,7 +214,7 @@ function generateComplianceActivities(queryResults){
         instance.status = getStatus(instance.State);
 
         if (instance.UserSubmissionTime !== null) {
-            instance.UserSubmissionTime = moment(new Date(instance.UserSubmissionTime)).format(viewDateTimeFormat);
+            instance.UserSubmissionTime = moment.utc(new Date(instance.UserSubmissionTime)).format(viewDateTimeFormat);
         } else {
             instance.UserSubmissionTime = 'N/A';
         }
