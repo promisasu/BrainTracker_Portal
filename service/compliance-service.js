@@ -263,7 +263,7 @@ function getStatus(state){
 
 function getActivityInstanceState(activityInstance){
     // check if the state is pending and whether the endDate is passed, if yes set the state as 'Expired'
-    if (moment().isAfter(new Date(activityInstance.EndTime))){
+    if (activityInstance.State.toLowerCase() !== COMPLETED && moment().isAfter(new Date(activityInstance.EndTime))){
         activityInstance.State = capitalize('expired');
     } else {
         activityInstance.State = capitalize(activityInstance.State);
