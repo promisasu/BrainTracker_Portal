@@ -95,6 +95,17 @@ function getStagesOfTrial(trialId){
     })
 }
 
+function getPatientRecord(patientPin){
+    var rawQuery = "SELECT pt.* " +
+        "FROM patients as pt " +
+        "WHERE pt.PatientPin = :pin LIMIT 1";
+
+    return database.sequelize.query(rawQuery, {
+        replacements: {pin: patientPin},
+        type: database.sequelize.QueryTypes.SELECT
+    });
+}
+
 module.exports.fetchTrialAndPatientIds = getTrialAndPatientIds;
 module.exports.fetchPatientIds = getPatientIds;
 module.exports.fetchTrialsIds = getTrialIds;
@@ -103,3 +114,4 @@ module.exports.fetchPatient = getPatient;
 module.exports.fetchTrialsForDashboard = getTrialListForDashboard;
 module.exports.fetchTrialDetails = getTrialDetails;
 module.exports.fetchStagesOfTrial = getStagesOfTrial;
+module.exports.fetchPatientRecord = getPatientRecord;

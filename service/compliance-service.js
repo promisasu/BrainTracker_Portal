@@ -13,6 +13,7 @@ const FINGER_TAPPING = 'Finger-Tapping';
 const SPATIAL_SPAN = 'Spatial-Span';
 const FLANKER_TEST = 'Flanker-Test';
 const WEEKLY_SURVEY = 'Epilepsy Weekly Survey';
+const PARENT_PROXY = 'Parent-Proxy Weekly Survey';
 
 // activity state captions
 const PENDING = "pending";
@@ -20,14 +21,15 @@ const IN_PROGRESS = "in progress";
 const COMPLETED = "completed";
 const EXPIRED = "expired";
 
-function getPatientComplianceData(patientPin){
+function getPatientComplianceData(patientPin, parentPin){
+
     var rawQuery = "SELECT ai.* " +
         " FROM activity_instance as ai, patients as pa " +
-        " WHERE ai.PatientPinFk = pa.PatientPin AND pa.PatientPin = :pin " +
-        "   AND ai.ActivityTitle in ('Pattern-Comparison', 'Finger-Tapping', 'Spatial-Span', 'Flanker-Test', 'Epilepsy Weekly Survey') ORDER BY ai.StartTime";
+        " WHERE ai.PatientPinFk = pa.PatientPin AND (pa.PatientPin = :pin OR pa.ParentPinFK = :parentPin) " +
+        "   AND ai.ActivityTitle in ('Pattern-Comparison', 'Finger-Tapping', 'Spatial-Span', 'Flanker-Test', 'Epilepsy Weekly Survey', 'Parent-Proxy Weekly Survey') ORDER BY ai.StartTime";
 
     return database.sequelize.query(rawQuery, {
-        replacements: {pin: patientPin},
+        replacements: {pin: patientPin, parentPin: parentPin},
         type: database.sequelize.QueryTypes.SELECT
     });
 }
@@ -51,17 +53,22 @@ function generateComplianceChartData(queryResults){
             {
                 label: 'Spatial-Span',
                 data: result.complianceData.spatialSpan,
-                backgroundColor: "orange"
+                backgroundColor: "#4c8f4d"
             },
             {
                 label: 'Flanker-Test',
                 data: result.complianceData.flankerTest,
-                backgroundColor: "green"
+                backgroundColor: "#3370b5"
             },
             {
                 label: 'Weekly Survey',
                 data: result.complianceData.weeklySurvey,
-                backgroundColor: "brown"
+                backgroundColor: "orange"
+            },
+            {
+                label: 'Parent-Proxy Weekly Survey',
+                data:result.complianceData.parentProxy,
+                backgroundColor: "#6f4d2b"
             }
         ]
     };
@@ -76,7 +83,8 @@ function generateLabelsAndDataPropertyOfChart(queryResults){
         fingerTapping: [],
         spatialSpan: [],
         flankerTest: [],
-        weeklySurvey: []
+        weeklySurvey: [],
+        parentProxy: []
     };
 
     queryResults.forEach(function(row){
@@ -96,7 +104,7 @@ function generateLabelsAndDataPropertyOfChart(queryResults){
 }
 
 function getIndividualActivityCompliance(instance, complianceData){
-    var totalActivities = 5;
+    var totalActivities = 6;
 
     if (instance.State === COMPLETED) {
         switch (instance.activityTitle.toLowerCase()){
@@ -114,6 +122,9 @@ function getIndividualActivityCompliance(instance, complianceData){
                 break;
             case WEEKLY_SURVEY.toLowerCase():
                 complianceData.weeklySurvey.push(100/totalActivities);
+                break;
+            case PARENT_PROXY.toLowerCase():
+                complianceData.parentProxy.push(100/totalActivities);
                 break;
             default:
             // do nothing
@@ -134,6 +145,9 @@ function getIndividualActivityCompliance(instance, complianceData){
                 break;
             case WEEKLY_SURVEY.toLowerCase():
                 complianceData.weeklySurvey.push(0);
+                break;
+            case PARENT_PROXY.toLowerCase():
+                complianceData.parentProxy.push(0);
                 break;
             default:
             // do nothing
@@ -249,7 +263,7 @@ function getStatus(state){
 
 function getActivityInstanceState(activityInstance){
     // check if the state is pending and whether the endDate is passed, if yes set the state as 'Expired'
-    if (activityInstance.State === PENDING && moment().isAfter(new Date(activityInstance.EndTime))){
+    if (moment().isAfter(new Date(activityInstance.EndTime))){
         activityInstance.State = capitalize('expired');
     } else {
         activityInstance.State = capitalize(activityInstance.State);
@@ -290,7 +304,33 @@ function generateActivitiesStats(queryResults){
     return stats;
 }
 
+function getParentActivities(parentPin){
+    var rawQuery = "SELECT ai.* " +
+        " FROM activity_instance as ai, patients as pa " +
+        " WHERE ai.PatientPinFk = pa.PatientPin AND pa.type in ('parent_proxy') AND pa.patientPin = :pin " +
+        "   AND ai.ActivityTitle in ('Parent-Proxy Weekly Survey') ORDER BY ai.StartTime";
+
+    return database.sequelize.query(rawQuery, {
+        replacements: {pin: parentPin},
+        type: database.sequelize.QueryTypes.SELECT
+    });
+}
+
+function getChildActivities(childPin){
+    var rawQuery = "SELECT ai.* " +
+        " FROM activity_instance as ai, patients as pa " +
+        " WHERE ai.PatientPinFk = pa.PatientPin AND pa.type in ('child') AND pa.patientPin = :pin " +
+        "   AND ai.ActivityTitle in ('Pattern-Comparison', 'Finger-Tapping', 'Spatial-Span', 'Flanker-Test', 'Epilepsy Weekly Survey') ORDER BY ai.StartTime";
+
+    return database.sequelize.query(rawQuery, {
+        replacements: {pin: childPin},
+        type: database.sequelize.QueryTypes.SELECT
+    });
+}
+
 module.exports.fetchPatientComplianceData = getPatientComplianceData;
 module.exports.fetchComplianceChartData = generateComplianceChartData;
 module.exports.fetchComplianceActivities = generateComplianceActivities;
 module.exports.fetchActivitiesStats = generateActivitiesStats;
+module.exports.fetchParentActivities = getParentActivities;
+module.exports.fetchChildActivities = getChildActivities;

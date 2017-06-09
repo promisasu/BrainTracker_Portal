@@ -20,30 +20,54 @@ const flankerTestService = require('../../service/flanker-test-service');
  */
 function patientView (request, reply) {
 
-    Promise.all([
-        utilityService.fetchTrialAndPatientIds(request.params.pin),
-        complianceService.fetchPatientComplianceData(request.params.pin),
-        patternComparisonService.fetchRecentFivePatternComparisons(request.params.pin),
-        fingerTappingService.fetchRecentFiveFingerTappings(request.params.pin),
-        spatialSpanService.fetchRecentFiveSpatialSpans(request.params.pin),
-        flankerTestService.fetchRecentFiveFlankerTests(request.params.pin)
-    ]).then(function(values){
+    // fetch patient record
+    utilityService.fetchPatientRecord(request.params.pin).then(function(patient){
 
-        var formattedPatternComparisons = patternComparisonService.fetchFormattedPatternComparisons(values[2]);
-        var formattedFingerTappings = fingerTappingService.fetchFormattedFingerTapping(values[3]);
-        var formattedSpatialSpans = spatialSpanService.fetchFormattedSpatialSpanActivities(values[4]);
-        var formattedFlankerTests = spatialSpanService.fetchFormattedSpatialSpanActivities(values[5]);
+        // fetch parent's activities for this child patient
+        complianceService.fetchParentActivities(patient[0].ParentPinFK).then(function(parentActivities){
 
+            // fetch child's activities
+            complianceService.fetchChildActivities(patient[0].PatientPin).then(function(childActivities){
 
-        return reply.view('patientepilepsy', {
-            title: 'Epilepsy | Patient',
-            breadCrumbData: values[0][0],
-            complianceChartData: JSON.stringify(complianceService.fetchComplianceChartData(values[1])),
-            patternComparisonChartData: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons),
-            fingerTappingChartData: fingerTappingService.fetchFingerTappingChartData(formattedFingerTappings),
-            spatialSpanChartData: spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpans),
-            flankerTestChartData: flankerTestService.fetchAggregateChartData(formattedFlankerTests)
+                // fetch breadCrumb Data
+                utilityService.fetchTrialAndPatientIds(request.params.pin).then(function(breadCrumbData){
+
+                    // fetch latest five pattern-comparisons
+                    patternComparisonService.fetchRecentFivePatternComparisons(request.params.pin).then(function(patternComparisons){
+
+                        // fetch latest five finger-taps
+                        fingerTappingService.fetchRecentFiveFingerTappings(request.params.pin).then(function(fingerTaps){
+
+                            // fetch latest five spatial-spans
+                            spatialSpanService.fetchRecentFiveSpatialSpans(request.params.pin).then(function(spatialSpans){
+
+                                // fetch latest five flanker-tests
+                                flankerTestService.fetchRecentFiveFlankerTests(request.params.pin).then(function(flankerTests){
+
+                                    var formattedPatternComparisons = patternComparisonService.fetchFormattedPatternComparisons(patternComparisons);
+                                    var formattedFingerTaps = fingerTappingService.fetchFormattedFingerTapping(fingerTaps);
+                                    var formattedSpatialSpans = spatialSpanService.fetchFormattedSpatialSpanActivities(spatialSpans);
+                                    var formattedFlankerTests = flankerTestService.fetchFormattedFlankerTests(flankerTests);
+
+                                    return reply.view('patientepilepsy', {
+                                        title: 'Epilepsy | Patient',
+                                        breadCrumbData: breadCrumbData[0],
+                                        complianceChartData: JSON.stringify(complianceService.fetchComplianceChartData(childActivities.concat(parentActivities))),
+                                        patternComparisonChartData: patternComparisonService.fetchAggregateChartData(formattedPatternComparisons),
+                                        fingerTappingChartData: fingerTappingService.fetchFingerTappingChartData(formattedFingerTaps),
+                                        spatialSpanChartData: spatialSpanService.fetchSpatialSpanChartData(formattedSpatialSpans),
+                                        flankerTestChartData: flankerTestService.fetchAggregateChartData(formattedFlankerTests)
+                                    });
+
+                                });
+                            });
+                        });
+                    })
+                });
+            });
         });
+
+
     }).catch(function(err){
         console.log(err);
         return reply({code: 500, message: 'Something went Wrong!'}).code(500);

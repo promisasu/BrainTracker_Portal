@@ -6,18 +6,30 @@ const complianceService = require('../../service/compliance-service');
 const utilityService = require('../../service/utility-service');
 
 function surveyComplianceView(request, reply, patientPin){
-    Promise.all([
-        utilityService.fetchTrialAndPatientIds(patientPin),
-        complianceService.fetchPatientComplianceData(patientPin)
-    ]).then(function(values){
-        var complianceQueryResults = values[1];
 
-        return reply.view('compliance-detail', {
-            title: 'Epilepsy | Compliance',
-            breadCrumbData: values[0][0],
-            complianceChartData: JSON.stringify(complianceService.fetchComplianceChartData(complianceQueryResults)),
-            complianceActivities: complianceService.fetchComplianceActivities(complianceQueryResults),
-            activitiesStats: complianceService.fetchActivitiesStats(complianceQueryResults)
+    // fetch patient record
+    utilityService.fetchPatientRecord(patientPin).then(function(patient){
+
+        // fetch parent's activities
+        complianceService.fetchParentActivities(patient[0].ParentPinFK).then(function(parentActivities){
+
+            // fetch child's activities
+            complianceService.fetchChildActivities(patient[0].PatientPin).then(function(childActivities){
+
+                // fetch breadCrumbData
+                utilityService.fetchTrialAndPatientIds(patientPin).then(function(breadCrumbData){
+
+                    var totalActivities = childActivities.concat(parentActivities);
+
+                    return reply.view('compliance-detail', {
+                        title: 'Epilepsy | Compliance',
+                        breadCrumbData: breadCrumbData[0],
+                        complianceChartData: JSON.stringify(complianceService.fetchComplianceChartData(totalActivities)),
+                        complianceActivities: complianceService.fetchComplianceActivities(totalActivities),
+                        activitiesStats: complianceService.fetchActivitiesStats(totalActivities)
+                    });
+                });
+            });
         });
 
     }).catch(function(err){
